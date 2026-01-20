@@ -1,0 +1,26 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: Mini E-commerce API
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mini_ecommerce}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  refresh-token-expiration: 604800000 # 7 days
+  access-token-expiration: 900000 # 15 minutes
+  jwt-secret-key: ${JWT_SECRET:f1545ca030b7c3b0f7d7820196cb7fb14b9cb2a5ec4b911405cad2fa430966523c247a7c1c6553153f0e639873be291efb278ac8f1a5c68768d5401185f6f9e6}
