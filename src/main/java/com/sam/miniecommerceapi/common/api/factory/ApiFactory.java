@@ -49,4 +49,14 @@ public class ApiFactory {
     SuccessApi<T> response = successBuild(HttpStatus.OK.value(), data, message);
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie).body(response);
   }
+
+  public static ResponseEntity<ErrorApi> error(ErrorCode errorCode, String path) {
+    ErrorApi response = errorBuild(errorCode, path, null);
+    return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+  }
+
+  public static ResponseEntity<ErrorApi> error(ErrorCode errorCode, String path, String message) {
+    ErrorApi response = errorBuild(errorCode, path, message);
+    return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+  }
 }
