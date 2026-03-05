@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.security.exception;
+package com.sam.miniecommerceapi.auth.security.jwt;
 
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,8 +7,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.jspecify.annotations.NonNull;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,15 +16,15 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
   AuthResponder responder;
 
   @Override
-  public void commence(
+  public void handle(
       @NonNull HttpServletRequest request,
       @NonNull HttpServletResponse response,
-      @NonNull AuthenticationException authException)
+      @NonNull AccessDeniedException accessDeniedException)
       throws IOException {
-    responder.sendError(response, ErrorCode.UNAUTHORIZED_ERROR, request.getServletPath());
+    responder.sendError(response, ErrorCode.ACCESS_DENIED, request.getServletPath());
   }
 }

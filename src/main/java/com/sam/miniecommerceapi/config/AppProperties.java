@@ -13,5 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "app")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppProperties {
-  String jwtSecretKey;
+    String jwtSecretKey;
+    Long refreshTokenExpiration;
+    Long accessTokenExpiration;
+    boolean isProduction;
 }

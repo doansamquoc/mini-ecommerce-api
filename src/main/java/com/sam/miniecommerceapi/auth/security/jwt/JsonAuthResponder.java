@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.security.exception;
+package com.sam.miniecommerceapi.auth.security.jwt;
 
 import com.sam.miniecommerceapi.common.api.ErrorApi;
 import com.sam.miniecommerceapi.common.api.factory.ApiFactory;
