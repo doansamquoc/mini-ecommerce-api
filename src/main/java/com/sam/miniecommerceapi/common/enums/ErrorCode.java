@@ -18,8 +18,9 @@ public enum ErrorCode {
     TOKEN_NOT_FOUND(1006, HttpStatus.NOT_FOUND, "Token not found"),
     PRODUCT_NOT_FOUND(2001, HttpStatus.NOT_FOUND, "Product not found"),
     INVALID_REQUEST(3001, HttpStatus.BAD_REQUEST, "Invalid request"),
-    INVALID_CREDENTIALS(4001, HttpStatus.BAD_REQUEST, "Invalid credentials");
-
+    INVALID_CREDENTIALS(4001, HttpStatus.BAD_REQUEST, "Invalid credentials"),
+    EMAIL_EXISTED(3002, HttpStatus.CONFLICT, "This email already exists"),
+    PASSWORD_SIZE(3003, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters");
     int errorCode;
     HttpStatus httpStatus;
     String message;

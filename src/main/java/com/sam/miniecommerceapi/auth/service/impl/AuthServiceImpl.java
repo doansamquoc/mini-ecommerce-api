@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
 import com.sam.miniecommerceapi.auth.dto.internal.LoginResult;
+import com.sam.miniecommerceapi.auth.dto.request.CreationRequest;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.auth.security.jwt.JwtProvider;
@@ -9,7 +10,11 @@ import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.common.dto.UserPrincipal;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.common.util.UsernameUtils;
+import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
+import com.sam.miniecommerceapi.user.mapper.UserMapper;
+import com.sam.miniecommerceapi.user.repository.UserRepository;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +23,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthServiceImpl implements AuthService {
+    UserMapper mapper;
     UserService userService;
+    UserRepository repository;
     AuthenticationManager authManager;
+    PasswordEncoder encoder;
     JwtProvider jwtProvider;
     RefreshTokenService refreshTokenService;
 
@@ -39,8 +48,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResult login(LoginRequest request, String ip, String agent) {
-        UserPrincipal userPrincipal = authenticate(request.getIdentifier(), request.getPassword());
+    public LoginResult login(LoginRequest r, String ip, String agent) {
+        UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
 
         String accessToken = jwtProvider.generateAccessToken(userPrincipal);
 
@@ -48,5 +57,17 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken refreshToken = refreshTokenService.create(user, ip, agent);
 
         return LoginResult.builder().accessToken(accessToken).refreshToken(refreshToken.getToken()).build();
+    }
+
+    @Override
+    public UserResponse create(CreationRequest r) {
+        if (userService.existsByEmail(r.getEmail())) throw new BusinessException(ErrorCode.EMAIL_EXISTED);
+        String username = UsernameUtils.generateUsername(r.getEmail());
+
+        User user = mapper.toUser(r);
+        user.setUsername(username);
+        user.setPassword(encoder.encode(r.getPassword()));
+
+        return mapper.toResponse(repository.save(user));
     }
 }

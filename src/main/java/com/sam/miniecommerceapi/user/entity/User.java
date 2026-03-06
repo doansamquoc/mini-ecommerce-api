@@ -19,13 +19,16 @@ public class User extends BaseEntity {
   @Column(name = "username", unique = true, nullable = false)
   String username;
 
-  @Column(name = "email", unique = true, nullable = false)
+  @Column(name = "email", unique = true)
   String email;
+
+  @Column(name = "phone", unique = true)
+  String phone;
 
   @Column(name = "password", nullable = false)
   String password;
 
-  @Column(name = "display_name", nullable = false)
+  @Column(name = "display_name")
   String displayName;
 
   @ElementCollection(fetch = FetchType.LAZY)

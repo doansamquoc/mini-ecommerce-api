@@ -22,7 +22,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getReference(String id){
+    public User getReference(String id) {
         return repository.getReferenceById(id);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return repository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByPhone(String phone) {
+        return repository.existsByPhone(phone);
     }
 }

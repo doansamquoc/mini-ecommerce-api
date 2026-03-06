@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.auth.controller;
 
 import com.sam.miniecommerceapi.auth.dto.internal.LoginResult;
+import com.sam.miniecommerceapi.auth.dto.request.CreationRequest;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.dto.response.AuthResponse;
 import com.sam.miniecommerceapi.auth.service.AuthService;
@@ -9,6 +10,7 @@ import com.sam.miniecommerceapi.common.annotation.UserAgent;
 import com.sam.miniecommerceapi.common.api.SuccessApi;
 import com.sam.miniecommerceapi.common.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.service.CookieService;
+import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +39,11 @@ public class AuthController {
         ResponseCookie cookie = cookieService.createRefreshToken(result.getRefreshToken());
         AuthResponse authResponse = new AuthResponse(result.getAccessToken());
         return ApiFactory.success(cookie.toString(), authResponse, "Login successfully!");
+    }
+
+    @PostMapping("/create")
+    ResponseEntity<SuccessApi<UserResponse>> create(@Valid @RequestBody CreationRequest r) {
+        UserResponse userResponse = authService.create(r);
+        return ApiFactory.created(userResponse, "User has been created");
     }
 }
