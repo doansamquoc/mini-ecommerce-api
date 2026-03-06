@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.config;
+package com.sam.miniecommerceapi.common.config;
 
 import com.sam.miniecommerceapi.common.audit.AuditMetaDataResolver;
 import org.springframework.context.annotation.Configuration;

@@ -5,7 +5,7 @@ import com.sam.miniecommerceapi.auth.repository.RefreshTokenRepository;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service

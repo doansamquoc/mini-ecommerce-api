@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.common.service;
 
 import com.sam.miniecommerceapi.common.constant.AppConstant;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
