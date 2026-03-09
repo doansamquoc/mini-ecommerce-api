@@ -11,10 +11,8 @@ import com.sam.miniecommerceapi.common.annotation.ClientIp;
 import com.sam.miniecommerceapi.common.annotation.UserAgent;
 import com.sam.miniecommerceapi.common.api.SuccessApi;
 import com.sam.miniecommerceapi.common.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.common.service.CookieService;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +21,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +29,6 @@ import java.io.IOException;
 public class AuthController {
     AuthService authService;
     CookieService cookieService;
-    AppProperties appProperties;
 
     @PostMapping("/login")
     ResponseEntity<SuccessApi<AuthResponse>> authenticate(

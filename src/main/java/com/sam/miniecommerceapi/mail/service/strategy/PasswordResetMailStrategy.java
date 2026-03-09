@@ -5,7 +5,6 @@ import com.sam.miniecommerceapi.mail.dto.PasswordResetMailData;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 
 @Component

@@ -1,11 +1,8 @@
 package com.sam.miniecommerceapi.user.dto.request;
 
-import com.sam.miniecommerceapi.common.enums.Role;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
 
 @Data
 @Builder
