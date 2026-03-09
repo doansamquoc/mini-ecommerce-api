@@ -14,27 +14,21 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "refresh_tokens")
+@Table(name = "password_reset_tokens")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RefreshToken extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
+public class PasswordResetToken extends BaseEntity {
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @Column(name = "token", unique = true, nullable = false)
+    @Column(name = "token", nullable = false, unique = true)
     String token;
 
     @Column(name = "expires_at", nullable = false)
     Instant expiresAt;
 
-    @Column(name = "revoked", nullable = false)
-    boolean revoked;
-
-    @Column(name = "device")
-    String device;
-
-    @Column(name = "ip")
-    String ip;
+    @Column(name = "is_used", nullable = false)
+    boolean isUsed;
 
     public boolean isExpired() {
         return Instant.now().isAfter(this.expiresAt);
