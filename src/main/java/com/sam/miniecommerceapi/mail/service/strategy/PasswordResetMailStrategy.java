@@ -18,15 +18,14 @@ public class PasswordResetMailStrategy implements MailStrategy {
 
     @Override
     public void setContextVariables(Context context, Object data) {
-        if (data instanceof PasswordResetMailData(
-                String email, String username, String ip, String agent, String token, Clock clock
-        )) {
-            context.setVariable("email", email);
-            context.setVariable("username", username);
-            context.setVariable("ip", ip);
-            context.setVariable("agent", agent);
-            context.setVariable("token", token);
-            context.setVariable("time", LocalDateTime.now(clock));
+        if (data instanceof PasswordResetMailData d) {
+            context.setVariable("email", d.email());
+            context.setVariable("username", d.username());
+            context.setVariable("ip", d.ip());
+            context.setVariable("agent", d.agent());
+            context.setVariable("token", d.token());
+            context.setVariable("resetLink", d.resetLink());
+            context.setVariable("time", LocalDateTime.now(d.clock()));
         }
     }
 }

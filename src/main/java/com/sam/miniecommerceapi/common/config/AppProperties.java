@@ -16,5 +16,7 @@ public class AppProperties {
     String jwtSecretKey;
     Long refreshTokenExpiration;
     Long accessTokenExpiration;
+    Long passwordResetTokenExpiration;
     boolean isProduction;
+    String frontendUrl;
 }

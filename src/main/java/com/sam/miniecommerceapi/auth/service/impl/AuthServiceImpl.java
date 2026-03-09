@@ -2,19 +2,29 @@ package com.sam.miniecommerceapi.auth.service.impl;
 
 import com.sam.miniecommerceapi.auth.dto.internal.LoginResult;
 import com.sam.miniecommerceapi.auth.dto.request.CreationRequest;
+import com.sam.miniecommerceapi.auth.dto.request.ForgotPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
+import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
+import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.auth.event.LoginEvent;
+import com.sam.miniecommerceapi.auth.event.PasswordChangedEvent;
+import com.sam.miniecommerceapi.auth.event.PasswordResetEvent;
 import com.sam.miniecommerceapi.auth.event.RegisterUserEvent;
 import com.sam.miniecommerceapi.auth.security.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.AuthService;
+import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.common.dto.UserPrincipal;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.util.UsernameUtils;
 import com.sam.miniecommerceapi.mail.dto.LoginMailData;
+import com.sam.miniecommerceapi.mail.dto.PasswordChangedMailData;
+import com.sam.miniecommerceapi.mail.dto.PasswordResetMailData;
 import com.sam.miniecommerceapi.mail.dto.WelcomeMailData;
+import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.mapper.UserMapper;
@@ -40,12 +50,14 @@ public class AuthServiceImpl implements AuthService {
     Clock clock;
     UserMapper mapper;
     UserService userService;
-    UserRepository repository;
-    AuthenticationManager authManager;
     PasswordEncoder encoder;
     JwtProvider jwtProvider;
+    UserRepository repository;
+    AppProperties appProperties;
+    AuthenticationManager authManager;
     ApplicationEventPublisher publisher;
     RefreshTokenService refreshTokenService;
+    PasswordResetTokenService passwordResetTokenService;
 
     private UserPrincipal authenticate(String identifier, String password) {
         try {
@@ -87,5 +99,41 @@ public class AuthServiceImpl implements AuthService {
         publisher.publishEvent(event);
 
         return mapper.toResponse(userSaved);
+    }
+
+    @Override
+    public void forgotPassword(ForgotPasswordRequest r, String ip, String agent) {
+        // If user existed by email then send mail
+        userService.findOptinalByEmail(r.getEmail()).ifPresent(u -> {
+            String token = passwordResetTokenService.createToken(u);
+            String resetLink = appProperties.getFrontendUrl() + "/reset-password?token=" + token;
+
+            PasswordResetMailData data = new PasswordResetMailData(
+                    u.getEmail(), u.getUsername(), ip, agent, token, resetLink, clock
+            );
+            PasswordResetEvent event = new PasswordResetEvent(this, data);
+            publisher.publishEvent(event);
+        });
+        // If not, continue
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest r) {
+        PasswordResetToken passwordResetToken = passwordResetTokenService.validateToken(r.getToken());
+
+        String hashedPassword = encoder.encode(r.getNewPassword());
+        User user = passwordResetToken.getUser();
+
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder().password(hashedPassword).build();
+        userService.updateUser(user.getId(), userUpdateRequest);
+
+        PasswordChangedMailData data = new PasswordChangedMailData(user.getEmail(), user.getUsername());
+        PasswordChangedEvent event = new PasswordChangedEvent(this, data);
+        publisher.publishEvent(event);
+    }
+
+    @Override
+    public PasswordResetToken validateToken(String token) {
+        return passwordResetTokenService.validateToken(token);
     }
 }
