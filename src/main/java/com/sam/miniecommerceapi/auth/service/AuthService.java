@@ -8,5 +8,5 @@ import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 public interface AuthService {
     LoginResult login(LoginRequest request, String ip, String agent);
 
-    UserResponse create(CreationRequest r);
+    UserResponse register(CreationRequest r);
 }

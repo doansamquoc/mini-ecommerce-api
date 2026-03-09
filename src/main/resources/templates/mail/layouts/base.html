@@ -1,0 +1,17 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)" lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title></title>
+    </head>
+
+    <body style="margin: 0; padding: 0; box-sizing: border-box; line-height: 1.6">
+        <div style="max-width: 720px; margin: 0 auto">
+            <main th:replace="${content}"></main>
+            <footer th:replace="~{mail/fragments/footer :: footer}"></footer>
+        </div>
+    </body>
+
+</html>

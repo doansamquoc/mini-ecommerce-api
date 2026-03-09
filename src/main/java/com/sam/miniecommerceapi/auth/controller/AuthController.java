@@ -31,7 +31,7 @@ public class AuthController {
     CookieService cookieService;
 
     @PostMapping("/login")
-    ResponseEntity<SuccessApi<AuthResponse>> login(
+    ResponseEntity<SuccessApi<AuthResponse>> authenticate(
             @Valid @RequestBody LoginRequest loginRequest,
             @ClientIp String ip, @UserAgent String agent
     ) {
@@ -41,9 +41,9 @@ public class AuthController {
         return ApiFactory.success(cookie.toString(), authResponse, "Login successfully!");
     }
 
-    @PostMapping("/create")
-    ResponseEntity<SuccessApi<UserResponse>> create(@Valid @RequestBody CreationRequest r) {
-        UserResponse userResponse = authService.create(r);
+    @PostMapping("/register")
+    ResponseEntity<SuccessApi<UserResponse>> register(@Valid @RequestBody CreationRequest r) {
+        UserResponse userResponse = authService.register(r);
         return ApiFactory.created(userResponse, "User has been created");
     }
 }

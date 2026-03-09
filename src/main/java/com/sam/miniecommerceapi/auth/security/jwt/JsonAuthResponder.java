@@ -18,17 +18,17 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JsonAuthResponder implements AuthResponder {
-  ObjectMapper mapper;
+    ObjectMapper mapper;
 
-  @Override
-  public void sendError(HttpServletResponse response, ErrorCode errorCode, String path)
-      throws IOException {
-    ErrorApi error = ApiFactory.error(errorCode, path).getBody();
+    @Override
+    public void sendError(HttpServletResponse response, ErrorCode errorCode, String path) throws IOException {
+        ErrorApi error = ApiFactory.error(errorCode, path).getBody();
 
-    response.setStatus(errorCode.getHttpStatus().value());
-    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setStatus(errorCode.getHttpStatus().value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-    response.getWriter().write(mapper.writeValueAsString(error));
-  }
+        response.getWriter().write(mapper.writeValueAsString(error));
+        response.flushBuffer();
+    }
 }
