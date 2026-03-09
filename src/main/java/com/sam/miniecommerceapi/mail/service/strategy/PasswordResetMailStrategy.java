@@ -2,7 +2,6 @@ package com.sam.miniecommerceapi.mail.service.strategy;
 
 import com.sam.miniecommerceapi.common.enums.MailTemplate;
 import com.sam.miniecommerceapi.mail.dto.PasswordResetMailData;
-import com.sam.miniecommerceapi.mail.dto.request.SendMailRequest;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 
