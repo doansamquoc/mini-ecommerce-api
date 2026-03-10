@@ -6,7 +6,11 @@ import com.sam.miniecommerceapi.user.entity.User;
 public interface RefreshTokenService {
     void validate(RefreshToken refreshToken);
 
-    RefreshToken create(User user, String ip, String agent);
+    RefreshToken validateToken(User user);
+
+    RefreshToken validateToken(String tokenString);
+
+    RefreshToken createToken(User user, String ip, String agent);
 
     void revoke(RefreshToken refreshToken);
 

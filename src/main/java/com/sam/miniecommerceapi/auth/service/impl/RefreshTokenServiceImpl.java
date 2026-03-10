@@ -26,12 +26,30 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void validate(RefreshToken refreshToken) {
         if (refreshToken.isRevoked())
             throw new BusinessException(ErrorCode.TOKEN_REVOKED);
-        if (refreshToken.getExpiresAt().isBefore(Instant.now()))
+        if (refreshToken.isExpired())
             throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
     }
 
     @Override
-    public RefreshToken create(User user, String ip, String agent) {
+    public RefreshToken validateToken(User user) {
+        RefreshToken token = findByUser(user);
+        if (token.isExpired() || token.isRevoked()) {
+            throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
+        }
+        return token;
+    }
+
+    @Override
+    public RefreshToken validateToken(String tokenString) {
+        RefreshToken token = findByToken(tokenString);
+        if (token.isExpired() || token.isRevoked()) {
+            throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
+        }
+        return token;
+    }
+
+    @Override
+    public RefreshToken createToken(User user, String ip, String agent) {
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())
