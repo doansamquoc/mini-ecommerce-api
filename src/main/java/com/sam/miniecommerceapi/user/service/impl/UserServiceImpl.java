@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findOptinalByEmail(String email) {
+    public Optional<User> findOptionalByEmail(String email) {
         return repository.findByEmail(email);
     }
 
@@ -62,5 +62,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByPhone(String phone) {
         return repository.existsByPhone(phone);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return repository.save(user);
     }
 }

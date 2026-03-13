@@ -22,7 +22,6 @@ public class PasswordResetMailStrategy implements MailStrategy {
             context.setVariable("username", d.username());
             context.setVariable("ip", d.ip());
             context.setVariable("agent", d.agent());
-            context.setVariable("token", d.token());
             context.setVariable("resetLink", d.resetLink());
             context.setVariable("time", LocalDateTime.now(d.clock()));
         }

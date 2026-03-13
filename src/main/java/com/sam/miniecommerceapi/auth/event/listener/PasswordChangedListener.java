@@ -21,7 +21,7 @@ public class PasswordChangedListener {
     @Async
     @EventListener
     public void handlePasswordChangedEvent(PasswordChangedEvent event) {
-        PasswordChangedMailData data = event.getData();
+        PasswordChangedMailData data = event.data();
         mailService.sendHtmlMail(new SendMailRequest(data.email()), MailTemplate.PASSWORD_CHANGED, data);
     }
 }

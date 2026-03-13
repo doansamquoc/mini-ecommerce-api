@@ -8,7 +8,7 @@ public interface RefreshTokenService {
 
     RefreshToken validateToken(User user);
 
-    RefreshToken validateToken(String tokenString);
+    RefreshToken validateToken(String refreshTokenStr);
 
     RefreshToken createToken(User user, String ip, String agent);
 

@@ -21,7 +21,7 @@ public class PasswordResetListener {
     @Async
     @EventListener
     public void handlePasswordResetListener(PasswordResetEvent event) {
-        PasswordResetMailData data = event.getData();
+        PasswordResetMailData data = event.data();
         mailService.sendHtmlMail(new SendMailRequest(data.email()), MailTemplate.PASSWORD_RESET, data);
     }
 }

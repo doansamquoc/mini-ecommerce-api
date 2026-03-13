@@ -7,7 +7,6 @@ public record PasswordResetMailData(
         String username,
         String ip,
         String agent,
-        String token,
         String resetLink,
         Clock clock
 ) {

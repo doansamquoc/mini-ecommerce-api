@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.user.entity.User;
 
 public interface PasswordResetTokenService {
-    String createToken(User user);
+    PasswordResetToken createToken(User user);
 
     void deleteToken(User user);
 

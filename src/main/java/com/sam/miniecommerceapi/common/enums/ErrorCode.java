@@ -18,12 +18,16 @@ public enum ErrorCode {
     TOKEN_NOT_FOUND(1006, HttpStatus.NOT_FOUND, "Token not found"),
     PRODUCT_NOT_FOUND(2001, HttpStatus.NOT_FOUND, "Product not found"),
     INVALID_REQUEST(3001, HttpStatus.BAD_REQUEST, "Invalid request"),
-    INVALID_CREDENTIALS(4001, HttpStatus.BAD_REQUEST, "Invalid credentials"),
+    WRONG_CREDENTIALS(4001, HttpStatus.BAD_REQUEST, "Wrong credentials"),
     EMAIL_EXISTED(3002, HttpStatus.CONFLICT, "This email already exists"),
     PASSWORD_SIZE(3003, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters"),
     USER_NOT_FOUND(4002, HttpStatus.NOT_FOUND, "User not found"),
     TOKEN_USED(1007, HttpStatus.BAD_REQUEST, "Token used"),
-    TOKEN_INVALID(1008, HttpStatus.UNAUTHORIZED, "Token invalid");
+    TOKEN_INVALID(1008, HttpStatus.UNAUTHORIZED, "Token invalid"),
+    ACCOUNT_LOCKED(1009, HttpStatus.LOCKED, "Account has locked"),
+    ACCOUNT_DISABLED(1010, HttpStatus.BAD_REQUEST, "Account has disabled"),
+    ACCOUNT_EXPIRED(1011, HttpStatus.BAD_REQUEST, "Account has expired"),
+    AUTHENTICATION_FAILED(1012, HttpStatus.INTERNAL_SERVER_ERROR, "Authentication failed");
 
     int errorCode;
     HttpStatus httpStatus;

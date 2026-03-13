@@ -40,8 +40,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken validateToken(String tokenString) {
-        RefreshToken token = findByToken(tokenString);
+    public RefreshToken validateToken(String refreshTokenStr) {
+        RefreshToken token = findByToken(refreshTokenStr);
         if (token.isExpired() || token.isRevoked()) {
             throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
         }

@@ -11,7 +11,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    Optional<User> findOptinalByEmail(String email);
+    Optional<User> findOptionalByEmail(String email);
 
     UserResponse updateUser(String id, UserUpdateRequest r);
 
@@ -22,4 +22,6 @@ public interface UserService {
     boolean existsByEmail(String email);
 
     boolean existsByPhone(String phone);
+
+    User saveUser(User user);
 }

@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -19,9 +21,9 @@ public class RegisterUserListener {
     MailService mailService;
 
     @Async
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleRegisterUserEvent(RegisterUserEvent event) {
-        WelcomeMailData data = event.getData();
+        WelcomeMailData data = event.data();
         mailService.sendHtmlMail(new SendMailRequest(data.email()), MailTemplate.WELCOME, data);
     }
 }

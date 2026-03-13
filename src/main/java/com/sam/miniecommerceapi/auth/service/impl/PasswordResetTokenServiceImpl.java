@@ -23,7 +23,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
     PasswordResetTokenRepository repository;
 
     @Override
-    public String createToken(User user) {
+    public PasswordResetToken createToken(User user) {
         String token = UuidUtils.generateUUID();
         Instant expiresAt = Instant.now().plusMillis(appProperties.getPasswordResetTokenExpiration());
 
@@ -35,7 +35,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
                 .build();
 
         repository.save(passwordResetToken);
-        return token;
+        return passwordResetToken;
     }
 
     @Override

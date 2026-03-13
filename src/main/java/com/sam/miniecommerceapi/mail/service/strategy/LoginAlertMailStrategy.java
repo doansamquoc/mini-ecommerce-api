@@ -18,13 +18,13 @@ public class LoginAlertMailStrategy implements MailStrategy {
     @Override
     public void setContextVariables(Context context, Object data) {
         if (data instanceof LoginMailData(
-                String email, String username, String ip, String agent, String token, Clock clock
+                String email, String username, String ip, String agent, String resetLink, Clock clock
         )) {
             context.setVariable("email", email);
             context.setVariable("ip", ip);
             context.setVariable("agent", agent);
             context.setVariable("username", username);
-            context.setVariable("token", token);
+            context.setVariable("resetLink", resetLink);
             context.setVariable("time", LocalDateTime.now(clock));
         }
 
