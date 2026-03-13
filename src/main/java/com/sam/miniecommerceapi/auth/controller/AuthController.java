@@ -93,4 +93,7 @@ public class AuthController {
 
         return ApiFactory.success(cookie.toString(), response, "Refresh access token successfully.");
     }
+
+    // TODO: In the future add device checking (session) feature
+
 }
