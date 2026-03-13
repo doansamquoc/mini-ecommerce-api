@@ -42,11 +42,11 @@ public class CookieService {
 
     public ResponseCookie createRefreshToken(String value) {
         long maxAgeInSeconds = app.getRefreshTokenExpiration() / 1000;
-        return create(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, maxAgeInSeconds, "/refresh");
+        return create(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, maxAgeInSeconds, "/api/v1/auth/refresh");
     }
 
     public void deleteRefreshToken() {
-        delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/refresh");
+        delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/api/v1/auth/refresh");
     }
 
     private void delete(String name, String path) {
