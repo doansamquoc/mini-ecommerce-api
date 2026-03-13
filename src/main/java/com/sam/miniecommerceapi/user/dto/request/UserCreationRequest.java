@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.auth.dto.request;
+package com.sam.miniecommerceapi.user.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

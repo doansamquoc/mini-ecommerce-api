@@ -1,10 +1,9 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
-import com.sam.miniecommerceapi.auth.dto.request.UserCreationRequest;
+import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.auth.event.RegisterUserEvent;
 import com.sam.miniecommerceapi.auth.service.IdentityService;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
-import com.sam.miniecommerceapi.common.enums.Role;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.util.UsernameUtils;
 import com.sam.miniecommerceapi.mail.dto.WelcomeMailData;
@@ -19,8 +18,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

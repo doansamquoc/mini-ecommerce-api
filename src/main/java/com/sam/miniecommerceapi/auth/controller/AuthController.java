@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.controller;
 
 import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
-import com.sam.miniecommerceapi.auth.dto.request.UserCreationRequest;
+import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ForgotPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
@@ -16,7 +16,6 @@ import com.sam.miniecommerceapi.common.api.SuccessApi;
 import com.sam.miniecommerceapi.common.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.service.CookieService;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
