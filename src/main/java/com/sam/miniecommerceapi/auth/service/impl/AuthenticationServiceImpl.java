@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
-import com.sam.miniecommerceapi.auth.dto.internal.LoginResult;
+import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
@@ -65,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public LoginResult login(LoginRequest r, String ip, String agent) {
+    public TokenDTO login(LoginRequest r, String ip, String agent) {
         UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
         User user = userService.getReference(userPrincipal.getId());
 
@@ -73,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshToken = refreshTokenService.createToken(user, ip, agent);
 
         publishLoginAlertMessage(user, ip, agent);
-        return new LoginResult(accessToken, refreshToken.getToken());
+        return new TokenDTO(accessToken, refreshToken.getToken());
     }
 
     private void publishLoginAlertMessage(User user, String ip, String agent) {

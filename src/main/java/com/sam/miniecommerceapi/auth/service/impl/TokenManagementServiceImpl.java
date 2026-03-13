@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
-import com.sam.miniecommerceapi.auth.dto.internal.LoginResult;
+import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.auth.security.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
@@ -22,7 +22,7 @@ public class TokenManagementServiceImpl implements TokenManagementService {
     private final RefreshTokenService refreshTokenService;
 
     @Override
-    public LoginResult refreshAccessToken(String refreshTokenStr, String ip, String agent) {
+    public TokenDTO refreshAccessToken(String refreshTokenStr, String ip, String agent) {
         if (refreshTokenStr == null) throw new BusinessException(ErrorCode.TOKEN_INVALID);
 
         RefreshToken oldRefreshToken = refreshTokenService.validateToken(refreshTokenStr);
@@ -33,12 +33,12 @@ public class TokenManagementServiceImpl implements TokenManagementService {
         return enrichToken(user, ip, agent);
     }
 
-    private LoginResult enrichToken(User user, String ip, String agent) {
+    private TokenDTO enrichToken(User user, String ip, String agent) {
         UserPrincipal userPrincipal = UserPrincipal.create(user);
 
         String accessToken = jwtProvider.generateAccessToken(userPrincipal);
         RefreshToken refreshToken = refreshTokenService.createToken(user, ip, agent);
 
-        return new LoginResult(accessToken, refreshToken.getToken());
+        return new TokenDTO(accessToken, refreshToken.getToken());
     }
 }

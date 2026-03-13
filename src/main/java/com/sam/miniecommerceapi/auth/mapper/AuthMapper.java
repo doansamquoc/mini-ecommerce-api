@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.mapper;
 
-import com.sam.miniecommerceapi.auth.dto.internal.LoginResult;
+import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 
 public interface AuthMapper {
-    LoginResult toLoginResult();
+    TokenDTO toLoginResult();
 }
