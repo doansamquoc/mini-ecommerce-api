@@ -48,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return (UserPrincipal) auth.getPrincipal();
         } catch (BadCredentialsException bce) {
             log.warn("Wrong password [{}].", identifier);
-            throw new BusinessException(ErrorCode.WRONG_CREDENTIALS);
+            throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
         } catch (LockedException le) {
             log.warn("Account [{}] is locked.", identifier);
             throw new BusinessException(ErrorCode.ACCOUNT_LOCKED);
@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BusinessException(ErrorCode.ACCOUNT_EXPIRED);
         } catch (AuthenticationException ae) {
             log.error("Authenticate unknown error [{}].", ae.getMessage());
-            throw new BusinessException(ErrorCode.AUTHENTICATION_FAILED);
+            throw new BusinessException(ErrorCode.AUTH_FAILED);
         }
     }
 

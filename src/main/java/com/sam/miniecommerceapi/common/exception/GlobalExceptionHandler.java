@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorApi> handleGeneric(Exception e, HttpServletRequest request) {
-        ErrorCode errorCode = ErrorCode.INTERNAL_ERROR;
+        ErrorCode errorCode = ErrorCode.SERVER_INTERNAL;
         String message = e.getMessage();
         if (message == null || message.isBlank()) message = errorCode.getMessage();
         return ApiFactory.error(errorCode, request.getServletPath(), message);
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
             }
             cause = cause.getCause();
         }
-        return ApiFactory.error(ErrorCode.INVALID_REQUEST, request.getServletPath());
+        return ApiFactory.error(ErrorCode.REQUEST_INVALID, request.getServletPath());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
