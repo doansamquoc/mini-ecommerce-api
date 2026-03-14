@@ -33,14 +33,14 @@ public enum ErrorCode {
 
     // User 2xxx
     EMAIL_ALREADY_EXISTED(2001, HttpStatus.CONFLICT, "Email already exists"),
-    USER_NOT_FOUND(4002, HttpStatus.NOT_FOUND, "User not found"),
+    USER_NOT_FOUND(2002, HttpStatus.NOT_FOUND, "User not found"),
 
     // Product 3xxx
     PRODUCT_NOT_FOUND(3001, HttpStatus.NOT_FOUND, "Product not found"),
 
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
-    USER_PASSWORD_TOO_SHORT(3003, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters");
+    USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters");
 
     int errorCode;
     HttpStatus httpStatus;
