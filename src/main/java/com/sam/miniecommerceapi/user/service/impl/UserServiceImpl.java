@@ -37,11 +37,20 @@ public class UserServiceImpl implements UserService {
         return repository.findByIdentifier(identifier).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
+    /**
+     * Find user with email
+     * @param email User's email
+     * @return User
+     */
     @Override
     public User findByEmail(String email) {
         return repository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
+    /**
+     * @param email User's email
+     * @return Optional user
+     */
     @Override
     public Optional<User> findOptionalByEmail(String email) {
         return repository.findByEmail(email);

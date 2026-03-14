@@ -33,6 +33,12 @@ public class PasswordServiceImpl implements PasswordService {
     ApplicationEventPublisher publisher;
     PasswordResetTokenService passwordResetTokenService;
 
+    /**
+     * Forgot password. Find an account with email. If account not found then continue without send mail message
+     * @param r ForgotPasswordRequest
+     * @param ip Client IP
+     * @param agent User Agent
+     */
     @Override
     public void forgotPassword(ForgotPasswordRequest r, String ip, String agent) {
         userService.findOptionalByEmail(r.getEmail()).ifPresent(user -> {
