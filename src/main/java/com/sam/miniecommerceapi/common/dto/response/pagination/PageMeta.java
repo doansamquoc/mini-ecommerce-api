@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageMeta {
-    int page;
-    int size;
+    int pageNumber;
+    int pageSize;
     long totalElements;
     int totalPages;
     List<SortMeta> sort;
