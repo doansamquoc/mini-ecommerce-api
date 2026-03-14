@@ -37,6 +37,8 @@ public enum ErrorCode {
 
     // Product 3xxx
     PRODUCT_NOT_FOUND(3001, HttpStatus.NOT_FOUND, "Product not found"),
+    PRODUCT_NAME_CONFLICT(3002, HttpStatus.CONFLICT, "Product name conflict"),
+    PRODUCT_SLUG_CONFLICT(3003, HttpStatus.CONFLICT, "Product slug conflict"),
 
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
