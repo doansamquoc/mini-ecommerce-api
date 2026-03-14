@@ -35,8 +35,9 @@ public class PasswordServiceImpl implements PasswordService {
 
     /**
      * Forgot password. Find an account with email. If account not found then continue without send mail message
-     * @param r ForgotPasswordRequest
-     * @param ip Client IP
+     *
+     * @param r     ForgotPasswordRequest
+     * @param ip    Client IP
      * @param agent User Agent
      */
     @Override

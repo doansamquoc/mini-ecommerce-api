@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Find user with identifier (Username, email, phone)
+     *
      * @param identifier Could be username, email or phone number
      * @return User
      */
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Find user with email
+     *
      * @param email User's email
      * @return User
      */
@@ -58,8 +60,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Update user. Update by owner or admin
+     *
      * @param id User ID
-     * @param r UserUpdateRequest
+     * @param r  UserUpdateRequest
      * @return UserResponse
      */
     @Override
@@ -72,8 +75,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Get all users. Only admin can do this
+     *
      * @param pageNumber Page number
-     * @param pageSize Page size
+     * @param pageSize   Page size
      * @return PageResponse<UserResponse>
      */
     @Override
