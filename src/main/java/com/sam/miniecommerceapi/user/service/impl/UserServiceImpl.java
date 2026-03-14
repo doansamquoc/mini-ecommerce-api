@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,13 +42,26 @@ public class UserServiceImpl implements UserService {
         return repository.findByEmail(email);
     }
 
+    /**
+     * Update user. Update by owner or admin
+     * @param id User ID
+     * @param r UserUpdateRequest
+     * @return UserResponse
+     */
     @Override
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     public UserResponse updateUser(String id, UserUpdateRequest r) {
         User user = getReference(id);
         user = mapper.toUser(r, user);
         return mapper.toResponse(repository.save(user));
     }
 
+    /**
+     * Get all users. Only admin can do this
+     * @param pageNumber Page number
+     * @param pageSize Page size
+     * @return PageResponse<UserResponse>
+     */
     @Override
     public PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -56,6 +70,38 @@ public class UserServiceImpl implements UserService {
         Page<UserResponse> userResponses = page.map(mapper::toResponse);
 
         return PageResponse.from(userResponses);
+    }
+
+    /**
+     * @param id user ID
+     * @return UserResponse
+     */
+    @Override
+    public UserResponse getUser(String id) {
+        return mapper.toResponse(findById(id));
+    }
+
+    /**
+     * Soft delete.
+     * Mark user as deleted
+     *
+     * @param id User ID
+     */
+    @Override
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
+    public void deleteUser(String id) {
+        User user = findById(id);
+        repository.delete(user);
+    }
+
+    /**
+     * Restore user data. Mark user as not deleted
+     *
+     * @param id User ID
+     */
+    @Override
+    public void restoreUser(String id) {
+        repository.restoreById(id);
     }
 
     @Override
@@ -81,5 +127,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         return repository.save(user);
+    }
+
+    @Override
+    public User findById(String id) {
+        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }

@@ -18,6 +18,12 @@ public interface UserService {
 
     PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize);
 
+    UserResponse getUser(String id);
+
+    void deleteUser(String id);
+
+    void restoreUser(String id);
+
     User getReference(String id);
 
     boolean existsByUsername(String username);
@@ -27,4 +33,6 @@ public interface UserService {
     boolean existsByPhone(String phone);
 
     User saveUser(User user);
+
+    User findById(String id);
 }
