@@ -12,12 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PaginationResponse<T> {
+public class PageResponse<T> {
     List<T> items;
-    int pageNo;
-    int pageSize;
-    long totalElements;
-    int totalPages;
-    boolean first;
-    boolean last;
+    PageMeta pageMeta;
 }
