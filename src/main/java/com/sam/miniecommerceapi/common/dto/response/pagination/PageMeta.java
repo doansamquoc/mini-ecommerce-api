@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.common.dto.response;
+package com.sam.miniecommerceapi.common.dto.response.pagination;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

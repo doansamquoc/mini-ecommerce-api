@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.common.api;
+package com.sam.miniecommerceapi.common.dto.response.api;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

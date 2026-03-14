@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.common.dto;
+package com.sam.miniecommerceapi.auth.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sam.miniecommerceapi.common.enums.Role;

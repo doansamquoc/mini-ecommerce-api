@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
 import com.sam.miniecommerceapi.auth.service.CustomUserDetailsService;
-import com.sam.miniecommerceapi.common.dto.UserPrincipal;
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;

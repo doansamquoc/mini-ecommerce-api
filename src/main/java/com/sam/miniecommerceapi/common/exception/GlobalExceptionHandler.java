@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.common.exception;
 
-import com.sam.miniecommerceapi.common.api.ErrorApi;
-import com.sam.miniecommerceapi.common.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.common.dto.response.api.ErrorApi;
+import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;

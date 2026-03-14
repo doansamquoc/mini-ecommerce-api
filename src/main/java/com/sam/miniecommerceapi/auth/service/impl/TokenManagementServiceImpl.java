@@ -5,7 +5,7 @@ import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.auth.security.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.auth.service.TokenManagementService;
-import com.sam.miniecommerceapi.common.dto.UserPrincipal;
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.user.entity.User;

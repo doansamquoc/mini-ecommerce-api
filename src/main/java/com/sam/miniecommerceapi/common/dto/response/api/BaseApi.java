@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.common.api;
+package com.sam.miniecommerceapi.common.dto.response.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

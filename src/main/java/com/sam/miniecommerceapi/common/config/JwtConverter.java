@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.common.config;
 
-import com.sam.miniecommerceapi.common.dto.UserPrincipal;
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.core.convert.converter.Converter;

@@ -1,7 +1,7 @@
-package com.sam.miniecommerceapi.common.api.factory;
+package com.sam.miniecommerceapi.common.dto.response.api.factory;
 
-import com.sam.miniecommerceapi.common.api.ErrorApi;
-import com.sam.miniecommerceapi.common.api.SuccessApi;
+import com.sam.miniecommerceapi.common.dto.response.api.ErrorApi;
+import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
