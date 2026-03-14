@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService {
     UserRepository repository;
     UserMapper mapper;
 
+    /**
+     * Find user with identifier (Username, email, phone)
+     * @param identifier Could be username, email or phone number
+     * @return User
+     */
     @Override
     public User findByIdentifier(String identifier) {
         return repository.findByIdentifier(identifier).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
