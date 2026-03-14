@@ -5,6 +5,8 @@ import com.sam.miniecommerceapi.common.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Set;
 
@@ -15,7 +17,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@SQLRestriction("is_deleted = false")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 public class User extends BaseEntity {
     @Column(name = "username", unique = true, nullable = false)
     String username;
@@ -38,4 +42,8 @@ public class User extends BaseEntity {
     @Column(name = "role", nullable = false)
     @Builder.Default
     Set<Role> roles = Set.of(Role.USER);
+
+    @Column(name = "is_deleted")
+    @Builder.Default
+    boolean isDeleted = false;
 }
