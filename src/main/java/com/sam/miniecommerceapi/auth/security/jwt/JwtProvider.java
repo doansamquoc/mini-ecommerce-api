@@ -11,11 +11,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -30,6 +33,12 @@ public class JwtProvider {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         Date issueTime = new Date();
         Date expirationTime = new Date(System.currentTimeMillis() + app.getAccessTokenExpiration());
+        List<String> roles = user.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(Objects::nonNull)
+                .map(a -> a.replace("ROLE_", ""))
+                .toList();
 
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .issuer("Mini E-commerce API")
@@ -37,7 +46,7 @@ public class JwtProvider {
                 .issueTime(issueTime)
                 .expirationTime(expirationTime)
                 .jwtID(UUID.randomUUID().toString())
-                .claim("roles", user.getAuthorities())
+                .claim("roles", roles)
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .build();
@@ -56,10 +65,12 @@ public class JwtProvider {
         return jwsObject.serialize();
     }
 
-    public boolean validateAccessToken(String token) throws ParseException, JOSEException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        if (expirationTime.before(new Date())) return false;
-        return signedJWT.verify(new MACVerifier(secretKey));
+    public boolean validateAccessToken(String token) {
+        try {
+            SignedJWT jwt = SignedJWT.parse(token);
+            return jwt.verify(new MACVerifier(secretKey));
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

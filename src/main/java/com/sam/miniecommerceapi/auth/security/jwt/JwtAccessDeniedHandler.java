@@ -17,14 +17,14 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
-  AuthResponder responder;
+    AuthResponder responder;
 
-  @Override
-  public void handle(
-      @NonNull HttpServletRequest request,
-      @NonNull HttpServletResponse response,
-      @NonNull AccessDeniedException accessDeniedException)
-      throws IOException {
-    responder.sendError(response, ErrorCode.ACCESS_DENIED, request.getServletPath());
-  }
+    @Override
+    public void handle(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull AccessDeniedException accessDeniedException
+    ) throws IOException {
+        responder.sendError(response, ErrorCode.AUTH_ACCESS_DENIED, request.getServletPath());
+    }
 }

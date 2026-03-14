@@ -17,14 +17,14 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-  AuthResponder responder;
+    AuthResponder responder;
 
-  @Override
-  public void commence(
-      @NonNull HttpServletRequest request,
-      @NonNull HttpServletResponse response,
-      @NonNull AuthenticationException authException)
-      throws IOException {
-    responder.sendError(response, ErrorCode.AUTH_UNAUTHORIZED, request.getServletPath());
-  }
+    @Override
+    public void commence(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull AuthenticationException authException
+    ) throws IOException {
+        responder.sendError(response, ErrorCode.AUTH_UNAUTHORIZED, request.getServletPath());
+    }
 }

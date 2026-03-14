@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.user.service;
 
+import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
@@ -14,6 +15,8 @@ public interface UserService {
     Optional<User> findOptionalByEmail(String email);
 
     UserResponse updateUser(String id, UserUpdateRequest r);
+
+    PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize);
 
     User getReference(String id);
 

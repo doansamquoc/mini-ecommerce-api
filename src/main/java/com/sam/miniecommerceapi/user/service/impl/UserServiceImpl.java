@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.user.service.impl;
 
+import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
@@ -11,6 +12,9 @@ import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -42,6 +46,16 @@ public class UserServiceImpl implements UserService {
         User user = getReference(id);
         user = mapper.toUser(r, user);
         return mapper.toResponse(repository.save(user));
+    }
+
+    @Override
+    public PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> page = repository.findAll(pageable);
+
+        Page<UserResponse> userResponses = page.map(mapper::toResponse);
+
+        return PageResponse.from(userResponses);
     }
 
     @Override
