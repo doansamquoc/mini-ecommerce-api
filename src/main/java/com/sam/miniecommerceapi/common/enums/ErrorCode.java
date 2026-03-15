@@ -50,6 +50,9 @@ public enum ErrorCode {
     CATEGORY_IMAGE_URL_CANNOT_BE_BLANK(3105, HttpStatus.BAD_REQUEST, "Category image url cannot be blank"),
     CATEGORY_IMAGE_URL_MUST_BE_URL(3106, HttpStatus.BAD_REQUEST, "Category image url must be an url"),
 
+    CATEGORY_NAME_CONFLICT(3107, HttpStatus.CONFLICT, "Category name conflict"),
+    CATEGORY_SLUG_CONFLICT(3108, HttpStatus.CONFLICT, "Category slug conflict"),
+
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
     USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters");
