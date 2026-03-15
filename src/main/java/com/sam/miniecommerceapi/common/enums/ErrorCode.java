@@ -35,10 +35,20 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTED(2001, HttpStatus.CONFLICT, "Email already exists"),
     USER_NOT_FOUND(2002, HttpStatus.NOT_FOUND, "User not found"),
 
-    // Product 3xxx
+    // Product 30xx
     PRODUCT_NOT_FOUND(3001, HttpStatus.NOT_FOUND, "Product not found"),
     PRODUCT_NAME_CONFLICT(3002, HttpStatus.CONFLICT, "Product name conflict"),
     PRODUCT_SLUG_CONFLICT(3003, HttpStatus.CONFLICT, "Product slug conflict"),
+
+    // Category 31xx
+    CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),
+    CATEGORY_NAME_SIZE(3102, HttpStatus.BAD_REQUEST, "Category names must be at least 2 to 64 characters"),
+
+    CATEGORY_SLUG_CANNOT_BE_BLANK(3103, HttpStatus.BAD_REQUEST, "Category slug cannot be blank"),
+    CATEGORY_SLUG_SIZE(3104, HttpStatus.BAD_REQUEST, "Category slug must be at least 2 to 64 characters"),
+
+    CATEGORY_IMAGE_URL_CANNOT_BE_BLANK(3105, HttpStatus.BAD_REQUEST, "Category image url cannot be blank"),
+    CATEGORY_IMAGE_URL_MUST_BE_URL(3106, HttpStatus.BAD_REQUEST, "Category image url must be an url"),
 
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
