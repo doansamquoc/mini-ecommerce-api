@@ -9,7 +9,6 @@ import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
@@ -47,5 +46,23 @@ public class CategoryController {
     ) {
         PageResponse<CategoryResponse> responses = categoryService.getCategories(pageNumber, pageSize);
         return ApiFactory.success(responses, "Get categories successfully.");
+    }
+
+    @GetMapping("/id/{id}")
+    ResponseEntity<SuccessApi<CategoryResponse>> getCategoryById(@PathVariable String id) {
+        CategoryResponse response = categoryService.getCategoryById(id);
+        return ApiFactory.success(response, "Get category successfully.");
+    }
+
+    @GetMapping("/slug/{slug}")
+    ResponseEntity<SuccessApi<CategoryResponse>> getCategoryBySlug(@PathVariable String slug) {
+        CategoryResponse response = categoryService.getCategorySlug(slug);
+        return ApiFactory.success(response, "Get category successfully.");
+    }
+
+    @GetMapping("/name/{name}")
+    ResponseEntity<SuccessApi<CategoryResponse>> getCategoryByName(@PathVariable String name) {
+        CategoryResponse response = categoryService.getCategoryByName(name);
+        return ApiFactory.success(response, "Get category successfully.");
     }
 }

@@ -25,6 +25,11 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository repository;
     CategoryMapper mapper;
 
+    /**
+     * @param pageNumber page number
+     * @param pageSize   page size
+     * @return List of category
+     */
     @Override
     public PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -32,6 +37,39 @@ public class CategoryServiceImpl implements CategoryService {
         Page<CategoryResponse> responses = categories.map(mapper::toResponse);
 
         return PageResponse.from(responses);
+    }
+
+    /**
+     * Get category by ID
+     *
+     * @param id Category ID
+     * @return Category data
+     */
+    @Override
+    public CategoryResponse getCategoryById(String id) {
+        return mapper.toResponse(findById(id));
+    }
+
+    /**
+     * Get category by slug
+     *
+     * @param slug Category slug
+     * @return Category data
+     */
+    @Override
+    public CategoryResponse getCategorySlug(String slug) {
+        return mapper.toResponse(findBySlug(slug));
+    }
+
+    /**
+     * Get category by name
+     *
+     * @param name Category name
+     * @return Category data
+     */
+    @Override
+    public CategoryResponse getCategoryByName(String name) {
+        return mapper.toResponse(findByName(name));
     }
 
     @Override
@@ -68,15 +106,15 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     public Category findById(String id) {
-        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     public Category findByName(String name) {
-        return repository.findByName(name).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        return repository.findByName(name).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     public Category findBySlug(String slug) {
-        return repository.findBySlug(slug).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        return repository.findBySlug(slug).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     public boolean existedByName(String name) {

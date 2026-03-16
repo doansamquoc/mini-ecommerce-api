@@ -8,6 +8,12 @@ import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;
 public interface CategoryService {
     PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize);
 
+    CategoryResponse getCategoryById(String id);
+
+    CategoryResponse getCategorySlug(String slug);
+
+    CategoryResponse getCategoryByName(String name);
+
     CategoryResponse createCategory(CategoryCreationRequest r);
 
     CategoryResponse updateCategory(String id, CategoryUpdateRequest r);

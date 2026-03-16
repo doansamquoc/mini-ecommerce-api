@@ -53,6 +53,8 @@ public enum ErrorCode {
     CATEGORY_NAME_CONFLICT(3107, HttpStatus.CONFLICT, "Category name conflict"),
     CATEGORY_SLUG_CONFLICT(3108, HttpStatus.CONFLICT, "Category slug conflict"),
 
+    CATEGORY_NOT_FOUND(3199, HttpStatus.NOT_FOUND, "Category not found"),
+
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
     USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters");
