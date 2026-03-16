@@ -14,4 +14,5 @@ public class ErrorApi extends BaseApi {
   int errorCode;
   String error;
   String path;
+  Object data;
 }

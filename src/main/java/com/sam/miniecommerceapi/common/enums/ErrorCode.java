@@ -39,6 +39,7 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(3001, HttpStatus.NOT_FOUND, "Product not found"),
     PRODUCT_NAME_CONFLICT(3002, HttpStatus.CONFLICT, "Product name conflict"),
     PRODUCT_SLUG_CONFLICT(3003, HttpStatus.CONFLICT, "Product slug conflict"),
+    PRODUCT_SKU_ALREADY_EXISTS(3004, HttpStatus.CONFLICT, "Product sku already exists"),
 
     // Category 31xx
     CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),
