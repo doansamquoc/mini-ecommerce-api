@@ -3,6 +3,7 @@ package com.sam.miniecommerceapi.product.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,6 +15,7 @@ public class ProductCreationRequest {
     String name;
     String description;
     String slug;
+    BigDecimal minPrice;
     String categoryId;
     String mainImage;
     List<ProductVariantRequest> variants;
