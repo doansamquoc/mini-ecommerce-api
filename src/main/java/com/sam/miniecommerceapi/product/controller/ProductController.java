@@ -2,8 +2,10 @@ package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
+import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -29,5 +31,19 @@ public class ProductController {
     ResponseEntity<SuccessApi<ProductDetailsResponse>> getProductBySlug(@PathVariable String slug) {
         ProductDetailsResponse response = productService.getProductBySlug(slug);
         return ApiFactory.success(response, "Get product successfully.");
+    }
+
+    @GetMapping
+    ResponseEntity<SuccessApi<PageResponse<ProductResponse>>> getSummaryProducts(
+            @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = "20") int pageSize,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "sortBy", required = false) String sortBy
+
+    ) {
+        PageResponse<ProductResponse> responses;
+        responses = productService.getProducts(pageNumber, pageSize, keyword, sortBy);
+
+        return ApiFactory.success(responses, "Get products successfully.");
     }
 }

@@ -1,7 +1,9 @@
 package com.sam.miniecommerceapi.product.service;
 
+import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
+import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ProductService {
@@ -10,4 +12,10 @@ public interface ProductService {
 
     @Transactional(readOnly = true)
     ProductDetailsResponse getProductBySlug(String slug);
+
+    @Transactional(readOnly = true)
+    PageResponse<ProductResponse> getSummaryProducts(int pageNumber, int pageSize);
+
+    @Transactional(readOnly = true)
+    PageResponse<ProductResponse> getProducts(int pageNumber, int pageSize, String keyword, String sortBy);
 }

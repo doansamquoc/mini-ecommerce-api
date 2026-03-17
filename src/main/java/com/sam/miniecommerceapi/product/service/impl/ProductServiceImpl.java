@@ -1,10 +1,12 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
+import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
+import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.AttributeOption;
 import com.sam.miniecommerceapi.product.entity.Category;
 import com.sam.miniecommerceapi.product.entity.Product;
@@ -21,6 +23,10 @@ import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,10 +95,42 @@ public class ProductServiceImpl implements ProductService {
         return mapper.toResponse(product, variants, allOptions, new ProductMappingHelper());
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<ProductResponse> getSummaryProducts(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
+        Page<ProductResponse> products = repository.findAllSummary(pageable);
+
+        return PageResponse.from(products);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<ProductResponse> getProducts(int pageNumber, int pageSize, String keyword, String sortBy) {
+        // Handle sorting
+        Sort sort = handleSorting(sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        String searchKey = (keyword == null) ? "" : keyword;
+
+        Page<ProductResponse> products = repository.searchProducts(searchKey, pageable);
+
+        return PageResponse.from(products);
+    }
+
     public List<ProductVariant> getVariants(String slug) {
         return repository.findBySlugWithDetails(slug);
     }
 
+    private Sort handleSorting(String sortBy) {
+        return switch (sortBy) {
+            case "price-desc" -> Sort.by("minPrice").descending();
+            case "price-asc" -> Sort.by("minPrice").ascending();
+            case "newest" -> Sort.by("createdAt").descending();
+            default -> Sort.by("name").ascending();
+        };
+    }
 
     private ProductVariant buildVariant(ProductVariantRequest r, Product product) {
         Set<AttributeOption> attributeOptions = optionService.getAttributeOptionsById(r.getAttributeOptionIds());
