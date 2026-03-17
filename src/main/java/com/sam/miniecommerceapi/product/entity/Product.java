@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -29,7 +27,6 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     Category category;
 
-    @Column(name = "images")
-    @OneToMany(mappedBy = "product")
-    List<ProductImages> images;
+    @Column(name = "main_image")
+    String mainImage;
 }

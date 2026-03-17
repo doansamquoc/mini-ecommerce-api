@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
- * Attribute for product. Example Color, Size,...
+ * Attribute for product. Example Color, Size, Ram, Storage,...
  */
 @Entity
 @Getter
