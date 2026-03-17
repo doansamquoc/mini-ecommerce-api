@@ -32,7 +32,7 @@ public enum ErrorCode {
     ACCOUNT_EXPIRED(1203, HttpStatus.BAD_REQUEST, "Account expired"),
 
     // User 2xxx
-    EMAIL_ALREADY_EXISTED(2001, HttpStatus.CONFLICT, "Email already exists"),
+    USER_EMAIL_ALREADY_EXISTS(2001, HttpStatus.CONFLICT, "Email already exists"),
     USER_NOT_FOUND(2002, HttpStatus.NOT_FOUND, "User not found"),
 
     // Product 30xx
@@ -42,6 +42,19 @@ public enum ErrorCode {
     PRODUCT_SKU_ALREADY_EXISTS(3004, HttpStatus.CONFLICT, "Product sku already exists"),
     PRODUCT_SKU_CONFLICT(3005, HttpStatus.CONFLICT, "Product sku conflict"),
     PRODUCT_ATTRIBUTE_OPTION_NOT_FOUND(3010, HttpStatus.NOT_FOUND, "Product attribute option not found"),
+    PRODUCT_NAME_CANNOT_BE_BLANK(3011, HttpStatus.BAD_REQUEST, "Product name cannot be lank"),
+    PRODUCT_NAME_SIZE(3012, HttpStatus.BAD_REQUEST, "Product name must be at least 2 to 255 characters"),
+    PRODUCT_SLUG_CANNOT_BLANK(3013, HttpStatus.BAD_REQUEST, "Product slug cannot be lank"),
+    PRODUCT_SLUG_SIZE(3014, HttpStatus.BAD_REQUEST, "Product slug must be at least 2 to 255 characters"),
+    PRODUCT_DESCRIPTION_SIZE(3015, HttpStatus.BAD_REQUEST, "Product description must be at least 2 characters"),
+    PRODUCT_IMAGE_URL_CANNOT_BE_BLANK(1016, HttpStatus.BAD_REQUEST, "Product image url cannot be blank"),
+    PRODUCT_IMAGE_URL_MUST_BE_URL(1017, HttpStatus.BAD_REQUEST, "Product image url must be an url"),
+    PRODUCT_SKU_CANNOT_BE_BLANK(1018, HttpStatus.BAD_REQUEST, "Product sku cannot be blank"),
+    PRODUCT_SKU_SIZE(1019, HttpStatus.BAD_REQUEST, "Product sku must be at least 2 to 16 characters"),
+    PRODUCT_PRICE_CANNOT_BE_NULL(1020, HttpStatus.BAD_REQUEST, "Product price cannot be null"),
+    PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(1021, HttpStatus.BAD_REQUEST, "Product stock quantity cannot be null"),
+
+
     // Category 31xx
     CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),
     CATEGORY_NAME_SIZE(3102, HttpStatus.BAD_REQUEST, "Category names must be at least 2 to 64 characters"),

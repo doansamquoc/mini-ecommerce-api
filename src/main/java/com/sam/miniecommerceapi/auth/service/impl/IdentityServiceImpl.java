@@ -35,7 +35,7 @@ public class IdentityServiceImpl implements IdentityService {
         try {
             user = userService.saveUser(user);
         } catch (DataIntegrityViolationException dive) {
-            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTED);
+            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXISTS);
         }
 
         publishWelcomeMessage(user);
