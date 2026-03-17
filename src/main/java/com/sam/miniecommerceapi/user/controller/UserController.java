@@ -35,20 +35,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SuccessApi<UserResponse>> getUser(@PathVariable String id) {
+    public ResponseEntity<SuccessApi<UserResponse>> getUser(@PathVariable Long id) {
         UserResponse response = userService.getUser(id);
         return ApiFactory.success(response, "Get user successfully.");
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessApi<String>> softDelete(@PathVariable String id) {
+    public ResponseEntity<SuccessApi<String>> softDelete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ApiFactory.success("Delete successfully.");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessApi<UserResponse>> updateUser(
-            @PathVariable String id,
+            @PathVariable Long id,
             @Valid @RequestBody UserUpdateRequest r
     ) {
         UserResponse response = userService.updateUser(id, r);

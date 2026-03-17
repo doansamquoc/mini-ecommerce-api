@@ -14,17 +14,17 @@ public interface UserService {
 
     Optional<User> findOptionalByEmail(String email);
 
-    UserResponse updateUser(String id, UserUpdateRequest r);
+    UserResponse updateUser(Long id, UserUpdateRequest r);
 
     PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize);
 
-    UserResponse getUser(String id);
+    UserResponse getUser(Long id);
 
-    void deleteUser(String id);
+    void deleteUser(Long id);
 
-    void restoreUser(String id);
+    void restoreUser(Long id);
 
-    User getReference(String id);
+    User getReference(Long id);
 
     boolean existsByUsername(String username);
 
@@ -34,5 +34,5 @@ public interface UserService {
 
     User saveUser(User user);
 
-    User findById(String id);
+    User findById(Long id);
 }

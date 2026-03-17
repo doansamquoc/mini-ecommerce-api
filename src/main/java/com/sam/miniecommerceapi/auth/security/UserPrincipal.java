@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserPrincipal implements UserDetails {
-    String id;
+    Long id;
     String email;
     String username;
     @JsonIgnore

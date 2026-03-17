@@ -14,9 +14,9 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class BaseEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  String id;
+  Long id;
 
   @CreationTimestamp
   @Column(name = "created_at", updatable = false)

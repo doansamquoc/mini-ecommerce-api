@@ -104,23 +104,27 @@ public class CategoryServiceImpl implements CategoryService {
         return mapper.toResponse(repository.save(category));
     }
 
-
+    @Override
     public Category findById(String id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
+    @Override
     public Category findByName(String name) {
         return repository.findByName(name).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
+    @Override
     public Category findBySlug(String slug) {
         return repository.findBySlug(slug).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
+    @Override
     public boolean existedByName(String name) {
         return repository.existsByName(name);
     }
 
+    @Override
     public boolean existedBySlug(String slug) {
         return repository.existsBySlug(slug);
     }

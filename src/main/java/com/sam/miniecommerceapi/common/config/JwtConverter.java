@@ -16,30 +16,29 @@ import java.util.Collection;
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-  JwtGrantedAuthoritiesConverter authoritiesConverter;
+    JwtGrantedAuthoritiesConverter authoritiesConverter;
 
-  public JwtConverter() {
-    this.authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-    this.authoritiesConverter.setAuthoritiesClaimName("roles");
-    this.authoritiesConverter.setAuthorityPrefix("ROLE_");
-  }
+    public JwtConverter() {
+        this.authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        this.authoritiesConverter.setAuthoritiesClaimName("roles");
+        this.authoritiesConverter.setAuthorityPrefix("ROLE_");
+    }
 
-  @Override
-  public AbstractAuthenticationToken convert(Jwt jwt) {
-    Collection<GrantedAuthority> authorities = this.authoritiesConverter.convert(jwt);
+    @Override
+    public AbstractAuthenticationToken convert(Jwt jwt) {
+        Collection<GrantedAuthority> authorities = this.authoritiesConverter.convert(jwt);
 
-    String id = jwt.getSubject();
-    String email = jwt.getClaimAsString("email");
-    String username = jwt.getClaimAsString("username");
+        Long id = Long.valueOf(jwt.getSubject());
+        String email = jwt.getClaimAsString("email");
+        String username = jwt.getClaimAsString("username");
 
-    UserPrincipal principal =
-        UserPrincipal.builder()
-            .id(id)
-            .email(email)
-            .username(username)
-            .authorities(authorities)
-            .build();
+        UserPrincipal principal = UserPrincipal.builder()
+                        .id(id)
+                        .email(email)
+                        .username(username)
+                        .authorities(authorities)
+                        .build();
 
-    return new UsernamePasswordAuthenticationToken(principal, jwt, authorities);
-  }
+        return new UsernamePasswordAuthenticationToken(principal, jwt, authorities);
+    }
 }

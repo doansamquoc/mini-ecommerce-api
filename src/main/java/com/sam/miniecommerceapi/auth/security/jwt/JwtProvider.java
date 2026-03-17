@@ -42,7 +42,7 @@ public class JwtProvider {
 
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .issuer("Mini E-commerce API")
-                .subject(user.getId())
+                .subject(user.getId().toString())
                 .issueTime(issueTime)
                 .expirationTime(expirationTime)
                 .jwtID(UUID.randomUUID().toString())

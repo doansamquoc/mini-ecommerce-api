@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.username = :identifier OR u.email = :identifier")
     Optional<User> findByIdentifier(@Param("identifier") String identifier);
 
@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return User
      */
     @Query(value = "SELECT * FROM users WHERE id = ?", nativeQuery = true)
-    Optional<User> findAnyById(String id);
+    Optional<User> findAnyById(Long id);
 
     /**
      * Restore user with native query
@@ -34,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE users SET is_deleted = false WHERE id = ?", nativeQuery = true)
-    void restoreById(String id);
+    void restoreById(Long id);
 
     @NullMarked
     Page<User> findAll(Pageable pageable);
@@ -42,7 +42,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String email);
 
     @NullMarked
-    Optional<User> findById(String id);
+    Optional<User> findById(Long id);
 
     boolean existsByUsername(String username);
 

@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
-    public UserResponse updateUser(String id, UserUpdateRequest r) {
+    public UserResponse updateUser(Long id, UserUpdateRequest r) {
         User user = getReference(id);
         user = mapper.toUser(r, user);
         return mapper.toResponse(repository.save(user));
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
      * @return UserResponse
      */
     @Override
-    public UserResponse getUser(String id) {
+    public UserResponse getUser(Long id) {
         return mapper.toResponse(findById(id));
     }
 
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         User user = findById(id);
         repository.delete(user);
     }
@@ -118,12 +118,12 @@ public class UserServiceImpl implements UserService {
      * @param id User ID
      */
     @Override
-    public void restoreUser(String id) {
+    public void restoreUser(Long id) {
         repository.restoreById(id);
     }
 
     @Override
-    public User getReference(String id) {
+    public User getReference(Long id) {
         return repository.getReferenceById(id);
     }
 
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(String id) {
+    public User findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }
