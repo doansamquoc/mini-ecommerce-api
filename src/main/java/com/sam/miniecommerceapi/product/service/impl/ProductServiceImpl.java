@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
-import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
+import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.entity.AttributeOption;
 import com.sam.miniecommerceapi.product.entity.Category;
 import com.sam.miniecommerceapi.product.entity.Product;
@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductResponse createProduct(ProductCreationRequest r) {
+    public ProductDetailsResponse createProduct(ProductCreationRequest r) {
         // Category
         Category category = categoryService.findById(r.getCategoryId());
 
@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(readOnly = true)
     @Override
-    public ProductResponse getProductBySlug(String slug) {
+    public ProductDetailsResponse getProductBySlug(String slug) {
         List<ProductVariant> variants = getVariants(slug);
         if (variants.isEmpty()) throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
 

@@ -2,8 +2,8 @@ package com.sam.miniecommerceapi.product.mapper;
 
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductAttributeResponse;
+import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
-import com.sam.miniecommerceapi.product.dto.response.ProductSummaryResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductVariantResponse;
 import com.sam.miniecommerceapi.product.entity.Attribute;
 import com.sam.miniecommerceapi.product.entity.AttributeOption;
@@ -28,7 +28,7 @@ public interface ProductMapper {
 
     @Mapping(target = "variants", source = "variants")
     @Mapping(target = "attributes", expression = "java(helper.groupAttributes(options))")
-    ProductResponse toResponse(
+    ProductDetailsResponse toResponse(
             Product product,
             List<ProductVariant> variants,
             Set<AttributeOption> options,
@@ -39,5 +39,5 @@ public interface ProductMapper {
 
     ProductAttributeResponse toAttributeResponse(Attribute attribute);
 
-    ProductSummaryResponse toSummaryResponse(Product product);
+    ProductResponse toSummaryResponse(Product product);
 }

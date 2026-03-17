@@ -3,18 +3,18 @@ package com.sam.miniecommerceapi.product.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductSummaryResponse {
+public class ProductDetailsResponse {
     Long id;
     String name;
     String slug;
-    String images;
-    String categoryName;
-    BigDecimal displayPrice;
+    String description;
+    List<ProductVariantResponse> variants;
+    List<ProductAttributeResponse> attributes;
 }

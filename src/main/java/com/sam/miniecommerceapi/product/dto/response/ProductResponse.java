@@ -3,8 +3,7 @@ package com.sam.miniecommerceapi.product.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -14,8 +13,8 @@ import java.util.Map;
 public class ProductResponse {
     Long id;
     String name;
+    BigDecimal minPrice;
     String slug;
-    String description;
-    List<ProductVariantResponse> variants;
-    List<ProductAttributeResponse> attributes;
+    String mainImage;
+    String categoryName;
 }

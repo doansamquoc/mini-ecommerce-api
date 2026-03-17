@@ -1,7 +1,6 @@
 package com.sam.miniecommerceapi.product.repository;
 
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
-import com.sam.miniecommerceapi.product.dto.response.ProductSummaryResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import org.springframework.data.domain.Page;
@@ -12,17 +11,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
-    @Query("SELECT new com.sam.miniecommerceapi.product.dto.response.ProductSummaryResponse(p.id, p.name, p.slug, p.mainImage, c.name, MIN(v.price)) " +
+    @Query("SELECT new com.sam.miniecommerceapi.product.dto.response.ProductResponse(" +
+            "p.id, p.name, p.minPrice, p.slug, p.mainImage, c.name) " +
             "FROM Product p " +
-            "JOIN Category c " +
-            "JOIN ProductVariant v ON v.product.id = p.id " +
-            "GROUP BY p.id, p.name, p.slug, p.mainImage, c.name"
-    )
-    Page<ProductSummaryResponse> findAllWithMinPrice(Pageable pageable);
+            "JOIN p.category c")
+    Page<ProductResponse> findAllSummary(Pageable pageable);
+
+    @Query("SELECT new com.sam.miniecommerceapi.product.dto.response.ProductResponse(" +
+            "p.id, p.name, p.minPrice, p.slug, p.mainImage, c.name) " +
+            "FROM Product p " +
+            "JOIN p.category c " +
+            "WHERE p.name LIKE %:keyword% OR c.name LIKE %:keyword%")
+    Page<ProductResponse> searchProducts(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT pv FROM ProductVariant pv " +
             "JOIN FETCH pv.product p " +
