@@ -38,12 +38,10 @@ public class ProductController {
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20") int pageSize,
             @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "sortBy", required = false) String sortBy
+            @RequestParam(name = "sortBy", defaultValue = "newest", required = false) String sortBy
 
     ) {
-        PageResponse<ProductResponse> responses;
-        responses = productService.getProducts(pageNumber, pageSize, keyword, sortBy);
-
+        PageResponse<ProductResponse> responses = productService.getProducts(pageNumber, pageSize, keyword, sortBy);
         return ApiFactory.success(responses, "Get products successfully.");
     }
 }
