@@ -1,6 +1,5 @@
 package com.sam.miniecommerceapi.product.dto.response;
 
-import com.sam.miniecommerceapi.product.entity.AttributeOption;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

@@ -5,7 +5,6 @@ import com.sam.miniecommerceapi.product.entity.AttributeOption;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
