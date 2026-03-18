@@ -143,6 +143,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
     public User saveUser(User user) {
         return repository.save(user);
     }

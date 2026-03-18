@@ -54,7 +54,7 @@ public enum ErrorCode {
     PRODUCT_PRICE_CANNOT_BE_NULL(1020, HttpStatus.BAD_REQUEST, "Product price cannot be null"),
     PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(1021, HttpStatus.BAD_REQUEST, "Product stock quantity cannot be null"),
     PRODUCT_VARIANT_NOT_FOUND(1022, HttpStatus.NOT_FOUND, "Product variant not found"),
-
+    PRODUCT_VARIANT_NOT_ENOUGH(1023, HttpStatus.BAD_REQUEST, "Product variant is not enough"),
     // Category 31xx
     CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),
     CATEGORY_NAME_SIZE(3102, HttpStatus.BAD_REQUEST, "Category names must be at least 2 to 64 characters"),

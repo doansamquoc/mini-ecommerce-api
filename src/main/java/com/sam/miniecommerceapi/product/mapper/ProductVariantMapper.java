@@ -24,7 +24,7 @@ public interface ProductVariantMapper {
     @Mapping(target = "id", ignore = true)
     void updateVariant(ProductVariantUpdateRequest r, @MappingTarget ProductVariant variant);
 
-    ProductVariantResponse toResponse(ProductVariant productVariant);
+    ProductVariantResponse toResponse(ProductVariant variant);
 
     List<ProductVariantResponse> toResponses(List<ProductVariant> variants);
 

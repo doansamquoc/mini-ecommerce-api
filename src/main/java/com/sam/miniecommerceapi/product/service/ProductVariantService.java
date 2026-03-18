@@ -19,4 +19,6 @@ public interface ProductVariantService {
     void deleteVariant(ProductVariant variant);
 
     List<ProductVariant> saveAll(List<ProductVariant> finalVariants);
+
+    boolean existsById(Long id);
 }

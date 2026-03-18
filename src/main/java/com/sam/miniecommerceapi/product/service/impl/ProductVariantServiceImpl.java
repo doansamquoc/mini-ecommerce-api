@@ -73,4 +73,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public List<ProductVariant> saveAll(List<ProductVariant> variants) {
         return repository.saveAll(variants);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
 }

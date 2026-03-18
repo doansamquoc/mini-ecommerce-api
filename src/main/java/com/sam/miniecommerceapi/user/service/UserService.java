@@ -32,6 +32,8 @@ public interface UserService {
 
     boolean existsByPhone(String phone);
 
+    boolean existsById(Long id);
+
     User saveUser(User user);
 
     User findById(Long id);
