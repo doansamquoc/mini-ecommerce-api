@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.common.resolver;
 
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -25,8 +26,8 @@ public class CurrentUserIdArgumentResolver implements HandlerMethodArgumentResol
             @Nullable WebDataBinderFactory binderFactory
     ) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            return Long.valueOf(jwt.getSubject());
+        if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
+            return userPrincipal.getId();
         }
         return null;
     }
