@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.common.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BusinessException extends RuntimeException {
     ErrorCode errorCode;
     Map<String, Object> data;

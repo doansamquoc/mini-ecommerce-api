@@ -21,8 +21,9 @@ import java.nio.file.AccessDeniedException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     ResponseEntity<ErrorApi> handleBusiness(BusinessException e, HttpServletRequest request) {
-        ErrorCode errorCode = e.getErrorCode();
-        return ApiFactory.error(errorCode, request.getServletPath());
+        if (e.getData().isEmpty())
+            return ApiFactory.error(e.getErrorCode(), request.getRequestURI());
+        return ApiFactory.error(e.getErrorCode(), request.getRequestURI(), e.getData());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
