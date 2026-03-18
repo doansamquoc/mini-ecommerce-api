@@ -2,11 +2,12 @@ package com.sam.miniecommerceapi.common.resolver;
 
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
+import com.sam.miniecommerceapi.common.enums.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -29,6 +30,6 @@ public class CurrentUserIdArgumentResolver implements HandlerMethodArgumentResol
         if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
             return userPrincipal.getId();
         }
-        return null;
+        throw new BusinessException(ErrorCode.AUTH_UNAUTHORIZED);
     }
 }
