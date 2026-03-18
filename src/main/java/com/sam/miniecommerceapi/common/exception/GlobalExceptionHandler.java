@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         Throwable cause = e.getCause();
         while (cause != null) {
             if (cause instanceof BusinessException be) {
-                return ApiFactory.error(be.getErrorCode(), request.getServletPath());
+                return ApiFactory.error(be.getErrorCode(), request.getServletPath(), cause.getMessage());
             }
             cause = cause.getCause();
         }
