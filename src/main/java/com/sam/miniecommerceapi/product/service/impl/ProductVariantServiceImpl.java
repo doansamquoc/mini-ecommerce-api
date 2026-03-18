@@ -75,6 +75,11 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
+    public ProductVariant save(ProductVariant variant) {
+        return repository.save(variant);
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return repository.existsById(id);
     }

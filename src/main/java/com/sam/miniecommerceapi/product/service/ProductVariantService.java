@@ -20,5 +20,7 @@ public interface ProductVariantService {
 
     List<ProductVariant> saveAll(List<ProductVariant> finalVariants);
 
+    ProductVariant save(ProductVariant variant);
+
     boolean existsById(Long id);
 }
