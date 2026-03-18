@@ -41,4 +41,7 @@ public class ProductVariant extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "option_id")
     )
     Set<AttributeOption> options;
+
+    @Version
+    Long version;
 }
