@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.common.util;
 
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import org.springframework.security.core.Authentication;
@@ -16,8 +17,8 @@ public class SecurityUtils {
 
         Object principal = authentication.getPrincipal();
 
-        if (principal instanceof Jwt jwt) {
-            return Long.valueOf(jwt.getSubject());
+        if (principal instanceof UserPrincipal userPrincipal) {
+            return userPrincipal.getId();
         }
 
         throw new BusinessException(ErrorCode.AUTH_UNAUTHORIZED);
