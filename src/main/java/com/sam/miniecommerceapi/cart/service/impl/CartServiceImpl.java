@@ -34,8 +34,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartResponse addToCart(CartCreationRequest r) {
-        User user = userService.findById(r.getUserId());
+    public CartResponse addToCart(Long userId, CartCreationRequest r) {
+        User user = userService.findById(userId);
         ProductVariant variant = variantService.findById(r.getProductVariantId());
 
         if (variant.getStockQuantity() - r.getQuantity() < 0)
@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
         cart.setQuantity(cart.getQuantity() + r.getQuantity());
 
         if (variant.getStockQuantity() - cart.getQuantity() < 0)
-                throw new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_ENOUGH);
+            throw new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_ENOUGH);
 
         return mapper.toResponse(repository.save(cart));
     }
@@ -72,5 +72,15 @@ public class CartServiceImpl implements CartService {
         Page<CartResponse> cartResponses = carts.map(mapper::toResponse);
 
         return PageResponse.from(cartResponses);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCart(Long userId, Long cartId) {
+        repository.deleteCart(cartId, userId);
+    }
+
+    public void delete(Cart cart) {
+        repository.delete(cart);
     }
 }

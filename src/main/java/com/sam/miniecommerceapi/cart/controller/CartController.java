@@ -22,8 +22,11 @@ public class CartController {
     CartService cartService;
 
     @PostMapping
-    ResponseEntity<SuccessApi<CartResponse>> addToCart(@Valid @RequestBody CartCreationRequest r) {
-        CartResponse response = cartService.addToCart(r);
+    ResponseEntity<SuccessApi<CartResponse>> addToCart(
+            @CurrentUserId Long userId,
+            @Valid @RequestBody CartCreationRequest r
+    ) {
+        CartResponse response = cartService.addToCart(userId, r);
         return ApiFactory.success(response, "Add to cart successfully.");
     }
 
@@ -35,5 +38,11 @@ public class CartController {
     ) {
         PageResponse<CartResponse> responses = cartService.getCarts(pageNumber, pageSize, id);
         return ApiFactory.success(responses, "Get products in cart successfully.");
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<SuccessApi<String>> deleteCart(@PathVariable Long id, @CurrentUserId Long userId) {
+        cartService.deleteCart(userId, id);
+        return ApiFactory.success("Delete cart successfully.");
     }
 }
