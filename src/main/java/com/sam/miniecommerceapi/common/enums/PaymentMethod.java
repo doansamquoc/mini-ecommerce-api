@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -7,5 +8,10 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum PaymentMethod {
-    COD, PAYPAL, STRIPE
+    @JsonProperty("COD")
+    COD,
+    @JsonProperty("PAYPAL")
+    PAYPAL,
+    @JsonProperty("STRIPE")
+    STRIPE
 }
