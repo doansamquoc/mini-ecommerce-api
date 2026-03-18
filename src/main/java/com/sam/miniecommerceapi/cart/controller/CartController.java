@@ -45,4 +45,10 @@ public class CartController {
         cartService.deleteCart(userId, id);
         return ApiFactory.success("Delete cart successfully.");
     }
+
+    @DeleteMapping
+    ResponseEntity<SuccessApi<String>> deleteAllCartsByUserId(@CurrentUserId Long userId) {
+        cartService.deleteAllByUser(userId);
+        return ApiFactory.success("Delete all carts successfully.");
+    }
 }

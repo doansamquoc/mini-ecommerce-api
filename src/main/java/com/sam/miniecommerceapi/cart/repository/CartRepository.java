@@ -15,9 +15,7 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Query("SELECT c FROM Cart c " +
-            "JOIN FETCH c.variant v " +
-            "WHERE c.user.id = :id")
+    @Query("SELECT c FROM Cart c JOIN FETCH c.variant v WHERE c.user.id = :id")
     Page<Cart> findAllByUserId(Long id, Pageable pageable);
 
     Optional<Cart> findByUserAndVariant(User user, ProductVariant productVariant);
@@ -25,4 +23,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.id = :cartId AND c.user.id = :userId")
     void deleteCart(@Param("cartId") Long cartId, @Param("userId") Long userId);
+
+    void deleteCartByUserId(Long userId);
 }

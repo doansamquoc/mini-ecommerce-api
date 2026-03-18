@@ -80,7 +80,9 @@ public class CartServiceImpl implements CartService {
         repository.deleteCart(cartId, userId);
     }
 
-    public void delete(Cart cart) {
-        repository.delete(cart);
+    @Transactional
+    @Override
+    public void deleteAllByUser(Long userId) {
+        repository.deleteCartByUserId(userId);
     }
 }
