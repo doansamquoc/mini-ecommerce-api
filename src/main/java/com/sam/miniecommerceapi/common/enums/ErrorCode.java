@@ -53,7 +53,7 @@ public enum ErrorCode {
     PRODUCT_SKU_SIZE(1019, HttpStatus.BAD_REQUEST, "Product sku must be at least 2 to 16 characters"),
     PRODUCT_PRICE_CANNOT_BE_NULL(1020, HttpStatus.BAD_REQUEST, "Product price cannot be null"),
     PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(1021, HttpStatus.BAD_REQUEST, "Product stock quantity cannot be null"),
-
+    PRODUCT_VARIANT_NOT_FOUND(1022, HttpStatus.NOT_FOUND, "Product variant not found"),
 
     // Category 31xx
     CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),

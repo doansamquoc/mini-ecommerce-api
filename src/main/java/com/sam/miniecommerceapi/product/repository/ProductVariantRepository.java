@@ -9,9 +9,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface ProductVariantRepository extends JpaRepository<ProductVariant, String> {
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
     boolean existsBySku(String sku);
 
     @Query("SELECT v.sku FROM ProductVariant v WHERE v.sku IN :skus")
     List<String> findExistingSkus(Collection<String> skus);
+
+    List<ProductVariant> findAllByProductId(Long productId);
 }

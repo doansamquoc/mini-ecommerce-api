@@ -3,8 +3,10 @@ package com.sam.miniecommerceapi.product.service.impl;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
+import com.sam.miniecommerceapi.product.dto.request.ProductVariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.AttributeOption;
@@ -20,6 +22,8 @@ import com.sam.miniecommerceapi.product.service.AttributeOptionService;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import com.sam.miniecommerceapi.product.service.ProductVariantService;
+import com.sam.miniecommerceapi.product.util.PriceUtils;
+import com.sam.miniecommerceapi.product.util.SortingUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +62,10 @@ public class ProductServiceImpl implements ProductService {
         if (existsBySlug(r.getSlug())) throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
         Product product = mapper.toProduct(r);
         product.setCategory(category);
+
+        // Why set minPrice here? Variants have saved yet? Because with all variants, these have to saved it.
+        // If the update process by the variant have any bugs then @Transactional'll restore like never save product yet.
+        product.setMinPrice(PriceUtils.calcMinPriceByRequest(r.getVariants()));
 
         // Save product before handle variants
         Product productSaved = repository.save(product);
@@ -108,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductResponse> getProducts(int pageNumber, int pageSize, String keyword, String sortBy) {
         // Handle sorting
-        Sort sort = handleSorting(sortBy);
+        Sort sort = SortingUtils.sort(sortBy);
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
@@ -123,13 +132,64 @@ public class ProductServiceImpl implements ProductService {
         return repository.findBySlugWithDetails(slug);
     }
 
-    private Sort handleSorting(String sortBy) {
-        return switch (sortBy) {
-            case "price-desc" -> Sort.by("minPrice").descending();
-            case "price-asc" -> Sort.by("minPrice").ascending();
-            case "newest" -> Sort.by("createdAt").descending();
-            default -> Sort.by("name").ascending();
-        };
+    @Transactional
+    @Override
+    public ProductDetailsResponse updateProduct(Long id, ProductUpdateRequest r) {
+        // Find a product by ID
+        Product product = findById(id);
+
+        // Validate slug. Slug must be different current slug and not already exists
+        if (!r.getSlug().equals(product.getSlug()) && existsBySlug(r.getSlug()))
+            throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
+
+        // If through the above validate. Update slug equals current slug. We not update it by set slug is null.
+        r.setSlug(null);
+
+        // Update product
+        mapper.updateProduct(r, product);
+
+        List<ProductVariant> currentVariants = variantService.getProductVariantsByProductId(id);
+
+        Set<Long> requestIds = r.getVariants().stream()
+                .map(ProductVariantUpdateRequest::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        currentVariants.stream().filter(v -> !requestIds.contains(v.getId())).forEach(variantService::deleteVariant);
+
+        List<ProductVariant> finalVariants = r.getVariants().stream().map(vReq -> {
+            ProductVariant variant;
+
+            // If id is null then update or insert it.
+            if (vReq.getId() != null) {
+                // Update case
+                variant = variantService.findById(vReq.getId());
+                variantService.updateVariant(variant, vReq);
+            } else {
+                // Insert case
+                variant = variantMapper.toEntity(vReq);
+                variant.setProduct(product);
+            }
+
+            // Update attribute options for owner variants
+            Set<AttributeOption> options = optionService.getAttributeOptionsById(vReq.getAttributeOptionIds());
+            variant.setOptions(options);
+
+            return variant;
+        }).toList();
+
+        List<ProductVariant> savedVariants = variantService.saveAll(finalVariants);
+
+        product.setMinPrice(PriceUtils.calcMinPrice(savedVariants));
+        Product savedProduct = repository.save(product);
+
+        Set<AttributeOption> allOptions = mapToAttributeOption(savedVariants);
+
+        return mapper.toResponse(savedProduct, savedVariants, allOptions, new ProductMappingHelper());
+    }
+
+    public Product findById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     private ProductVariant buildVariant(ProductVariantRequest r, Product product) {

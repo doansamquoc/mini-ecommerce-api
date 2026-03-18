@@ -4,6 +4,7 @@ import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
+import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.service.ProductService;
@@ -43,5 +44,14 @@ public class ProductController {
     ) {
         PageResponse<ProductResponse> responses = productService.getProducts(pageNumber, pageSize, keyword, sortBy);
         return ApiFactory.success(responses, "Get products successfully.");
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<SuccessApi<ProductDetailsResponse>> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductUpdateRequest r
+    ) {
+        ProductDetailsResponse response = productService.updateProduct(id, r);
+        return ApiFactory.success(response, "Update product successfully.");
     }
 }
