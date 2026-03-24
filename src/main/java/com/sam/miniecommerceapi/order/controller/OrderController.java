@@ -11,10 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +21,20 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping
-    ResponseEntity<SuccessApi<OrderResponse>> createOrder(@CurrentUserId Long userId, @Valid @RequestBody OrderRequest r) {
+    ResponseEntity<SuccessApi<OrderResponse>> createOrder(
+            @CurrentUserId Long userId,
+            @Valid @RequestBody OrderRequest r
+    ) {
         OrderResponse response = orderService.createOrder(userId, r);
         return ApiFactory.success(response, "Order created successfully.");
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<SuccessApi<OrderResponse>> updateOrder(
+            @PathVariable Long id,
+            @Valid @RequestBody OrderRequest r
+    ) {
+        OrderResponse response = orderService.updateOrder(id, r);
+        return ApiFactory.success(response, "Order updated successfully.");
     }
 }

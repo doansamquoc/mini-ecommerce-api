@@ -25,4 +25,14 @@ public class OrderItemServiceImpl implements OrderItemService {
     public List<OrderItem> saveAll(List<OrderItem> orderItems) {
         return repository.saveAll(orderItems);
     }
+
+    @Override
+    public void delete(OrderItem orderItem) {
+        repository.delete(orderItem);
+    }
+
+    @Override
+    public void deleteAll(List<OrderItem> orderItems) {
+        repository.saveAll(orderItems);
+    }
 }

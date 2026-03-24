@@ -12,6 +12,10 @@ public interface ProductVariantService {
 
     List<ProductVariant> getProductVariantsByProductId(Long id);
 
+    int deductStock(Long id, int quantity);
+
+    void addStock(Long id, int quantity);
+
     void updateVariant(ProductVariant variant, ProductVariantUpdateRequest r);
 
     ProductVariant findById(Long id);

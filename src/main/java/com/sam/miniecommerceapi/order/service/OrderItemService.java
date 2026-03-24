@@ -8,4 +8,8 @@ public interface OrderItemService {
     OrderItem save(OrderItem orderItem);
 
     List<OrderItem> saveAll(List<OrderItem> orderItems);
+
+    void delete(OrderItem orderItem);
+
+    void deleteAll(List<OrderItem> orderItems);
 }

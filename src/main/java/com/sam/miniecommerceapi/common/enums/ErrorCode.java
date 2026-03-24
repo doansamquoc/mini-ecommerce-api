@@ -47,14 +47,16 @@ public enum ErrorCode {
     PRODUCT_SLUG_CANNOT_BLANK(3013, HttpStatus.BAD_REQUEST, "Product slug cannot be lank"),
     PRODUCT_SLUG_SIZE(3014, HttpStatus.BAD_REQUEST, "Product slug must be at least 2 to 255 characters"),
     PRODUCT_DESCRIPTION_SIZE(3015, HttpStatus.BAD_REQUEST, "Product description must be at least 2 characters"),
-    PRODUCT_IMAGE_URL_CANNOT_BE_BLANK(1016, HttpStatus.BAD_REQUEST, "Product image url cannot be blank"),
-    PRODUCT_IMAGE_URL_MUST_BE_URL(1017, HttpStatus.BAD_REQUEST, "Product image url must be an url"),
-    PRODUCT_SKU_CANNOT_BE_BLANK(1018, HttpStatus.BAD_REQUEST, "Product sku cannot be blank"),
-    PRODUCT_SKU_SIZE(1019, HttpStatus.BAD_REQUEST, "Product sku must be at least 2 to 16 characters"),
-    PRODUCT_PRICE_CANNOT_BE_NULL(1020, HttpStatus.BAD_REQUEST, "Product price cannot be null"),
-    PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(1021, HttpStatus.BAD_REQUEST, "Product stock quantity cannot be null"),
-    PRODUCT_VARIANT_NOT_FOUND(1022, HttpStatus.NOT_FOUND, "Product variant not found"),
-    PRODUCT_VARIANT_NOT_ENOUGH(1023, HttpStatus.BAD_REQUEST, "Product variant is not enough"),
+    PRODUCT_IMAGE_URL_CANNOT_BE_BLANK(3016, HttpStatus.BAD_REQUEST, "Product image url cannot be blank"),
+    PRODUCT_IMAGE_URL_MUST_BE_URL(3017, HttpStatus.BAD_REQUEST, "Product image url must be an url"),
+    PRODUCT_SKU_CANNOT_BE_BLANK(3018, HttpStatus.BAD_REQUEST, "Product sku cannot be blank"),
+    PRODUCT_SKU_SIZE(3019, HttpStatus.BAD_REQUEST, "Product sku must be at least 2 to 16 characters"),
+    PRODUCT_PRICE_CANNOT_BE_NULL(3020, HttpStatus.BAD_REQUEST, "Product price cannot be null"),
+    PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(3021, HttpStatus.BAD_REQUEST, "Product stock quantity cannot be null"),
+    PRODUCT_VARIANT_NOT_FOUND(3022, HttpStatus.NOT_FOUND, "Product variant not found"),
+    PRODUCT_VARIANT_NOT_ENOUGH(3023, HttpStatus.BAD_REQUEST, "Product variant is not enough"),
+    PRODUCT_OUT_OF_STOCK(3024, HttpStatus.BAD_REQUEST, "Product is not enough or out of stock"),
+
     // Category 31xx
     CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),
     CATEGORY_NAME_SIZE(3102, HttpStatus.BAD_REQUEST, "Category names must be at least 2 to 64 characters"),
@@ -69,6 +71,10 @@ public enum ErrorCode {
     CATEGORY_SLUG_CONFLICT(3108, HttpStatus.CONFLICT, "Category slug conflict"),
 
     CATEGORY_NOT_FOUND(3199, HttpStatus.NOT_FOUND, "Category not found"),
+
+    // Order 32xx
+    ORDER_CANNOT_UPDATE(3201, HttpStatus.BAD_REQUEST, "Order cannot update"),
+    ORDER_INVALID_QUANTITY(3202, HttpStatus.BAD_REQUEST, "Order invalid quantity"),
 
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),

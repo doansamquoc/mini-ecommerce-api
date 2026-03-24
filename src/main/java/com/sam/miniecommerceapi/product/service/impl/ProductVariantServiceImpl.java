@@ -52,6 +52,15 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         return repository.findAllByProductId(id);
     }
 
+    @Override
+    public int deductStock(Long id, int quantity) {
+        return repository.deductStock(id, quantity);
+    }
+
+    @Override
+    public void addStock(Long id, int quantity) {
+        repository.addStock(id, quantity);
+    }
 
     @Override
     public void updateVariant(ProductVariant variant, ProductVariantUpdateRequest r) {
