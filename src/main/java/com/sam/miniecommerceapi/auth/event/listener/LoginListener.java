@@ -21,7 +21,7 @@ public class LoginListener {
     @Async
     @EventListener
     public void handleLoginEvent(LoginEvent event) {
-        LoginMailData data = event.getData();
+        LoginMailData data = event.data();
         mailService.sendHtmlMail(new SendMailRequest(data.email()), MailTemplate.LOGIN_ALERT, data);
     }
 }

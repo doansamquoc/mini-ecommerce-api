@@ -81,6 +81,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String resetLink = appProperties.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
 
         LoginMailData data = new LoginMailData(user.getEmail(), user.getUsername(), ip, agent, resetLink, clock);
-        publisher.publishEvent(new LoginEvent(this, data));
+        publisher.publishEvent(new LoginEvent(data));
     }
 }
