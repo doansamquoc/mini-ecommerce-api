@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: ${SERVER_PORT:9000}
 
 spring:
   application:
@@ -36,6 +36,7 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
       lettuce:
         pool:
           max-active: 8
