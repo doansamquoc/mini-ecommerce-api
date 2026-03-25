@@ -15,9 +15,9 @@ public class WelcomeMailStrategy implements MailStrategy {
 
     @Override
     public void setContextVariables(Context context, Object data) {
-        if (data instanceof WelcomeMailData(String email, String username)) {
-            context.setVariable("email", email);
-            context.setVariable("username", username);
+        if (data instanceof WelcomeMailData d) {
+            context.setVariable("email", d.email());
+            context.setVariable("username", d.username());
         }
     }
 }
