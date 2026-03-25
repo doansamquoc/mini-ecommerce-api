@@ -4,5 +4,5 @@ import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 
 public interface IdentityService {
-    UserResponse createUser(UserCreationRequest r);
+    UserResponse registerUser(UserCreationRequest r);
 }

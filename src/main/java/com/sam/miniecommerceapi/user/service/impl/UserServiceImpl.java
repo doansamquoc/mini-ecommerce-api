@@ -3,12 +3,15 @@ package com.sam.miniecommerceapi.user.service.impl;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.common.util.UsernameUtils;
+import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.mapper.UserMapper;
 import com.sam.miniecommerceapi.user.repository.UserRepository;
 import com.sam.miniecommerceapi.user.service.UserService;
+import com.sam.miniecommerceapi.user.util.DisplayNameUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,6 +29,7 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
     UserRepository repository;
+    PasswordEncoder encoder;
     UserMapper mapper;
 
     /**
@@ -155,5 +160,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public User createUser(UserCreationRequest request) {
+        if (existsByEmail(request.getEmail())) throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXISTS);
+
+        String username = UsernameUtils.generateUsername(request.getEmail());
+        String hashedPassword = encoder.encode(request.getPassword());
+        String displayName = DisplayNameUtils.generateDisplayName(request.getEmail());
+
+        User user = mapper.toUser(request);
+        user.setUsername(username);
+        user.setPassword(hashedPassword);
+        user.setDisplayName(displayName);
+
+        return repository.save(user);
     }
 }

@@ -25,29 +25,17 @@ import org.springframework.stereotype.Service;
 public class IdentityServiceImpl implements IdentityService {
     UserMapper userMapper;
     UserService userService;
-    PasswordEncoder encoder;
     ApplicationEventPublisher publisher;
 
     @Override
-    public UserResponse createUser(UserCreationRequest r) {
-        User user = enrichUser(r);
+    public UserResponse registerUser(UserCreationRequest request) {
+        // Create user
+        User user = userService.createUser(request);
 
-        try {
-            user = userService.saveUser(user);
-        } catch (DataIntegrityViolationException dive) {
-            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXISTS);
-        }
-
+        // Send an email welcome to user
         publishWelcomeMessage(user);
 
         return userMapper.toResponse(user);
-    }
-
-    private User enrichUser(UserCreationRequest r) {
-        User user = userMapper.toUser(r);
-        user.setUsername(UsernameUtils.generateUsername(r.getEmail()));
-        user.setPassword(encoder.encode(r.getPassword()));
-        return user;
     }
 
     private void publishWelcomeMessage(User user) {

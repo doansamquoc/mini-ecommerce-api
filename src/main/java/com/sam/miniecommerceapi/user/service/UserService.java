@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.user.service;
 
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
@@ -37,4 +38,6 @@ public interface UserService {
     User saveUser(User user);
 
     User findById(Long id);
+
+    User createUser(UserCreationRequest request);
 }

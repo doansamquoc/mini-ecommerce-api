@@ -50,7 +50,7 @@ public class AuthController {
 
     @PostMapping("/register")
     ResponseEntity<SuccessApi<UserResponse>> register(@Valid @RequestBody UserCreationRequest r) {
-        UserResponse userResponse = identityService.createUser(r);
+        UserResponse userResponse = identityService.registerUser(r);
         return ApiFactory.created(userResponse, "User has been created");
     }
 
