@@ -78,7 +78,9 @@ public enum ErrorCode {
 
     // Request 4xxx
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
-    USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters");
+    USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters"),
+    RESET_TOKEN_CANNOT_BLANK(4003, HttpStatus.BAD_REQUEST, "Token cannot be blank"),
+    RESET_NEW_PASSWORD_CANNOT_BLANK(4004, HttpStatus.BAD_REQUEST, "New password cannot be blank");
 
     int errorCode;
     HttpStatus httpStatus;
