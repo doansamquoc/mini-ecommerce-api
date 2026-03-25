@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.user.controller;
 
+import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
 import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
@@ -36,6 +37,12 @@ public class UserController {
     public ResponseEntity<SuccessApi<UserResponse>> getUser(@PathVariable Long id) {
         UserResponse response = userService.getUser(id);
         return ApiFactory.success(response, "Get user successfully.");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<SuccessApi<UserResponse>> me(@CurrentUserId Long id) {
+        UserResponse response = userService.getUser(id);
+        return ApiFactory.success(response, "Get me successfully");
     }
     
     @DeleteMapping("/{id}")
