@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ public class UserPrincipal implements UserDetails {
     @JsonIgnore
     String password;
     Collection<? extends GrantedAuthority> authorities;
+    String jwtId;
+    Instant expiresAt;
 
     public static UserPrincipal create(User user) {
         return UserPrincipal.builder()

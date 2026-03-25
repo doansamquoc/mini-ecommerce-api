@@ -45,12 +45,12 @@ public class CookieService {
         return create(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, maxAgeInSeconds, "/api/v1/auth/refresh");
     }
 
-    public void deleteRefreshToken() {
-        delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/api/v1/auth/refresh");
+    public ResponseCookie deleteRefreshToken() {
+        return delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/api/v1/auth/refresh");
     }
 
-    private void delete(String name, String path) {
-        build(name, null, 0, path);
+    private ResponseCookie delete(String name, String path) {
+        return build(name, null, 0, path);
     }
 
     public void addCookie(HttpServletResponse response, ResponseCookie cookie) {

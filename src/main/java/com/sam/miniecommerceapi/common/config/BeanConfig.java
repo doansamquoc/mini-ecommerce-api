@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.common.config;
 
+import com.sam.miniecommerceapi.auth.security.jwt.JwtBlacklistValidator;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -55,8 +60,16 @@ public class BeanConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS512).build();
+    JwtDecoder jwtDecoder(JwtBlacklistValidator validator) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS512).build();
+
+        OAuth2TokenValidator<Jwt> defaultValidator = new JwtTimestampValidator();
+
+        OAuth2TokenValidator<Jwt> delegatingValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, validator);
+
+        jwtDecoder.setJwtValidator(delegatingValidator);
+
+        return jwtDecoder;
     }
 
     @Bean

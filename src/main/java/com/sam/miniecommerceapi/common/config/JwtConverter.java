@@ -33,11 +33,13 @@ public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken>
         String username = jwt.getClaimAsString("username");
 
         UserPrincipal principal = UserPrincipal.builder()
-                        .id(id)
-                        .email(email)
-                        .username(username)
-                        .authorities(authorities)
-                        .build();
+                .id(id)
+                .email(email)
+                .username(username)
+                .authorities(authorities)
+                .jwtId(jwt.getId())
+                .expiresAt(jwt.getExpiresAt())
+                .build();
 
         return new UsernamePasswordAuthenticationToken(principal, jwt, authorities);
     }

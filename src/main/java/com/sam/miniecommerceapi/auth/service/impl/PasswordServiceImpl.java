@@ -70,7 +70,10 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     private void publishForgotPasswordMessage(
-            User user, String ip, String agent, PasswordResetToken passwordResetToken
+            User user,
+            String ip,
+            String agent,
+            PasswordResetToken passwordResetToken
     ) {
         String resetLink = app.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
 

@@ -22,6 +22,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,6 +31,16 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
 
 app:
   refresh-token-expiration: 604800000 # 7 days

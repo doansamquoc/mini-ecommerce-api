@@ -1,15 +1,13 @@
 package com.sam.miniecommerceapi.auth.controller;
 
 import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
+import com.sam.miniecommerceapi.auth.service.*;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ForgotPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.response.AuthResponse;
-import com.sam.miniecommerceapi.auth.service.AuthenticationService;
-import com.sam.miniecommerceapi.auth.service.IdentityService;
-import com.sam.miniecommerceapi.auth.service.PasswordService;
-import com.sam.miniecommerceapi.auth.service.TokenManagementService;
 import com.sam.miniecommerceapi.common.annotation.ClientIp;
 import com.sam.miniecommerceapi.common.annotation.UserAgent;
 import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
@@ -22,7 +20,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class AuthController {
     PasswordService passwordService;
     IdentityService identityService;
     AuthenticationService authenticationService;
+    TokenBlacklistService tokenBlacklistService;
     TokenManagementService tokenManagementService;
 
     @PostMapping("/login")
@@ -91,6 +94,18 @@ public class AuthController {
         AuthResponse response = new AuthResponse(token.getAccessToken());
 
         return ApiFactory.success(cookie.toString(), response, "Refresh access token successfully.");
+    }
+
+    @PostMapping("/logout")
+    ResponseEntity<SuccessApi<String>> logout(@AuthenticationPrincipal UserPrincipal user) {
+        long remainingTimeInMs = user.getExpiresAt().toEpochMilli() - System.currentTimeMillis();
+
+        if (remainingTimeInMs > 0) {
+            tokenBlacklistService.addToBlacklist(user.getJwtId(), remainingTimeInMs);
+        }
+
+        ResponseCookie cookie = cookieService.deleteRefreshToken();
+        return ApiFactory.success(cookie.toString(), null, "Logged out successfully");
     }
 
     // TODO: In the future add device checking (session) feature
