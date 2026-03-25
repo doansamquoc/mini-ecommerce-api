@@ -63,13 +63,4 @@ public class JwtProvider {
 
         return jwsObject.serialize();
     }
-
-    public boolean validateAccessToken(String token) {
-        try {
-            SignedJWT jwt = SignedJWT.parse(token);
-            return jwt.verify(new MACVerifier(secretKey));
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
