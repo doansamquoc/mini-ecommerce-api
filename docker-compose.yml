@@ -30,7 +30,7 @@ services:
       - postgres-db
       - redis-cache
     environment:
-      - DB_URL=${DB_URL:jdbc:postgresql://postgres-db:5432/mini_ecommerce}
+      - DB_URL=jdbc:${DB_URL:postgresql://postgres-db:5432/mini_ecommerce}
       - DB_USERNAME=${DB_USERNAME:postgres}
       - DB_PASSWORD=${DB_PASSWORD:123456}
       - SPRING_DATA_REDIS_HOST=redis-cache
