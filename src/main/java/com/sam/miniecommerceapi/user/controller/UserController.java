@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public ResponseEntity<SuccessApi<PageResponse<UserResponse>>> getAllUsers(
             @RequestParam(name = "pageNumber", defaultValue = "0", required = false) int pageNumber,
@@ -44,11 +43,11 @@ public class UserController {
         UserResponse response = userService.getUser(id);
         return ApiFactory.success(response, "Get me successfully");
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessApi<String>> softDelete(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ApiFactory.success("Delete successfully.");
+        return ApiFactory.success("Delete user successfully");
     }
 
     @PutMapping("/{id}")
@@ -57,6 +56,12 @@ public class UserController {
             @Valid @RequestBody UserUpdateRequest r
     ) {
         UserResponse response = userService.updateUser(id, r);
-        return ApiFactory.success(response, "Update information successfully.");
+        return ApiFactory.success(response, "Update information successfully");
+    }
+
+    @PostMapping("/{id}")
+    ResponseEntity<SuccessApi<String>> restoreUser(@PathVariable Long id) {
+        userService.restoreUser(id);
+        return ApiFactory.success("Restore user successfully");
     }
 }

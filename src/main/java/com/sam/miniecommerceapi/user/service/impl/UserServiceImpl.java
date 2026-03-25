@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.user.service.impl;
 
+import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
@@ -86,6 +87,7 @@ public class UserServiceImpl implements UserService {
      * @return PageResponse<UserResponse>
      */
     @Override
+    @PreAuthorize(AppConstant.ADMIN)
     public PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<User> page = repository.findAll(pageable);
@@ -111,7 +113,7 @@ public class UserServiceImpl implements UserService {
      * @param id User ID
      */
     @Override
-    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize(AppConstant.LOGGED_IN_USER_OR_ADMIN)
     public void deleteUser(Long id) {
         User user = findById(id);
         repository.delete(user);
@@ -123,6 +125,7 @@ public class UserServiceImpl implements UserService {
      * @param id User ID
      */
     @Override
+    @PreAuthorize(AppConstant.LOGGED_IN_USER_OR_ADMIN)
     public void restoreUser(Long id) {
         repository.restoreById(id);
     }
