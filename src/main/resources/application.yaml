@@ -39,10 +39,10 @@ app:
   is-production: false
   frontend-url: http://localhost:5173
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-  show-actuator: true
+#springdoc:
+#  api-docs:
+#    path: /v3/api-docs
+#  swagger-ui:
+#    path: /swagger-ui.html
+#    enabled: true
+#  show-actuator: true
