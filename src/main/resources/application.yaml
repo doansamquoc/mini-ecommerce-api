@@ -6,7 +6,7 @@ spring:
     name: Mini E-commerce API
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/mini_ecommerce}
+    url: jdbc:postgresql://sam:bMobCJwsnuY7fJbEqPfPzsKRwOBIcSsq@dpg-d71nvcm3jp1c739f6230-a/miniecommerce_0xhy
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
