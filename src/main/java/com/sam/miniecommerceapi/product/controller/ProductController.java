@@ -8,6 +8,8 @@ import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
+@Tag(name = "Product endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductController {
     ProductService productService;
 
+    @Operation(summary = "Create product")
     @PostMapping
     ResponseEntity<SuccessApi<ProductDetailsResponse>> createProduct(@Valid @RequestBody ProductCreationRequest r) {
         ProductDetailsResponse response = productService.createProduct(r);
@@ -29,11 +33,13 @@ public class ProductController {
     }
 
     @GetMapping("/{slug}")
+    @Operation(summary = "Get product by slug")
     ResponseEntity<SuccessApi<ProductDetailsResponse>> getProductBySlug(@PathVariable String slug) {
         ProductDetailsResponse response = productService.getProductBySlug(slug);
         return ApiFactory.success(response, "Get product successfully.");
     }
 
+    @Operation(summary = "Get/search products", description = "Get/search products with pagination")
     @GetMapping
     ResponseEntity<SuccessApi<PageResponse<ProductResponse>>> getSummaryProducts(
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
@@ -46,6 +52,7 @@ public class ProductController {
         return ApiFactory.success(responses, "Get products successfully.");
     }
 
+    @Operation(summary = "Update product by ID")
     @PutMapping("/{id}")
     ResponseEntity<SuccessApi<ProductDetailsResponse>> updateProduct(
             @PathVariable Long id,

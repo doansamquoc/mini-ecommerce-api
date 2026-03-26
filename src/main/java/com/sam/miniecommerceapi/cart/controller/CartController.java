@@ -7,6 +7,8 @@ import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
 import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/carts")
+@Tag(name = "Cart endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CartController {
     CartService cartService;
 
+    @Operation(summary = "Add product to cart")
     @PostMapping
     ResponseEntity<SuccessApi<CartResponse>> addToCart(
             @CurrentUserId Long userId,
@@ -30,6 +34,7 @@ public class CartController {
         return ApiFactory.success(response, "Add to cart successfully.");
     }
 
+    @Operation(summary = "Get all products in cart by cart ID")
     @GetMapping
     ResponseEntity<SuccessApi<PageResponse<CartResponse>>> getProductsInCart(
             @CurrentUserId Long id,
@@ -40,12 +45,14 @@ public class CartController {
         return ApiFactory.success(responses, "Get products in cart successfully.");
     }
 
+    @Operation(summary = "Delete product in cart")
     @DeleteMapping("/{id}")
     ResponseEntity<SuccessApi<String>> deleteCart(@PathVariable Long id, @CurrentUserId Long userId) {
         cartService.deleteCart(userId, id);
         return ApiFactory.success("Delete cart successfully.");
     }
 
+    @Operation(summary = "Delete all products in cart")
     @DeleteMapping
     ResponseEntity<SuccessApi<String>> deleteAllCartsByUserId(@CurrentUserId Long userId) {
         cartService.deleteAllByUser(userId);

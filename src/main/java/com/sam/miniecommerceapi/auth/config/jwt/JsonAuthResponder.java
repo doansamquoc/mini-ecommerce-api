@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.auth.config.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sam.miniecommerceapi.common.dto.response.api.ErrorApi;
 import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
