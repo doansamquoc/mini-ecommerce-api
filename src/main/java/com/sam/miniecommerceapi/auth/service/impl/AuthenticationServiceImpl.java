@@ -67,10 +67,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public TokenDTO login(LoginRequest r, String ip, String agent) {
         UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
-        User user = userService.getReference(userPrincipal.getId());
+        User user = userService.findById(userPrincipal.getId());
 
         String accessToken = jwtProvider.generateAccessToken(userPrincipal);
-        RefreshToken refreshToken = refreshTokenService.createToken(user, ip, agent);
+        RefreshToken refreshToken = refreshTokenService.createToken(userPrincipal.getId(), ip, agent);
 
         publishLoginAlertMessage(user, ip, agent);
         return new TokenDTO(accessToken, refreshToken.getToken());

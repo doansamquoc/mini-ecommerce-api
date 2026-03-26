@@ -5,10 +5,13 @@ import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Optional;
 
 public interface UserService {
+    User oauth2Process(String email, String provider, String providerId);
+
     User findByIdentifier(String identifier);
 
     User findByEmail(String email);

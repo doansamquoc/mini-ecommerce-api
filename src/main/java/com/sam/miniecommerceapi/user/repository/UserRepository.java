@@ -4,6 +4,7 @@ import com.sam.miniecommerceapi.user.entity.User;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -38,6 +39,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @NullMarked
     Page<User> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"roles"})
+    Optional<User> findWithRolesByEmail(String email);
 
     Optional<User> findByEmail(String email);
 

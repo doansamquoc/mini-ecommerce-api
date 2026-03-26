@@ -37,7 +37,7 @@ public class TokenManagementServiceImpl implements TokenManagementService {
         UserPrincipal userPrincipal = UserPrincipal.create(user);
 
         String accessToken = jwtProvider.generateAccessToken(userPrincipal);
-        RefreshToken refreshToken = refreshTokenService.createToken(user, ip, agent);
+        RefreshToken refreshToken = refreshTokenService.createToken(user.getId(), ip, agent);
 
         return new TokenDTO(accessToken, refreshToken.getToken());
     }

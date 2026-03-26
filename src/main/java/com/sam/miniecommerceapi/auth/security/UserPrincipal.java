@@ -5,21 +5,25 @@ import com.sam.miniecommerceapi.common.enums.Role;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails, OAuth2User {
     Long id;
     String email;
     String username;
@@ -28,6 +32,8 @@ public class UserPrincipal implements UserDetails {
     Collection<? extends GrantedAuthority> authorities;
     String jwtId;
     Instant expiresAt;
+    @Builder.Default
+    Map<String, Object> attributes = new HashMap<>();
 
     public static UserPrincipal create(User user) {
         return UserPrincipal.builder()
@@ -39,8 +45,20 @@ public class UserPrincipal implements UserDetails {
                 .build();
     }
 
+    public static UserPrincipal create(User user, Map<String, Object> attributes) {
+        UserPrincipal userPrincipal = UserPrincipal.create(user);
+        userPrincipal.attributes = attributes;
+
+        return userPrincipal;
+    }
+
     private static Collection<? extends GrantedAuthority> extractAuthorities(Set<Role> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override
@@ -76,5 +94,10 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public @NullMarked String getName() {
+        return String.valueOf(id);
     }
 }
