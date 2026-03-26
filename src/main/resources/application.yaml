@@ -46,6 +46,12 @@ spring:
           max-idle: 8
           min-idle: 0
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 app:
   refresh-token-expiration: 604800000 # 7 days
   access-token-expiration: 900000 # 15 minutes
