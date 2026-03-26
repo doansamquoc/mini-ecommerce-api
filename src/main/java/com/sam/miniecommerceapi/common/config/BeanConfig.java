@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.common.config;
 
-import com.sam.miniecommerceapi.auth.security.jwt.JwtBlacklistValidator;
+import com.sam.miniecommerceapi.auth.config.jwt.JwtBlacklistValidator;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

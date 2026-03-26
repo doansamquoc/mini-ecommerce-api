@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.auth.security.jwt;
+package com.sam.miniecommerceapi.auth.config.jwt;
 
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;

@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.auth.service.impl;
 
 import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
-import com.sam.miniecommerceapi.auth.security.jwt.JwtProvider;
+import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.auth.service.TokenManagementService;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;

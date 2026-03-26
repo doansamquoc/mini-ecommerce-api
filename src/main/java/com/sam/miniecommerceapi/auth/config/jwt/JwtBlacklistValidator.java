@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.auth.security.jwt;
+package com.sam.miniecommerceapi.auth.config.jwt;
 
 import com.sam.miniecommerceapi.auth.service.TokenBlacklistService;
 import lombok.AccessLevel;
