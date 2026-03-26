@@ -12,6 +12,12 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
+      max-lifetime: 45000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      keepalive-time: 30000
 
   mail:
     host: smtp.gmail.com
