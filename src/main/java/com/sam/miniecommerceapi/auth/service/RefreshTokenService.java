@@ -10,7 +10,7 @@ public interface RefreshTokenService {
 
     RefreshToken validateToken(String refreshTokenStr);
 
-    RefreshToken createToken(User user, String ip, String agent);
+    RefreshToken createToken(Long userId, String ip, String agent);
 
     void revoke(RefreshToken refreshToken);
 

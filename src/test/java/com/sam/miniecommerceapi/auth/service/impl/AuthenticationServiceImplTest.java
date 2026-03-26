@@ -81,7 +81,7 @@ class AuthenticationServiceImplTest {
 
         RefreshToken mockRefreshToken = new RefreshToken();
         mockRefreshToken.setToken("refresh-token-456");
-        when(refreshTokenService.createToken(any(User.class), anyString(), anyString())).thenReturn(mockRefreshToken);
+        when(refreshTokenService.createToken(anyLong(), anyString(), anyString())).thenReturn(mockRefreshToken);
 
         PasswordResetToken mockResetToken = new PasswordResetToken();
         mockResetToken.setToken("reset-token-123");

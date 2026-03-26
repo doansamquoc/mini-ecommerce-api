@@ -1,5 +1,7 @@
 package com.sam.miniecommerceapi.common.config;
 
+import com.sam.miniecommerceapi.auth.config.OAuth2SuccessHandler;
+import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.auth.security.jwt.JwtAccessDeniedHandler;
 import com.sam.miniecommerceapi.auth.security.jwt.JwtAuthenticationEntryPoint;
@@ -24,6 +26,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
     JwtAccessDeniedHandler accessDeniedHandler;
+    CustomOAuth2UserService oAuth2UserService;
+    OAuth2SuccessHandler oAuth2SuccessHandler;
     JwtAuthenticationEntryPoint authenticationEntryPoint;
     JwtConverter jwtConverter;
     JwtDecoder jwtDecoder;
@@ -41,6 +45,10 @@ public class SecurityConfig {
                     auth.requestMatchers(AppConstant.ADMIN_ENDPOINTS).hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 });
+        httpSecurity.oauth2Login(oauth2 -> {
+            oauth2.userInfoEndpoint(u -> u.userService(oAuth2UserService));
+            oauth2.successHandler(oAuth2SuccessHandler);
+        });
         httpSecurity.oauth2ResourceServer(
                 oauth2 -> {
                     oauth2.authenticationEntryPoint(authenticationEntryPoint);

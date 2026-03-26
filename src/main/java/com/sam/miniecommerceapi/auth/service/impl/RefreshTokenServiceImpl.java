@@ -7,6 +7,7 @@ import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.user.entity.User;
+import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     AppProperties appProperties;
     RefreshTokenRepository repository;
+    EntityManager entityManager;
 
     @Override
     public void validate(RefreshToken refreshToken) {
@@ -49,9 +51,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken createToken(User user, String ip, String agent) {
+    public RefreshToken createToken(Long userId, String ip, String agent) {
+        User userRef = entityManager.getReference(User.class, userId);
+
         RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
+                .user(userRef)
                 .token(UUID.randomUUID().toString())
                 .expiresAt(Instant.now().plusMillis(appProperties.getRefreshTokenExpiration()))
                 .revoked(false)

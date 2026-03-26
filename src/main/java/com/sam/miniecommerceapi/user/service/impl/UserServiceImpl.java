@@ -1,8 +1,10 @@
 package com.sam.miniecommerceapi.user.service.impl;
 
+import com.sam.miniecommerceapi.auth.service.SocialAccountService;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
+import com.sam.miniecommerceapi.common.enums.SocialProvider;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.util.UsernameUtils;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -29,9 +32,37 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
+    SocialAccountService socialAccountService;
     UserRepository repository;
     PasswordEncoder encoder;
     UserMapper mapper;
+
+    @Override
+    @Transactional
+    public User oauth2Process(String email, String provider, String providerId) {
+        // Convert provider to an enum
+        SocialProvider providerEnum = SocialProvider.valueOf(provider.toUpperCase());
+
+        // Find with roles to avoid
+        User user = repository.findWithRolesByEmail(email).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setDisplayName(DisplayNameUtils.generateDisplayName(email));
+            newUser.setUsername(UsernameUtils.generateUsername(email));
+            return repository.save(newUser);
+        });
+
+        // Find social account
+        boolean exists = socialAccountService.existsBySocialAccount(providerEnum, providerId);
+
+        // Check if the account exists. If yes return to user
+        if (!exists) {
+            // Insert new social account
+            socialAccountService.createSocialAccount(user, providerEnum, providerId);
+        }
+
+        return user;
+    }
 
     /**
      * Find user with identifier (Username, email, phone)
@@ -179,5 +210,10 @@ public class UserServiceImpl implements UserService {
         user.setDisplayName(displayName);
 
         return repository.save(user);
+    }
+
+    public User createUser(String email) {
+        if (existsByEmail(email)) throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXISTS);
+        return null;
     }
 }

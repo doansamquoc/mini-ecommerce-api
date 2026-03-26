@@ -2,6 +2,7 @@ package com.sam.miniecommerceapi.common.config;
 
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken> {
     JwtGrantedAuthoritiesConverter authoritiesConverter;
