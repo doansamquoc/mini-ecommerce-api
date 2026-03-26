@@ -14,6 +14,8 @@ import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.common.service.CookieService;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import java.time.Instant;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Authentication endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
     CookieService cookieService;
@@ -38,6 +41,7 @@ public class AuthController {
     TokenBlacklistService tokenBlacklistService;
     TokenManagementService tokenManagementService;
 
+    @Operation(summary = "Login", description = "In program, the IP and UserAgent auto inject by annotation")
     @PostMapping("/login")
     ResponseEntity<SuccessApi<AuthResponse>> authenticate(
             @Valid @RequestBody LoginRequest loginRequest,
@@ -52,11 +56,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register User")
     ResponseEntity<SuccessApi<UserResponse>> register(@Valid @RequestBody UserCreationRequest r) {
         UserResponse userResponse = identityService.registerUser(r);
         return ApiFactory.created(userResponse, "User has been created");
     }
 
+    @Operation(
+            summary = "Forgot password",
+            description = "In program, the IP and UserAgent auto inject by annotation. Sent an email to reset password"
+    )
     @PostMapping("/forgot-password")
     ResponseEntity<SuccessApi<String>> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest r,
@@ -68,6 +77,10 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
+    @Operation(
+            summary = "Reset password",
+            description = "In program, the IP and UserAgent auto inject by annotation"
+    )
     ResponseEntity<SuccessApi<String>> resetPassword(
             @Valid @RequestBody ResetPasswordRequest r,
             @ClientIp String ip,
@@ -77,12 +90,14 @@ public class AuthController {
         return ApiFactory.success("Your password has been changed!");
     }
 
+    @Operation(summary = "Verify reset password token")
     @GetMapping("/verify-token")
     ResponseEntity<SuccessApi<String>> verifyPasswordResetToken(@RequestParam("token") String token) {
         passwordService.validateResetToken(token);
         return ApiFactory.success("Verify token successfully!");
     }
 
+    @Operation(summary = "Refresh", description = "Refresh new access token")
     @GetMapping("/refresh")
     ResponseEntity<SuccessApi<AuthResponse>> refresh(
             @CookieValue(name = "refresh-token", required = false) String refreshTokenStr,
@@ -96,6 +111,7 @@ public class AuthController {
         return ApiFactory.success(cookie.toString(), response, "Refresh access token successfully.");
     }
 
+    @Operation(summary = "Logout")
     @PostMapping("/logout")
     ResponseEntity<SuccessApi<String>> logout(@AuthenticationPrincipal UserPrincipal user) {
         long remainingTimeInMs = user.getExpiresAt().toEpochMilli() - System.currentTimeMillis();

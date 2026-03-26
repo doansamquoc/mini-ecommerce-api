@@ -19,4 +19,9 @@ public class AppProperties {
     Long passwordResetTokenExpiration;
     boolean isProduction;
     String frontendUrl;
+
+    // api-docs
+    String openApiTitle;
+    String openApiVersion;
+    String openApiProdServer;
 }
