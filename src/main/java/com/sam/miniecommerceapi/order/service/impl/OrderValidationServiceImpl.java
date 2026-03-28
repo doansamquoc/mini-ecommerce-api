@@ -8,7 +8,6 @@ import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderCreationRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderItemRequest;
 import com.sam.miniecommerceapi.order.entity.Order;
-import com.sam.miniecommerceapi.order.repository.OrderRepository;
 import com.sam.miniecommerceapi.order.service.OrderValidationService;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.product.service.ProductVariantService;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderValidationServiceImpl implements OrderValidationService {
-    OrderRepository repository;
     AppProperties appProperties;
     ProductVariantService variantService;
 

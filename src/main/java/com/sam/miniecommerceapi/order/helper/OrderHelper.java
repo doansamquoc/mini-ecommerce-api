@@ -3,7 +3,6 @@ package com.sam.miniecommerceapi.order.helper;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.order.entity.Order;
-import com.sam.miniecommerceapi.order.entity.OrderItem;
 import com.sam.miniecommerceapi.order.repository.OrderRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
