@@ -78,6 +78,9 @@ app:
   production: false
   frontend-url: http://localhost:5173
 
+  # Order
+  cancellation-deadline: 86400000 # 24 hours
+
   # Open Api Docs
   open-api-title: Mini E-commerce API Document
   open-api-prod-server: https://mini-ecommerce-api-zaiy.onrender.com

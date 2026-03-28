@@ -27,7 +27,10 @@ public class OpenApiConfig {
                         new Info().title(properties.getOpenApiTitle()).version(properties.getOpenApiVersion())
                 )
                 .servers(
-                        List.of(new Server().url(properties.getOpenApiProdServer()).description("Production"))
+                        List.of(
+                                new Server().url(properties.getOpenApiProdServer()).description("PROD"),
+                                new Server().url("http://localhost:9000").description("LOCAL")
+                        )
                 )
                 .components(new Components().addSecuritySchemes("Bearer Token", new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)

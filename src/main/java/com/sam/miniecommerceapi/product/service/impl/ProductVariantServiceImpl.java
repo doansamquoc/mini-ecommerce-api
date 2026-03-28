@@ -28,7 +28,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     /**
-     * Purpose: Avoid N + 1 query by check all of sku in once query.<br/>
+     * Purpose: Avoid N + 1 query by check all of sku in once query.<br>
      * Check sku already exists. If existed throw an exception with that sku(s).
      *
      * @param skus List of sku (String)
@@ -37,7 +37,8 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public void validateSkuNotExists(List<String> skus) {
         List<String> existedSkus = repository.findExistingSkus(skus);
         if (!existedSkus.isEmpty()) {
-            throw new BusinessException(ErrorCode.PRODUCT_SKU_ALREADY_EXISTS, Map.of("skus", existedSkus));
+            throw new BusinessException(
+                    ErrorCode.PRODUCT_SKU_ALREADY_EXISTS, Map.of("skus", existedSkus));
         }
     }
 
@@ -58,8 +59,8 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public void addStock(Long id, int quantity) {
-        repository.addStock(id, quantity);
+    public void increaseStock(Long id, int quantity) {
+        repository.increaseStock(id, quantity);
     }
 
     @Override
@@ -70,7 +71,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     @Override
     public ProductVariant findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
     }
 
     @Override
@@ -91,5 +94,10 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     @Override
     public boolean existsById(Long id) {
         return repository.existsById(id);
+    }
+
+    @Override
+    public List<ProductVariant> findAllByIds(List<Long> productVariantIds) {
+        return repository.findAllById(productVariantIds);
     }
 }

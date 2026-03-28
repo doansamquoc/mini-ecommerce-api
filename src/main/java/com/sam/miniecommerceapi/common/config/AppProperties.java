@@ -20,6 +20,9 @@ public class AppProperties {
     boolean isProduction;
     String frontendUrl;
 
+    // Order
+    Long cancellationDeadline;
+
     // api-docs
     String openApiTitle;
     String openApiVersion;

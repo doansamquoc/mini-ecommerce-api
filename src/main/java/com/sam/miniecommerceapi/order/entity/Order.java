@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class Order extends BaseEntity {
 
     @CreationTimestamp
     @Column(name = "order_date", nullable = false)
-    LocalDateTime orderDate;
+    Instant orderDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
@@ -51,4 +52,14 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<OrderItem> orderItems = new ArrayList<>();
+
+    @Column(name = "canceled_reason")
+    String canceledReason;
+
+    @Column(name = "canceled_at")
+    Instant canceledAt;
+
+    @Column(name = "delivered_at", updatable = false)
+    Instant deliveredAt;
+
 }

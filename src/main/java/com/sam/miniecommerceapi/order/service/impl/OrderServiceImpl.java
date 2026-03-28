@@ -3,8 +3,8 @@ package com.sam.miniecommerceapi.order.service.impl;
 import com.sam.miniecommerceapi.common.enums.ErrorCode;
 import com.sam.miniecommerceapi.common.enums.OrderStatus;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.order.dto.request.OrderCreationRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderItemRequest;
-import com.sam.miniecommerceapi.order.dto.request.OrderRequest;
 import com.sam.miniecommerceapi.order.dto.response.OrderResponse;
 import com.sam.miniecommerceapi.order.entity.Order;
 import com.sam.miniecommerceapi.order.entity.OrderItem;
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponse createOrder(Long userId, OrderRequest r) {
+    public OrderResponse createOrder(Long userId, OrderCreationRequest r) {
         User user = userService.findById(userId);
         Order order = mapper.toEntity(r);
         order.setUser(user);
@@ -77,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderResponse updateOrder(Long id, OrderRequest r) {
+    public OrderResponse updateOrder(Long id, OrderCreationRequest r) {
         Order order = findById(id);
 
         /*
@@ -118,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
                         );
                     }
                 } else if (quantityDiff < 0) {
-                    variantService.addStock(reqItem.getVariantId(), Math.abs(quantityDiff));
+                    variantService.increaseStock(reqItem.getVariantId(), Math.abs(quantityDiff));
                 }
 
                 existingItem.setQuantity(reqItem.getQuantity());
@@ -147,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
         }
         List<OrderItem> removedItems = new ArrayList<>();
         for (OrderItem removedItem : existingItemsMap.values()) {
-            variantService.addStock(removedItem.getVariant().getId(), removedItem.getQuantity());
+            variantService.increaseStock(removedItem.getVariant().getId(), removedItem.getQuantity());
             order.getOrderItems().remove(removedItem);
             removedItems.add(removedItem);
         }
