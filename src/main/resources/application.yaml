@@ -90,3 +90,5 @@ springdoc:
   swagger-ui:
     enabled: true
   show-actuator: false
+  show-oauth2-endpoints: true
+  show-login-endpoint: true
