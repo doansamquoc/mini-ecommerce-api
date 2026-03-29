@@ -14,7 +14,7 @@ public interface ProductVariantService {
 
     int deductStock(Long id, int quantity);
 
-    void addStock(Long id, int quantity);
+    void increaseStock(Long id, int quantity);
 
     void updateVariant(ProductVariant variant, ProductVariantUpdateRequest r);
 
@@ -27,4 +27,6 @@ public interface ProductVariantService {
     ProductVariant save(ProductVariant variant);
 
     boolean existsById(Long id);
+
+    List<ProductVariant> findAllByIds(List<Long> productVariantIds);
 }

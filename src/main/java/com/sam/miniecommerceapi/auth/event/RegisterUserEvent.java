@@ -1,8 +1,6 @@
 package com.sam.miniecommerceapi.auth.event;
 
-import com.sam.miniecommerceapi.mail.dto.WelcomeMailData;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
+import com.sam.miniecommerceapi.notification.dto.WelcomeMailData;
 
 public record RegisterUserEvent(WelcomeMailData data) {
 }

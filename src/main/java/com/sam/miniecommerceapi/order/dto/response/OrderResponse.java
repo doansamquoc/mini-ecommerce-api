@@ -1,12 +1,13 @@
 package com.sam.miniecommerceapi.order.dto.response;
 
-import com.sam.miniecommerceapi.common.enums.OrderStatus;
-import com.sam.miniecommerceapi.common.enums.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -14,13 +15,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponse {
     Long id;
     BigDecimal totalPrice;
-    LocalDateTime orderDate;
+    Instant orderDate;
     OrderStatus status;
     String shippingAddress;
     String phoneNumber;
     PaymentMethod paymentMethod;
     List<OrderItemResponse> items;
+    String canceledReason;
+    Instant canceledAt;
+    Instant deliveredAt;
 }

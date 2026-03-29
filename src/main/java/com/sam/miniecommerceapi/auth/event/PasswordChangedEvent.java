@@ -1,8 +1,6 @@
 package com.sam.miniecommerceapi.auth.event;
 
-import com.sam.miniecommerceapi.mail.dto.PasswordChangedMailData;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
+import com.sam.miniecommerceapi.notification.dto.PasswordChangedMailData;
 
 public record PasswordChangedEvent(PasswordChangedMailData data) {
 }

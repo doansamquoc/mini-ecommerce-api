@@ -1,11 +1,10 @@
 package com.sam.miniecommerceapi.user.service;
 
-import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Optional;
 

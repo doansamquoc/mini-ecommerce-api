@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.order.entity;
 
-import com.sam.miniecommerceapi.common.entity.BaseEntity;
-import com.sam.miniecommerceapi.common.enums.OrderStatus;
-import com.sam.miniecommerceapi.common.enums.PaymentMethod;
+import com.sam.miniecommerceapi.shared.entity.BaseEntity;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Order extends BaseEntity {
 
     @CreationTimestamp
     @Column(name = "order_date", nullable = false)
-    LocalDateTime orderDate;
+    Instant orderDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
@@ -51,4 +51,58 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<OrderItem> orderItems = new ArrayList<>();
+
+    @Column(name = "canceled_reason")
+    String canceledReason;
+
+    @Column(name = "canceled_at")
+    Instant canceledAt;
+
+    @Column(name = "delivered_at", updatable = false)
+    Instant deliveredAt;
+
+    public void cancel(String reason) {
+        this.setStatus(OrderStatus.CANCELED);
+        this.setCanceledReason(reason);
+        this.setCanceledAt(Instant.now());
+    }
+
+    public void delivered() {
+        this.setStatus(OrderStatus.DELIVERED);
+        this.setDeliveredAt(Instant.now());
+    }
+
+    public void markAsConfirm() {
+        this.setStatus(OrderStatus.CONFIRMED);
+    }
+
+    public void markAsPaid() {
+        this.setStatus(OrderStatus.PAID);
+    }
+
+    public void markAsDelivering() {
+        this.setStatus(OrderStatus.DELIVERING);
+    }
+
+    public void markAsFailed() {
+        this.setStatus(OrderStatus.FAILED);
+    }
+
+    public void markAsPendingPayment() {
+        this.setStatus(OrderStatus.PENDING_PAYMENT);
+    }
+
+    public void calcTotalPrice() {
+        this.setTotalPrice(this.orderItems.stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
+    public void addToOrderItems(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+    }
+
+    public void removeOrderItem(OrderItem orderItem) {
+        this.orderItems.remove(orderItem);
+    }
 }

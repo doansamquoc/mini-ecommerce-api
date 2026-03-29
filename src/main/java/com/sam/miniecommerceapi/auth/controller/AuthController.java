@@ -8,11 +8,11 @@ import com.sam.miniecommerceapi.auth.dto.request.ForgotPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.response.AuthResponse;
-import com.sam.miniecommerceapi.common.annotation.ClientIp;
-import com.sam.miniecommerceapi.common.annotation.UserAgent;
-import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
-import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.common.service.CookieService;
+import com.sam.miniecommerceapi.shared.annotation.ClientIp;
+import com.sam.miniecommerceapi.shared.annotation.UserAgent;
+import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
+import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.shared.service.CookieService;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,10 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Instant;
 
 @RestController
 @RequiredArgsConstructor

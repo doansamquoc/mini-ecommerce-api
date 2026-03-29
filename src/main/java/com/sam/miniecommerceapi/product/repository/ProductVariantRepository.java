@@ -21,22 +21,22 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     List<ProductVariant> findAllByProductId(Long productId);
 
     /**
-     * @param id Product variant ID
+     * @param id       Product variant ID
      * @param quantity Product quantity
      * @return The record number has been updated
      */
     @Transactional
     @Modifying
-    @Query(
-            "UPDATE ProductVariant v "
-                    + "SET v.stockQuantity = v.stockQuantity - :quantity "
-                    + "WHERE v.id = :id AND v.stockQuantity >= :quantity")
+    @Query("UPDATE ProductVariant v "
+            + "SET v.stockQuantity = v.stockQuantity - :quantity "
+            + "WHERE v.id = :id AND v.stockQuantity >= :quantity"
+    )
     int deductStock(@Param("id") long id, @Param("quantity") int quantity);
 
     @Modifying
-    @Query(
-            "UPDATE ProductVariant v "
-                    + "SET v.stockQuantity = v.stockQuantity + :quantity "
-                    + "WHERE v.id = :id")
-    void addStock(@Param("id") long id, @Param("quantity") int quantity);
+    @Query("UPDATE ProductVariant v "
+            + "SET v.stockQuantity = v.stockQuantity + :quantity "
+            + "WHERE v.id = :id"
+    )
+    void increaseStock(@Param("id") long id, @Param("quantity") int quantity);
 }

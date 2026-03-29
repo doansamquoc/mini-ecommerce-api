@@ -1,12 +1,12 @@
 package com.sam.miniecommerceapi.user.service.impl;
 
 import com.sam.miniecommerceapi.auth.service.SocialAccountService;
-import com.sam.miniecommerceapi.common.constant.AppConstant;
-import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
-import com.sam.miniecommerceapi.common.enums.ErrorCode;
-import com.sam.miniecommerceapi.common.enums.SocialProvider;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.common.util.UsernameUtils;
+import com.sam.miniecommerceapi.shared.constant.AppConstant;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.constant.SocialProvider;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import com.sam.miniecommerceapi.shared.util.UsernameUtils;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;

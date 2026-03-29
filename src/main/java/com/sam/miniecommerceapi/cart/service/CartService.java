@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.cart.service;
 
 import com.sam.miniecommerceapi.cart.dto.request.CartCreationRequest;
 import com.sam.miniecommerceapi.cart.dto.response.CartResponse;
-import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface CartService {

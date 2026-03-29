@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.order.entity;
 
-import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.shared.entity.BaseEntity;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +28,13 @@ public class OrderItem extends BaseEntity {
     @Column(name = "quantity")
     Integer quantity;
 
-    @Column(name = "price")
-    BigDecimal price;
+    @Column(name = "unit_price")
+    BigDecimal unitPrice;
+
+    @Column(name = "total_price")
+    BigDecimal totalPrice;
+
+    public void calcTotalPrice() {
+        this.setTotalPrice(this.unitPrice.multiply(BigDecimal.valueOf(this.quantity)));
+    }
 }

@@ -1,9 +1,9 @@
 package com.sam.miniecommerceapi.user.controller;
 
-import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
-import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
-import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.annotation.CurrentUserId;
+import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
+import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.service.UserService;
@@ -14,7 +14,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
-import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
-import com.sam.miniecommerceapi.common.enums.ErrorCode;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;

@@ -1,14 +1,13 @@
 package com.sam.miniecommerceapi.auth.event.listener;
 
 import com.sam.miniecommerceapi.auth.event.RegisterUserEvent;
-import com.sam.miniecommerceapi.common.enums.MailTemplate;
-import com.sam.miniecommerceapi.mail.dto.WelcomeMailData;
-import com.sam.miniecommerceapi.mail.dto.request.SendMailRequest;
-import com.sam.miniecommerceapi.mail.service.MailService;
+import com.sam.miniecommerceapi.shared.constant.MailTemplate;
+import com.sam.miniecommerceapi.notification.dto.WelcomeMailData;
+import com.sam.miniecommerceapi.notification.dto.request.SendMailRequest;
+import com.sam.miniecommerceapi.notification.service.MailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

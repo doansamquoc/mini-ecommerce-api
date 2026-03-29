@@ -3,10 +3,7 @@ package com.sam.miniecommerceapi.auth.service.impl;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.auth.event.RegisterUserEvent;
 import com.sam.miniecommerceapi.auth.service.IdentityService;
-import com.sam.miniecommerceapi.common.enums.ErrorCode;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.common.util.UsernameUtils;
-import com.sam.miniecommerceapi.mail.dto.WelcomeMailData;
+import com.sam.miniecommerceapi.notification.dto.WelcomeMailData;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.mapper.UserMapper;
@@ -15,8 +12,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
