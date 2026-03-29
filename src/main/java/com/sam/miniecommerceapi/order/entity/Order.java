@@ -11,7 +11,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,4 +61,48 @@ public class Order extends BaseEntity {
     @Column(name = "delivered_at", updatable = false)
     Instant deliveredAt;
 
+    public void cancel(String reason) {
+        this.setStatus(OrderStatus.CANCELED);
+        this.setCanceledReason(reason);
+        this.setCanceledAt(Instant.now());
+    }
+
+    public void delivered() {
+        this.setStatus(OrderStatus.DELIVERED);
+        this.setDeliveredAt(Instant.now());
+    }
+
+    public void markAsConfirm() {
+        this.setStatus(OrderStatus.CONFIRMED);
+    }
+
+    public void markAsPaid() {
+        this.setStatus(OrderStatus.PAID);
+    }
+
+    public void markAsDelivering() {
+        this.setStatus(OrderStatus.DELIVERING);
+    }
+
+    public void markAsFailed() {
+        this.setStatus(OrderStatus.FAILED);
+    }
+
+    public void markAsPendingPayment() {
+        this.setStatus(OrderStatus.PENDING_PAYMENT);
+    }
+
+    public void calcTotalPrice() {
+        this.setTotalPrice(this.orderItems.stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
+    public void addToOrderItems(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+    }
+
+    public void removeOrderItem(OrderItem orderItem) {
+        this.orderItems.remove(orderItem);
+    }
 }

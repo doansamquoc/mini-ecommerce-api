@@ -88,8 +88,15 @@ public enum ErrorCode {
     ORDER_CANNOT_UPDATE(3201, HttpStatus.BAD_REQUEST, "Order cannot update"),
     ORDER_INVALID_QUANTITY(3202, HttpStatus.BAD_REQUEST, "Order invalid quantity"),
     ORDER_EMPTY(3203, HttpStatus.BAD_REQUEST, "Order item cannot be empty"),
-    ORDER_CANNOT_BE_CANCELLED(3204, HttpStatus.NOT_ACCEPTABLE, "Order cannot be cancelled"),
+    ORDER_CANNOT_BE_CANCELED(3204, HttpStatus.NOT_ACCEPTABLE, "Order cannot be canceled"),
     ORDER_CANCELLATION_DEADLINE_PASSED(3205, HttpStatus.NOT_ACCEPTABLE, "Order cancellation deadline passed"),
+    ORDER_CANNOT_BE_CONFIRMED(3206, HttpStatus.NOT_ACCEPTABLE, "Order cannot be confirmed"),
+    ORDER_CANNOT_BE_DELIVERING(3207, HttpStatus.NOT_ACCEPTABLE, "Order cannot be delivering"),
+    ORDER_CANNOT_BE_DELIVERED(3208, HttpStatus.NOT_ACCEPTABLE, "Order cannot be delivered"),
+    ORDER_CANNOT_BE_PAYMENT_PENDING(3209, HttpStatus.NOT_ACCEPTABLE, "Order cannot be pending payment"),
+    ORDER_CANNOT_BE_PAID(3210, HttpStatus.NOT_ACCEPTABLE, "Order cannot be payment paid"),
+    ORDER_CANNOT_BE_FAILED(3211, HttpStatus.NOT_ACCEPTABLE, "Order cannot be payment failed"),
+
     // Order item
     ORDER_ITEM_NOT_FOUND(3300, HttpStatus.NOT_FOUND, "Order item not found"),
 

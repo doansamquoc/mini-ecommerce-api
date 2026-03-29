@@ -1,11 +1,9 @@
 package com.sam.miniecommerceapi.order.dto.request;
 
-import com.sam.miniecommerceapi.common.enums.OrderStatus;
-import com.sam.miniecommerceapi.common.enums.PaymentMethod;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -13,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItemRequest {
+    @NotNull(message = "FIELD_REQUIRED")
     Long variantId;
+    @Min(value = 1, message = "ORDER_ITEM_QUANTITY_MIN")
     Integer quantity;
 }

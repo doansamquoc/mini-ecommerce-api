@@ -7,5 +7,5 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum OrderStatus {
-    PENDING, CONFIRMED, DELIVERING, DELIVERED, CANCELLED, REFUNDING, REFUNDED,
+    PENDING, PENDING_PAYMENT, PAID, FAILED, CONFIRMED, DELIVERING, DELIVERED, CANCELED, REFUNDING, REFUNDED,
 }
