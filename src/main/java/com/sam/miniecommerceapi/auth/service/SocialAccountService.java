@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.service;
 
 import com.sam.miniecommerceapi.auth.entity.SocialAccount;
-import com.sam.miniecommerceapi.common.enums.SocialProvider;
+import com.sam.miniecommerceapi.shared.constant.SocialProvider;
 import com.sam.miniecommerceapi.user.entity.User;
 
 import java.util.Optional;

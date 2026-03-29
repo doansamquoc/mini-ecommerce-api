@@ -1,12 +1,11 @@
 package com.sam.miniecommerceapi.product.entity;
 
-import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.shared.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 @Entity

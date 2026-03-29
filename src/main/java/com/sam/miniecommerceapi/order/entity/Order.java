@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.order.entity;
 
-import com.sam.miniecommerceapi.common.entity.BaseEntity;
-import com.sam.miniecommerceapi.common.enums.OrderStatus;
-import com.sam.miniecommerceapi.common.enums.PaymentMethod;
+import com.sam.miniecommerceapi.shared.entity.BaseEntity;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

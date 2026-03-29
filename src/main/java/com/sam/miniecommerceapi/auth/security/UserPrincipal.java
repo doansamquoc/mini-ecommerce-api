@@ -1,11 +1,10 @@
 package com.sam.miniecommerceapi.auth.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sam.miniecommerceapi.common.enums.Role;
+import com.sam.miniecommerceapi.shared.constant.Role;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;

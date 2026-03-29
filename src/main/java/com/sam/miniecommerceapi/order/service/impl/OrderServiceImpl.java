@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.order.service.impl;
 
-import com.sam.miniecommerceapi.common.enums.ErrorCode;
-import com.sam.miniecommerceapi.common.enums.OrderStatus;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderItemRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderRequest;

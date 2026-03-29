@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.order.dto.request;
 
-import com.sam.miniecommerceapi.common.enums.PaymentMethod;
+import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

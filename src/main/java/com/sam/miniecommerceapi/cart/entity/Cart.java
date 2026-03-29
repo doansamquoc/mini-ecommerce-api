@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.cart.entity;
 
-import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.shared.entity.BaseEntity;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.*;

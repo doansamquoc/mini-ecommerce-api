@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.order.util;
 
-import com.sam.miniecommerceapi.common.enums.OrderStatus;
-import com.sam.miniecommerceapi.common.enums.PaymentMethod;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
 
 public class OrderStateMachine {
     public static boolean canTransition(OrderStatus from, OrderStatus to, PaymentMethod method) {

@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
-import com.sam.miniecommerceapi.common.enums.ErrorCode;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.ProductVariantUpdateRequest;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.product.mapper.ProductVariantMapper;

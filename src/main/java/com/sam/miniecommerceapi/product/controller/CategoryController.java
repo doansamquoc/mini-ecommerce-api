@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.product.controller;
 
-import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
-import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.common.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
+import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.CategoryCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.CategoryUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;

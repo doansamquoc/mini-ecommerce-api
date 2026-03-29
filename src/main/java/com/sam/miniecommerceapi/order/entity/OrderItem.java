@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.order.entity;
 
-import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.shared.entity.BaseEntity;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import jakarta.persistence.*;
 import lombok.*;

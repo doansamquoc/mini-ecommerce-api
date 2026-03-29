@@ -1,9 +1,9 @@
 package com.sam.miniecommerceapi.auth.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sam.miniecommerceapi.common.dto.response.api.ErrorApi;
-import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.common.enums.ErrorCode;
+import com.sam.miniecommerceapi.shared.dto.response.api.ErrorApi;
+import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.order.controller;
 
-import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
-import com.sam.miniecommerceapi.common.dto.response.api.SuccessApi;
-import com.sam.miniecommerceapi.common.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.shared.annotation.CurrentUserId;
+import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
+import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
 import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderRequest;
 import com.sam.miniecommerceapi.order.dto.response.OrderResponse;
