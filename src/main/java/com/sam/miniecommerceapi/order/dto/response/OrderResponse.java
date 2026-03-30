@@ -24,7 +24,7 @@ public class OrderResponse {
     String shippingAddress;
     String phoneNumber;
     PaymentMethod paymentMethod;
-    List<OrderItemResponse> items;
+    List<OrderItemResponse> orderItems;
     String canceledReason;
     Instant canceledAt;
     Instant deliveredAt;

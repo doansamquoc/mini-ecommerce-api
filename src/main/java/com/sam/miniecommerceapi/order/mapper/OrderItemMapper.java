@@ -5,19 +5,10 @@ import com.sam.miniecommerceapi.order.dto.response.OrderItemResponse;
 import com.sam.miniecommerceapi.order.entity.OrderItem;
 import com.sam.miniecommerceapi.product.mapper.ProductVariantMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
 
-@Mapper(
-        componentModel = "spring",
-        uses = {ProductVariantMapper.class},
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        unmappedSourcePolicy = ReportingPolicy.IGNORE
-)
+@Mapper(componentModel = "spring", uses = {ProductVariantMapper.class})
 public interface OrderItemMapper {
-    OrderItem toEntity(OrderItemRequest r);
+    OrderItem toEntity(OrderItemRequest request);
 
-    @Mapping(target = "variant", source = "variant")
     OrderItemResponse toResponse(OrderItem item);
 }
