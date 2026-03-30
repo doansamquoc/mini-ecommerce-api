@@ -21,6 +21,6 @@ public class AppConstant {
 
     public static final String LOGGED_IN_USER_OR_ADMIN = "#id == authentication.principal.id or hasRole('ADMIN')";
     public static final String ADMIN = "hasRole('ADMIN')";
-
+    public static final String MANAGER_OR_ADMIN = "hasRole('MANAGER') or hasRole('ADMIN')";
     public static final String BLACKLIST_PREFIX = "jwt:blacklist:";
 }

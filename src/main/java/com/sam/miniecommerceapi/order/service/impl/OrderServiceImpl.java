@@ -1,8 +1,5 @@
 package com.sam.miniecommerceapi.order.service.impl;
 
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.constant.OrderStatus;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderItemRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderRequest;
@@ -16,12 +13,18 @@ import com.sam.miniecommerceapi.order.service.OrderService;
 import com.sam.miniecommerceapi.order.util.OrderStateMachine;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.product.service.ProductVariantService;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,8 +44,8 @@ public class OrderServiceImpl implements OrderService {
     OrderItemService itemService;
     ProductVariantService variantService;
 
-    @Transactional
     @Override
+    @Transactional
     public OrderResponse createOrder(Long userId, OrderRequest r) {
         User user = userService.findById(userId);
         Order order = mapper.toEntity(r);
@@ -198,6 +201,21 @@ public class OrderServiceImpl implements OrderService {
         order.calcTotalPrice();
         return mapper.toResponse(repository.save(order));
     }
+
+    @Override
+    public PageResponse<OrderResponse> getOrderByStatus(OrderStatus status, Pageable pageable) {
+        Page<Order> orders = repository.findByStatus(status, pageable);
+        Page<OrderResponse> responses = orders.map(mapper::toResponse);
+        return PageResponse.from(responses);
+    }
+
+    @Override
+    public PageResponse<OrderResponse> getOrderByUserId(Long userId, OrderStatus status, Pageable pageable) {
+        Page<Order> orders = repository.findByUserIdAndStatus(userId, status, pageable);
+        Page<OrderResponse> responses = orders.map(mapper::toResponse);
+        return PageResponse.from(responses);
+    }
+
 
     public Order findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));

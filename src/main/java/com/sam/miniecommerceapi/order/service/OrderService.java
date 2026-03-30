@@ -3,6 +3,9 @@ package com.sam.miniecommerceapi.order.service;
 import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderRequest;
 import com.sam.miniecommerceapi.order.dto.response.OrderResponse;
+import com.sam.miniecommerceapi.shared.constant.OrderStatus;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface OrderService {
@@ -24,4 +27,8 @@ public interface OrderService {
     OrderResponse paymentFailedOrder(Long orderId);
 
     OrderResponse updateOrder(Long id, OrderRequest r);
+
+    PageResponse<OrderResponse> getOrderByStatus(OrderStatus status, Pageable pageable);
+
+    PageResponse<OrderResponse> getOrderByUserId(Long userId, OrderStatus status, Pageable pageable);
 }
