@@ -58,8 +58,8 @@ public class ProductController {
         return ApiFactory.success(response, "Get product successfully.");
     }
 
-    @Operation(summary = "Get/search products", description = "Get/search products with Full-text search (FTS)")
-    @GetMapping
+    @Operation(summary = "Search products", description = "Hibernate Search Engine (Lucene)")
+    @GetMapping("/search")
     ResponseEntity<SuccessApi<PageResponse<ProductResponse>>> searchProducts(
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20") int pageSize,
@@ -74,7 +74,7 @@ public class ProductController {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         PageResponse<ProductResponse> responses = searchService.searchProducts(keyword, minPrice, categoryName, pageable);
-        return ApiFactory.success(responses, "Get products successfully.");
+        return ApiFactory.success(responses, "Success");
     }
 
     @Operation(summary = "Update product by ID")
