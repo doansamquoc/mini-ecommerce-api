@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.cart.entity;
 
+import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.shared.entity.BaseEntity;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +27,7 @@ public class Cart extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_variant_id", nullable = false)
-    ProductVariant variant;
+    Variant variant;
 
     @Column(name = "quantity", nullable = false)
     Integer quantity;

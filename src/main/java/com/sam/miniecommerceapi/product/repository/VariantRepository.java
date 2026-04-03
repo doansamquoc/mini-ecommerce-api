@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.product.repository;
 
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
+import com.sam.miniecommerceapi.product.entity.Variant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,29 +12,24 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
+public interface VariantRepository extends JpaRepository<Variant, Long> {
     boolean existsBySku(String sku);
 
-    @Query("SELECT v.sku FROM ProductVariant v WHERE v.sku IN :skus")
+    @Query("SELECT v.sku FROM Variant v WHERE v.sku IN :skus")
     List<String> findExistingSkus(Collection<String> skus);
 
-    List<ProductVariant> findAllByProductId(Long productId);
+    List<Variant> findAllByProductId(Long productId);
 
-    /**
-     * @param id       Product variant ID
-     * @param quantity Product quantity
-     * @return The record number has been updated
-     */
     @Transactional
     @Modifying
-    @Query("UPDATE ProductVariant v "
+    @Query("UPDATE Variant v "
             + "SET v.stockQuantity = v.stockQuantity - :quantity "
             + "WHERE v.id = :id AND v.stockQuantity >= :quantity"
     )
     int deductStock(@Param("id") long id, @Param("quantity") int quantity);
 
     @Modifying
-    @Query("UPDATE ProductVariant v "
+    @Query("UPDATE Variant v "
             + "SET v.stockQuantity = v.stockQuantity + :quantity "
             + "WHERE v.id = :id"
     )

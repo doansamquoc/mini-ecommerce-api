@@ -12,11 +12,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductVariantUpdateRequest {
+public class VariantUpdateRequest {
     Long id; // IMPORTANT: null = create new, not null = update
     String sku;
     BigDecimal price;
     Integer stockQuantity;
     String variantImageUrl;
-    List<Long> attributeOptionIds;
+    Set<Long> attributeOptionIds;
 }

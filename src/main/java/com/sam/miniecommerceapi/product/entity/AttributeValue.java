@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "attribute_options")
+@Table(name = "attribute_values")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AttributeOption extends BaseEntity {
+public class AttributeValue extends BaseEntity {
     @Column(name = "value", nullable = false)
     String value;
 

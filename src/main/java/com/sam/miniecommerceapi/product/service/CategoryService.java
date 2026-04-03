@@ -9,7 +9,7 @@ import com.sam.miniecommerceapi.product.entity.Category;
 public interface CategoryService {
     PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize);
 
-    CategoryResponse getCategoryById(String id);
+    CategoryResponse getCategoryById(Long id);
 
     CategoryResponse getCategorySlug(String slug);
 
@@ -17,9 +17,9 @@ public interface CategoryService {
 
     CategoryResponse createCategory(CategoryCreationRequest r);
 
-    CategoryResponse updateCategory(String id, CategoryUpdateRequest r);
+    CategoryResponse updateCategory(Long id, CategoryUpdateRequest r);
 
-    Category findById(String id);
+    Category findById(Long id);
 
     Category findByName(String name);
 

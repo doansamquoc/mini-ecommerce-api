@@ -1,32 +1,30 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
-import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
+import com.github.slugify.Slugify;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.ProductVariantUpdateRequest;
-import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
-import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
-import com.sam.miniecommerceapi.product.entity.AttributeOption;
-import com.sam.miniecommerceapi.product.entity.Category;
-import com.sam.miniecommerceapi.product.entity.Product;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
-import com.sam.miniecommerceapi.product.helper.ProductMappingHelper;
+import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
+import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
+import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
+import com.sam.miniecommerceapi.product.dto.response.*;
+import com.sam.miniecommerceapi.product.entity.*;
+import com.sam.miniecommerceapi.product.helper.ProductConverter;
 import com.sam.miniecommerceapi.product.mapper.ProductMapper;
-import com.sam.miniecommerceapi.product.mapper.ProductVariantMapper;
+import com.sam.miniecommerceapi.product.mapper.VariantMapper;
 import com.sam.miniecommerceapi.product.repository.ProductRepository;
-import com.sam.miniecommerceapi.product.repository.ProductVariantRepository;
 import com.sam.miniecommerceapi.product.service.AttributeOptionService;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import com.sam.miniecommerceapi.product.service.ProductService;
-import com.sam.miniecommerceapi.product.service.ProductVariantService;
+import com.sam.miniecommerceapi.product.service.VariantService;
 import com.sam.miniecommerceapi.product.util.PriceUtils;
 import com.sam.miniecommerceapi.product.util.SortingUtils;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,83 +32,143 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductServiceImpl implements ProductService {
+    Slugify slugify;
     ProductMapper mapper;
     ProductRepository repository;
     CategoryService categoryService;
-    ProductVariantMapper variantMapper;
-    ProductVariantService variantService;
+    VariantMapper variantMapper;
+    VariantService variantService;
     AttributeOptionService optionService;
-    ProductVariantRepository variantRepository;
+    ProductConverter converter;
+    EntityManager entityManager;
 
+    @Override
     @Transactional
-    @Override
-    public ProductDetailsResponse createProduct(ProductCreationRequest r) {
-        // Category
-        Category category = categoryService.findById(r.getCategoryId());
+    public ProductDetailsResponse createProduct(ProductCreationRequest request) {
+        log.info("Creating new product: {}", request.getName());
 
-        // Product
-        if (existsBySlug(r.getSlug())) throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
-        Product product = mapper.toProduct(r);
-        product.setCategory(category);
+        // 1. Validate Business Rules (Fast Fail)
+        validateProductRequest(request);
 
-        // Why set minPrice here? Variants have saved yet? Because with all variants, these have to saved it.
-        // If the update process by the variant have any bugs then @Transactional'll restore like never save product yet.
-        product.setMinPrice(PriceUtils.calcMinPriceByRequest(r.getVariants()));
+        // 2. Load Dependencies (Batch Loading)
+        Category category = categoryService.findById(request.getCategoryId());
+        Map<Long, AttributeValue> attributeValues = loadAttributeValues(request);
 
-        // Save product before handle variants
-        Product productSaved = repository.save(product);
+        // 3. Assemble Entity
+        Product product = assembleProduct(request, category, attributeValues);
 
-        // Gather all skus in request
-        List<String> skus = r.getVariants().stream().map(ProductVariantRequest::getSku).toList();
+        // 4. Persistence
+        Product savedProduct = repository.save(product);
+        log.info("Product created successfully with ID: {} and Slug: {}", savedProduct.getId(), savedProduct.getSlug());
 
-        // Check conflict sku in the request
-        if (skus.size() != new HashSet<>(skus).size()) throw new BusinessException(ErrorCode.PRODUCT_SKU_CONFLICT);
+        // 5. Response Mapping
+        return mapper.toDetailsResponse(savedProduct);
+    }
 
-        // Check exists sku(s)
+    private void validateProductRequest(ProductCreationRequest request) {
+        // Validate internal SKU uniqueness in the request
+        List<String> skus = request.getVariants().stream().map(VariantRequest::getSku).toList();
+        if (skus.size() != new HashSet<>(skus).size()) {
+            throw new BusinessException(ErrorCode.PRODUCT_SKU_CONFLICT);
+        }
+
+        // Validate SKU existence in the database
         variantService.validateSkuNotExists(skus);
-
-        // Handle product variant(s)
-        List<ProductVariant> variants = r.getVariants().stream().map(req -> buildVariant(req, product)).toList();
-
-        // Save all variants
-        List<ProductVariant> savedVariants = variantRepository.saveAll(variants);
-        Set<AttributeOption> allOptions = mapToAttributeOption(savedVariants);
-
-        // Return product data. Include product, variant(s)
-        return mapper.toResponse(productSaved, savedVariants, allOptions, new ProductMappingHelper());
     }
 
-    @Transactional(readOnly = true)
+    private Map<Long, AttributeValue> loadAttributeValues(ProductCreationRequest request) {
+        Set<Long> allAttributeValueIds = request.getVariants().stream()
+                .flatMap(v -> v.getAttributeValueIds().stream())
+                .collect(Collectors.toSet());
+
+        return optionService.findAllById(allAttributeValueIds).stream()
+                .collect(Collectors.toMap(AttributeValue::getId, av -> av));
+    }
+
+    private Product assembleProduct(ProductCreationRequest request, Category category, Map<Long, AttributeValue> attrMap) {
+        Product product = mapper.toProduct(request);
+
+        // Enrich Product properties
+        product.setCategory(category);
+        product.setSlug(makeUniqueSlug(product.getName()));
+        product.setMinPrice(PriceUtils.calcMinPriceByRequest(request.getVariants()));
+
+        // Wire up Variants and their Attribute Values
+        product.getVariants().forEach(variant -> {
+            variant.setProduct(product);
+
+            // Match back to request to get attribute IDs for this specific variant
+            VariantRequest vReq = request.getVariants().stream()
+                    .filter(r -> r.getSku().equals(variant.getSku()))
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(ErrorCode.SERVER_INTERNAL));
+
+            Set<AttributeValue> fullValues = vReq.getAttributeValueIds().stream()
+                    .map(attrMap::get)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            variant.setValues(fullValues);
+        });
+
+        return product;
+    }
+
+    private ProductDetailsResponse mapToDetailsResponse(Product product) {
+        List<VariantResponse> variantResponses = product.getVariants().stream()
+                .map(variant -> VariantResponse.builder()
+                        .id(variant.getId())
+                        .sku(variant.getSku())
+                        .imageUrl(variant.getImageUrl())
+                        .price(variant.getPrice())
+                        .stockQuantity(variant.getStockQuantity())
+                        .values(variant.getValues().stream()
+                                .map(val -> new AttributeValueResponse(val.getAttribute().getName(), val.getValue())
+                                ).collect(Collectors.toSet()))
+                        .build()).toList();
+
+        Map<Attribute, Set<String>> attributeMap = new HashMap<>();
+        product.getVariants().forEach(variant -> variant.getValues().forEach(value -> {
+            Attribute attribute = value.getAttribute();
+            attributeMap.computeIfAbsent(attribute, k -> new TreeSet<>()).add(value.getValue());
+        }));
+
+        List<AttributeResponse> attributeResponses = attributeMap.entrySet().stream()
+                .map(entry -> AttributeResponse.builder()
+                        .id(entry.getKey().getId())
+                        .name(entry.getKey().getName())
+                        .values(entry.getValue())
+                        .build()
+                ).toList();
+
+        return ProductDetailsResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .slug(product.getSlug())
+                .description(product.getDescription())
+                .imageUrl(product.getImageUrl())
+                .variants(variantResponses)
+                .attributes(attributeResponses).build();
+    }
+
+    private ProductDetailsResponse buildDetailsResponse(Product product) {
+        Product productDetails = repository.findDetailsById(product.getId()).orElse(product);
+        return mapper.toDetailsResponse(productDetails);
+    }
+
     @Override
+    @Transactional(readOnly = true)
     public ProductDetailsResponse getProductBySlug(String slug) {
-        List<ProductVariant> variants = getVariants(slug);
-        if (variants.isEmpty()) throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
-
-        // Because all variants are in the same product, get product at first variant.
-        Product product = variants.getFirst().getProduct();
-
-        Set<AttributeOption> allOptions = mapToAttributeOption(variants);
-
-        return mapper.toResponse(product, variants, allOptions, new ProductMappingHelper());
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public PageResponse<ProductResponse> getSummaryProducts(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
-        Page<ProductResponse> products = repository.findAllSummary(pageable);
-
-        return PageResponse.from(products);
+        Product product = findBySlug(slug);
+        return mapper.toDetailsResponse(product);
     }
 
     @Transactional(readOnly = true)
@@ -126,10 +184,6 @@ public class ProductServiceImpl implements ProductService {
         Page<ProductResponse> products = repository.searchProducts(searchKey, pageable);
 
         return PageResponse.from(products);
-    }
-
-    public List<ProductVariant> getVariants(String slug) {
-        return repository.findBySlugWithDetails(slug);
     }
 
     @Transactional
@@ -148,17 +202,17 @@ public class ProductServiceImpl implements ProductService {
         // Update product
         mapper.updateProduct(r, product);
 
-        List<ProductVariant> currentVariants = variantService.getProductVariantsByProductId(id);
+        List<Variant> currentVariants = variantService.getProductVariantsByProductId(id);
 
         Set<Long> requestIds = r.getVariants().stream()
-                .map(ProductVariantUpdateRequest::getId)
+                .map(VariantUpdateRequest::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         currentVariants.stream().filter(v -> !requestIds.contains(v.getId())).forEach(variantService::deleteVariant);
 
-        List<ProductVariant> finalVariants = r.getVariants().stream().map(vReq -> {
-            ProductVariant variant;
+        List<Variant> finalVariants = r.getVariants().stream().map(vReq -> {
+            Variant variant;
 
             // If id is null then update or insert it.
             if (vReq.getId() != null) {
@@ -172,41 +226,45 @@ public class ProductServiceImpl implements ProductService {
             }
 
             // Update attribute options for owner variants
-            Set<AttributeOption> options = optionService.getAttributeOptionsById(vReq.getAttributeOptionIds());
-            variant.setOptions(options);
+            Set<AttributeValue> options = optionService.findAllById(vReq.getAttributeOptionIds());
+            variant.setValues(options);
 
             return variant;
         }).toList();
 
-        List<ProductVariant> savedVariants = variantService.saveAll(finalVariants);
+        List<Variant> savedVariants = variantService.saveAll(finalVariants);
 
         product.setMinPrice(PriceUtils.calcMinPrice(savedVariants));
         Product savedProduct = repository.save(product);
 
-        Set<AttributeOption> allOptions = mapToAttributeOption(savedVariants);
+        Set<AttributeValue> allOptions = mapToAttributeOption(savedVariants);
 
-        return mapper.toResponse(savedProduct, savedVariants, allOptions, new ProductMappingHelper());
+        return mapper.toDetailsResponse(savedProduct);
     }
 
     public Product findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
-    private ProductVariant buildVariant(ProductVariantRequest r, Product product) {
-        Set<AttributeOption> attributeOptions = optionService.getAttributeOptionsById(r.getAttributeOptionIds());
-
-        ProductVariant variant = variantMapper.toEntity(r);
-        variant.setProduct(product);
-        variant.setOptions(attributeOptions);
-
-        return variant;
-    }
-
-    private Set<AttributeOption> mapToAttributeOption(List<ProductVariant> variants) {
-        return variants.stream().flatMap(variant -> variant.getOptions().stream()).collect(Collectors.toSet());
+    private Set<AttributeValue> mapToAttributeOption(List<Variant> variants) {
+        return variants.stream().flatMap(variant -> variant.getValues().stream()).collect(Collectors.toSet());
     }
 
     private boolean existsBySlug(String slug) {
         return repository.existsBySlug(slug);
+    }
+
+    private Product findBySlug(String slug) {
+        return repository.findBySlug(slug).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+    }
+
+    private String makeUniqueSlug(String input) {
+        return slugify.slugify(input) + UUID.randomUUID().toString().substring(0, 6);
+    }
+
+    private void validateSkus(List<VariantRequest> requests) {
+        List<String> skus = requests.stream().map(VariantRequest::getSku).toList();
+        if (skus.size() != new HashSet<>(skus).size()) throw new BusinessException(ErrorCode.PRODUCT_SKU_CONFLICT);
+        variantService.validateSkuNotExists(skus);
     }
 }

@@ -1,10 +1,9 @@
 package com.sam.miniecommerceapi.product.service;
 
-import com.sam.miniecommerceapi.product.entity.AttributeOption;
+import com.sam.miniecommerceapi.product.entity.AttributeValue;
 
-import java.util.List;
 import java.util.Set;
 
 public interface AttributeOptionService {
-    Set<AttributeOption> getAttributeOptionsById(List<Long> ids);
+    Set<AttributeValue> findAllById(Set<Long> ids);
 }

@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.cart.repository;
 
 import com.sam.miniecommerceapi.cart.entity.Cart;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
+import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT c FROM Cart c JOIN FETCH c.variant v WHERE c.user.id = :id")
     Page<Cart> findAllByUserId(Long id, Pageable pageable);
 
-    Optional<Cart> findByUserAndVariant(User user, ProductVariant productVariant);
+    Optional<Cart> findByUserAndVariant(User user, Variant variant);
 
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.id = :cartId AND c.user.id = :userId")

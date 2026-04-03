@@ -1,21 +1,31 @@
 package com.sam.miniecommerceapi.product.controller;
 
-import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
-import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
+import com.sam.miniecommerceapi.product.entity.Product;
+import com.sam.miniecommerceapi.product.service.ProductSearchService;
 import com.sam.miniecommerceapi.product.service.ProductService;
+import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
+import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
+import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +33,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Product endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductController {
+    EntityManager entityManager;
     ProductService productService;
+    ProductSearchService searchService;
+
+    @PostMapping("/reindex")
+    public ResponseEntity<?> reindex() throws InterruptedException {
+        SearchSession searchSession = Search.session(entityManager);
+        searchSession.massIndexer(Product.class).startAndWait();
+        return ResponseEntity.ok("Indexing done");
+    }
 
     @Operation(summary = "Create product")
     @PostMapping
@@ -39,16 +58,22 @@ public class ProductController {
         return ApiFactory.success(response, "Get product successfully.");
     }
 
-    @Operation(summary = "Get/search products", description = "Get/search products with pagination")
+    @Operation(summary = "Get/search products", description = "Get/search products with Full-text search (FTS)")
     @GetMapping
-    ResponseEntity<SuccessApi<PageResponse<ProductResponse>>> getSummaryProducts(
+    ResponseEntity<SuccessApi<PageResponse<ProductResponse>>> searchProducts(
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20") int pageSize,
             @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "sortBy", defaultValue = "newest", required = false) String sortBy
-
+            @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(name = "categoryName", required = false) String categoryName,
+            @RequestParam(name = "sortBy", defaultValue = "name", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir
     ) {
-        PageResponse<ProductResponse> responses = productService.getProducts(pageNumber, pageSize, keyword, sortBy);
+        Sort.Direction direction = Sort.Direction.fromString(sortDir);
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        PageResponse<ProductResponse> responses = searchService.searchProducts(keyword, minPrice, categoryName, pageable);
         return ApiFactory.success(responses, "Get products successfully.");
     }
 

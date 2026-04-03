@@ -2,11 +2,11 @@ package com.sam.miniecommerceapi.product.service.impl;
 
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import com.sam.miniecommerceapi.product.dto.request.ProductVariantUpdateRequest;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
-import com.sam.miniecommerceapi.product.mapper.ProductVariantMapper;
-import com.sam.miniecommerceapi.product.repository.ProductVariantRepository;
-import com.sam.miniecommerceapi.product.service.ProductVariantService;
+import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
+import com.sam.miniecommerceapi.product.entity.Variant;
+import com.sam.miniecommerceapi.product.mapper.VariantMapper;
+import com.sam.miniecommerceapi.product.repository.VariantRepository;
+import com.sam.miniecommerceapi.product.service.VariantService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,9 +18,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ProductVariantServiceImpl implements ProductVariantService {
-    ProductVariantMapper mapper;
-    ProductVariantRepository repository;
+public class VariantServiceImpl implements VariantService {
+    VariantMapper mapper;
+    VariantRepository repository;
 
     @Override
     public boolean existsBySku(String sku) {
@@ -49,7 +49,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
      * @return List variants by product ID
      */
     @Override
-    public List<ProductVariant> getProductVariantsByProductId(Long id) {
+    public List<Variant> getProductVariantsByProductId(Long id) {
         return repository.findAllByProductId(id);
     }
 
@@ -64,30 +64,30 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public void updateVariant(ProductVariant variant, ProductVariantUpdateRequest r) {
-        ProductVariant newVariant = mapper.toEntity(r, variant);
+    public void updateVariant(Variant variant, VariantUpdateRequest r) {
+        Variant newVariant = mapper.toEntity(r, variant);
         repository.save(newVariant);
     }
 
     @Override
-    public ProductVariant findById(Long id) {
+    public Variant findById(Long id) {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
     }
 
     @Override
-    public void deleteVariant(ProductVariant variant) {
+    public void deleteVariant(Variant variant) {
         repository.delete(variant);
     }
 
     @Override
-    public List<ProductVariant> saveAll(List<ProductVariant> variants) {
+    public List<Variant> saveAll(List<Variant> variants) {
         return repository.saveAll(variants);
     }
 
     @Override
-    public ProductVariant save(ProductVariant variant) {
+    public Variant save(Variant variant) {
         return repository.save(variant);
     }
 
@@ -97,7 +97,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public List<ProductVariant> findAllByIds(List<Long> productVariantIds) {
+    public List<Variant> findAllByIds(List<Long> productVariantIds) {
         return repository.findAllById(productVariantIds);
     }
 }

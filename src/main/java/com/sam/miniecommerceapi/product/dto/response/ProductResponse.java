@@ -2,6 +2,9 @@ package com.sam.miniecommerceapi.product.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FieldProjection;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IdProjection;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.ProjectionConstructor;
 
 import java.math.BigDecimal;
 
@@ -15,6 +18,6 @@ public class ProductResponse {
     String name;
     BigDecimal minPrice;
     String slug;
-    String mainImage;
+    String imageUrl;
     String categoryName;
 }

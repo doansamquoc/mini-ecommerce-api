@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductAttributeOptionResponse {
-    String attribute;
+public class AttributeValueResponse {
+    String attributeName;
     String value;
 }

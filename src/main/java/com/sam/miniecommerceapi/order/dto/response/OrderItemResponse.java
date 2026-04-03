@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.order.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sam.miniecommerceapi.product.dto.response.ProductVariantResponse;
+import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItemResponse {
     Long id;
-    ProductVariantResponse variant;
+    VariantResponse variant;
     Integer quantity;
     BigDecimal unitPrice;
     BigDecimal totalPrice;

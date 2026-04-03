@@ -1,19 +1,29 @@
 package com.sam.miniecommerceapi.product.entity;
 
 import com.sam.miniecommerceapi.shared.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "categories")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category extends BaseEntity {
+    @FullTextField(analyzer = "standard")
     @Column(name = "name", nullable = false, unique = true)
     String name;
 
@@ -22,4 +32,7 @@ public class Category extends BaseEntity {
 
     @Column(name = "slug")
     String slug;
+
+    @OneToMany(mappedBy = "category")
+    List<Product> products;
 }

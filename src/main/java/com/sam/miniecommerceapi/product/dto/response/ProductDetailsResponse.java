@@ -15,7 +15,7 @@ public class ProductDetailsResponse {
     String name;
     String slug;
     String description;
-    String mainImage;
-    List<ProductVariantResponse> variants;
-    List<ProductAttributeResponse> attributes;
+    String imageUrl;
+    List<VariantResponse> variants;
+    List<AttributeResponse> attributes;
 }

@@ -11,8 +11,8 @@ import com.sam.miniecommerceapi.order.repository.OrderRepository;
 import com.sam.miniecommerceapi.order.service.OrderItemService;
 import com.sam.miniecommerceapi.order.service.OrderService;
 import com.sam.miniecommerceapi.order.util.OrderStateMachine;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
-import com.sam.miniecommerceapi.product.service.ProductVariantService;
+import com.sam.miniecommerceapi.product.entity.Variant;
+import com.sam.miniecommerceapi.product.service.VariantService;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.constant.OrderStatus;
 import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     UserService userService;
     OrderRepository repository;
     OrderItemService itemService;
-    ProductVariantService variantService;
+    VariantService variantService;
 
     @Override
     @Transactional
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new BusinessException(ErrorCode.PRODUCT_OUT_OF_STOCK, Map.of("id", i.getVariantId()));
             }
 
-            ProductVariant variant = variantService.findById(i.getVariantId());
+            Variant variant = variantService.findById(i.getVariantId());
             OrderItem orderItem = createOrderItem(order, variant, i.getQuantity());
 
             order.addToOrderItems(orderItem);
@@ -183,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
                     );
                 }
 
-                ProductVariant variant = variantService.findById(itemRequest.getVariantId());
+                Variant variant = variantService.findById(itemRequest.getVariantId());
                 OrderItem newItem = createOrderItem(order, variant, itemRequest.getQuantity());
 
                 order.addToOrderItems(newItem);
@@ -221,7 +221,7 @@ public class OrderServiceImpl implements OrderService {
         return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
     }
 
-    private OrderItem createOrderItem(Order order, ProductVariant variant, int quantity) {
+    private OrderItem createOrderItem(Order order, Variant variant, int quantity) {
         OrderItem orderItem = new OrderItem();
         orderItem.setVariant(variant);
         orderItem.setOrder(order);

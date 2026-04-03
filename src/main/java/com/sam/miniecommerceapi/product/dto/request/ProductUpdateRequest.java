@@ -16,5 +16,5 @@ public class ProductUpdateRequest {
     String slug;
     Long categoryId;
     String mainImage;
-    Set<ProductVariantUpdateRequest> variants;
+    Set<VariantUpdateRequest> variants;
 }

@@ -37,7 +37,7 @@ public class CategoryController {
     @Operation(summary = "Update category by ID")
     @PutMapping("/{id}")
     ResponseEntity<SuccessApi<CategoryResponse>> updateCategory(
-            @PathVariable String id,
+            @PathVariable Long id,
             @Valid @RequestBody CategoryUpdateRequest r
     ) {
         CategoryResponse response = categoryService.updateCategory(id, r);
@@ -56,7 +56,7 @@ public class CategoryController {
 
     @GetMapping("/id/{id}")
     @Operation(summary = "Get category by ID")
-    ResponseEntity<SuccessApi<CategoryResponse>> getCategoryById(@PathVariable String id) {
+    ResponseEntity<SuccessApi<CategoryResponse>> getCategoryById(@PathVariable Long id) {
         CategoryResponse response = categoryService.getCategoryById(id);
         return ApiFactory.success(response, "Get category successfully.");
     }

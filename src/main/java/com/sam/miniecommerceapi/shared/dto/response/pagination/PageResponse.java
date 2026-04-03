@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Collections;
@@ -40,5 +41,18 @@ public class PageResponse<T> {
                 .build();
 
         return PageResponse.<T>builder().content(page.getContent()).pageMeta(meta).build();
+    }
+
+    public static <T> PageResponse<T> fromSearchResult(List<T> content, long totalElements, Pageable pageable) {
+        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
+        PageMeta meta = PageMeta.builder()
+                .currentPage(pageable.getPageNumber() + 1)
+                .pageNumber(pageable.getPageNumber())
+                .pageSize(pageable.getPageSize())
+                .totalElements(totalElements)
+                .totalPages(totalPages)
+                .build();
+
+        return PageResponse.<T>builder().content(content).pageMeta(meta).build();
     }
 }

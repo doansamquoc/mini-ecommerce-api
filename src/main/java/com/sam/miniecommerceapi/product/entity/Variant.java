@@ -4,19 +4,21 @@ import com.sam.miniecommerceapi.shared.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "product_variants")
+@Table(name = "variants")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductVariant extends BaseEntity {
+public class Variant extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     Product product;
@@ -30,16 +32,17 @@ public class ProductVariant extends BaseEntity {
     @Column(name = "stock_quantity", nullable = false)
     Integer stockQuantity;
 
-    @Column(name = "variant_image_url")
-    String variantImageUrl;
+    @Column(name = "image_url")
+    String imageUrl;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(
-            name = "variant_options",
+            name = "variant_values",
             joinColumns = @JoinColumn(name = "variant_id"),
-            inverseJoinColumns = @JoinColumn(name = "option_id")
+            inverseJoinColumns = @JoinColumn(name = "value_id")
     )
-    Set<AttributeOption> options;
+    Set<AttributeValue> values = new LinkedHashSet<>();
 
     @Version
     Long version;

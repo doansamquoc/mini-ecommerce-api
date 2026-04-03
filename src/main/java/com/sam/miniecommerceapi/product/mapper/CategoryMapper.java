@@ -10,9 +10,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CategoryMapper {
-    Category toCategory(CategoryCreationRequest r);
+    Category toEntity(CategoryCreationRequest request);
 
-    Category toCategory(CategoryUpdateRequest r, @MappingTarget Category category);
+    Category toEntity(CategoryUpdateRequest request, @MappingTarget Category category);
 
     CategoryResponse toResponse(Category category);
 }

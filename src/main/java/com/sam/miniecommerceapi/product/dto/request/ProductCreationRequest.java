@@ -1,12 +1,12 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.URL;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -22,15 +22,12 @@ public class ProductCreationRequest {
     @Size(min = 2, message = "PRODUCT_DESCRIPTION_SIZE")
     String description;
 
-    @NotBlank(message = "PRODUCT_SLUG_CANNOT_BE_BLANK")
-    @Size(min = 2, max = 225, message = "PRODUCT_SLUG_SIZE")
-    String slug;
-
-    @NotBlank(message = "CATEGORY_ID_CANNOT_BE_BLANK")
-    String categoryId;
+    @NotNull(message = "CATEGORY_ID_CANNOT_BE_BLANK")
+    Long categoryId;
 
     @NotBlank(message = "PRODUCT_IMAGE_URL_CANNOT_BE_BLANK")
     @URL(message = "PRODUCT_IMAGE_URL_MUST_BE_URL")
-    String mainImage;
-    List<ProductVariantRequest> variants;
+    String imageUrl;
+
+    List<VariantRequest> variants;
 }

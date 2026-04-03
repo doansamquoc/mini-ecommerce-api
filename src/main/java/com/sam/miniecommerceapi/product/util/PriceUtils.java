@@ -1,19 +1,19 @@
 package com.sam.miniecommerceapi.product.util;
 
-import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
+import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
+import com.sam.miniecommerceapi.product.entity.Variant;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class PriceUtils {
-    public static BigDecimal calcMinPrice(List<ProductVariant> variants) {
-        return variants.stream().map(ProductVariant::getPrice).min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
+    public static BigDecimal calcMinPrice(List<Variant> variants) {
+        return variants.stream().map(Variant::getPrice).min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
     }
 
-    public static BigDecimal calcMinPriceByRequest(List<ProductVariantRequest> variantRequests) {
+    public static BigDecimal calcMinPriceByRequest(List<VariantRequest> variantRequests) {
         return variantRequests.stream()
-                .map(ProductVariantRequest::getPrice)
+                .map(VariantRequest::getPrice)
                 .min(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
     }

@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.shared.config;
 
+import com.github.slugify.Slugify;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtBlacklistValidator;
 import com.sam.miniecommerceapi.shared.constant.AppConstant;
 import lombok.AccessLevel;
@@ -80,5 +81,14 @@ public class BeanConfig {
     @Bean
     public Clock clock() {
         return Clock.systemDefaultZone();
+    }
+
+    @Bean
+    Slugify slugify() {
+        return Slugify.builder()
+                .lowerCase(true)
+                .transliterator(true)
+                .customReplacement("đ", "d")
+                .build();
     }
 }

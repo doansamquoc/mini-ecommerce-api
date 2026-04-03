@@ -15,9 +15,6 @@ public interface ProductService {
     ProductDetailsResponse getProductBySlug(String slug);
 
     @Transactional(readOnly = true)
-    PageResponse<ProductResponse> getSummaryProducts(int pageNumber, int pageSize);
-
-    @Transactional(readOnly = true)
     PageResponse<ProductResponse> getProducts(int pageNumber, int pageSize, String keyword, String sortBy);
 
     @Transactional

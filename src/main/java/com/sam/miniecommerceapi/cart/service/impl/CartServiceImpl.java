@@ -9,8 +9,8 @@ import com.sam.miniecommerceapi.cart.service.CartService;
 import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import com.sam.miniecommerceapi.product.entity.ProductVariant;
-import com.sam.miniecommerceapi.product.service.ProductVariantService;
+import com.sam.miniecommerceapi.product.entity.Variant;
+import com.sam.miniecommerceapi.product.service.VariantService;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
@@ -30,13 +30,13 @@ public class CartServiceImpl implements CartService {
     CartMapper mapper;
     UserService userService;
     CartRepository repository;
-    ProductVariantService variantService;
+    VariantService variantService;
 
     @Override
     @Transactional
     public CartResponse addToCart(Long userId, CartCreationRequest r) {
         User user = userService.findById(userId);
-        ProductVariant variant = variantService.findById(r.getProductVariantId());
+        Variant variant = variantService.findById(r.getProductVariantId());
 
         if (variant.getStockQuantity() - r.getQuantity() < 0)
             throw new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_ENOUGH);

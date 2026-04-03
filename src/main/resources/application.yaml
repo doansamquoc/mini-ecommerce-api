@@ -6,9 +6,9 @@ spring:
     name: Mini E-commerce API
 
   datasource:
-    url: ${DB_URL:jdbc:postgres://localhost:5432/mini_ecommerce}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:123456}
+    url: jdbc:postgresql://localhost:5432/mini_ecommerce
+    username: postgres
+    password: 123456
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -32,11 +32,28 @@ spring:
             enable: true
 
   jpa:
-    #    hibernate:
-    #      ddl-auto: update
+    hibernate:
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
+        search:
+          enabled: true
+          backend:
+            type: lucene
+            lucene_version: LATEST
+            directory:
+              root: ./lucene/indexes
+              type: local-filesystem  # hoặc local-heap cho test
+            analysis:
+              configurer: com.sam.miniecommerceapi.shared.config.LuceneAnalysisConfig
+            # Tối ưu indexing performance
+            indexing:
+              merge:
+                max_merge_count: 10
+                min_merge_size: 10
+              commit_interval: 1000  # milliseconds
+              flush_interval: 500
         format_sql: true
         default_batch_fetch_size: 100
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -95,3 +112,9 @@ springdoc:
   show-actuator: false
   show-oauth2-endpoints: true
   show-login-endpoint: true
+
+logging:
+  level:
+    org.hibernate.search: DEBUG
+    org.hibernate.search.engine: DEBUG
+    org.hibernate.search.mapper.orm: DEBUG
