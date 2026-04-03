@@ -5,9 +5,12 @@ import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
-import com.sam.miniecommerceapi.product.dto.response.*;
-import com.sam.miniecommerceapi.product.entity.*;
-import com.sam.miniecommerceapi.product.helper.ProductConverter;
+import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
+import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
+import com.sam.miniecommerceapi.product.entity.AttributeValue;
+import com.sam.miniecommerceapi.product.entity.Category;
+import com.sam.miniecommerceapi.product.entity.Product;
+import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.mapper.VariantMapper;
 import com.sam.miniecommerceapi.product.repository.ProductRepository;
@@ -20,7 +23,7 @@ import com.sam.miniecommerceapi.product.util.SortingUtils;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import jakarta.persistence.EntityManager;
+import com.sam.miniecommerceapi.shared.util.UUIDUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -47,15 +50,11 @@ public class ProductServiceImpl implements ProductService {
     VariantMapper variantMapper;
     VariantService variantService;
     AttributeOptionService optionService;
-    ProductConverter converter;
-    EntityManager entityManager;
 
     @Override
     @Transactional
     public ProductDetailsResponse createProduct(ProductCreationRequest request) {
         log.info("Creating new product: {}", request.getName());
-
-        // 1. Validate Business Rules (Fast Fail)
         validateProductRequest(request);
 
         // 2. Load Dependencies (Batch Loading)
@@ -122,48 +121,6 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    private ProductDetailsResponse mapToDetailsResponse(Product product) {
-        List<VariantResponse> variantResponses = product.getVariants().stream()
-                .map(variant -> VariantResponse.builder()
-                        .id(variant.getId())
-                        .sku(variant.getSku())
-                        .imageUrl(variant.getImageUrl())
-                        .price(variant.getPrice())
-                        .stockQuantity(variant.getStockQuantity())
-                        .values(variant.getValues().stream()
-                                .map(val -> new AttributeValueResponse(val.getAttribute().getName(), val.getValue())
-                                ).collect(Collectors.toSet()))
-                        .build()).toList();
-
-        Map<Attribute, Set<String>> attributeMap = new HashMap<>();
-        product.getVariants().forEach(variant -> variant.getValues().forEach(value -> {
-            Attribute attribute = value.getAttribute();
-            attributeMap.computeIfAbsent(attribute, k -> new TreeSet<>()).add(value.getValue());
-        }));
-
-        List<AttributeResponse> attributeResponses = attributeMap.entrySet().stream()
-                .map(entry -> AttributeResponse.builder()
-                        .id(entry.getKey().getId())
-                        .name(entry.getKey().getName())
-                        .values(entry.getValue())
-                        .build()
-                ).toList();
-
-        return ProductDetailsResponse.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .slug(product.getSlug())
-                .description(product.getDescription())
-                .imageUrl(product.getImageUrl())
-                .variants(variantResponses)
-                .attributes(attributeResponses).build();
-    }
-
-    private ProductDetailsResponse buildDetailsResponse(Product product) {
-        Product productDetails = repository.findDetailsById(product.getId()).orElse(product);
-        return mapper.toDetailsResponse(productDetails);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public ProductDetailsResponse getProductBySlug(String slug) {
@@ -195,7 +152,6 @@ public class ProductServiceImpl implements ProductService {
         // Validate slug. Slug must be different current slug and not already exists
         if (!r.getSlug().equals(product.getSlug()) && existsBySlug(r.getSlug()))
             throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
-
         // If through the above validate. Update slug equals current slug. We not update it by set slug is null.
         r.setSlug(null);
 
@@ -259,7 +215,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private String makeUniqueSlug(String input) {
-        return slugify.slugify(input) + UUID.randomUUID().toString().substring(0, 6);
+        return slugify.slugify(input) + "-" + UUIDUtils.generateSlugSuffix();
     }
 
     private void validateSkus(List<VariantRequest> requests) {

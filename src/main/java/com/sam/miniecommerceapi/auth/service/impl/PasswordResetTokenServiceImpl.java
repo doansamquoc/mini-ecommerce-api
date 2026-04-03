@@ -6,7 +6,7 @@ import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.shared.config.AppProperties;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import com.sam.miniecommerceapi.shared.util.UuidUtils;
+import com.sam.miniecommerceapi.shared.util.UUIDUtils;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     @Override
     public PasswordResetToken createToken(User user) {
-        String token = UuidUtils.generateUUID();
+        String token = UUIDUtils.generateUUID();
         Instant expiresAt = Instant.now().plusMillis(appProperties.getPasswordResetTokenExpiration());
 
         PasswordResetToken passwordResetToken = PasswordResetToken.builder()

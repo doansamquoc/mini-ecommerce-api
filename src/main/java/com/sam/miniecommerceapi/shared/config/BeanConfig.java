@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.shared.config;
 
+import com.cloudinary.Cloudinary;
 import com.github.slugify.Slugify;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtBlacklistValidator;
 import com.sam.miniecommerceapi.shared.constant.AppConstant;
@@ -27,7 +28,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -37,7 +40,7 @@ public class BeanConfig {
 
     @Bean
     SecretKey secretKey() {
-        byte[] key = appProperties.getJwtSecretKey().getBytes(StandardCharsets.UTF_8);
+        byte[] key = appProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
         if (key.length < 32) throw new IllegalArgumentException("JWT secret key must least 256 bit");
         return new SecretKeySpec(key, AppConstant.ALGORITHM);
     }
@@ -90,5 +93,15 @@ public class BeanConfig {
                 .transliterator(true)
                 .customReplacement("đ", "d")
                 .build();
+    }
+
+    @Bean
+    Cloudinary cloudinary() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put("cloud_name", appProperties.getCloudinaryName());
+        configs.put("api_key", appProperties.getCloudinaryApiKey());
+        configs.put("api_secret", appProperties.getCloudinaryApiSecret());
+        configs.put("secure", true);
+        return new Cloudinary(configs);
     }
 }

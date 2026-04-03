@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "app")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppProperties {
-    String jwtSecretKey;
+    String secretKey;
     Long refreshTokenExpiration;
     Long accessTokenExpiration;
     Long passwordResetTokenExpiration;
@@ -27,4 +27,10 @@ public class AppProperties {
     String openApiTitle;
     String openApiVersion;
     String openApiProdServer;
+
+    // Cloudinary
+    String cloudinaryName;
+    String cloudinaryApiKey;
+    String cloudinaryApiSecret;
+    String cloudinaryUrl;
 }

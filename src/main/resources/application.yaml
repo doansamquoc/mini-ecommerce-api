@@ -91,7 +91,7 @@ app:
   refresh-token-expiration: 604800000 # 7 days
   access-token-expiration: 604800000 # 15 minutes
   password-reset-token-expiration: 900000 # 15 minutes
-  jwt-secret-key: ${JWT_SECRET:f1545ca030b7c3b0f7d7820196cb7fb14b9cb2a5ec4b911405cad2fa430966523c247a7c1c6553153f0e639873be291efb278ac8f1a5c68768d5401185f6f9e6}
+  secret-key: ${JWT_SECRET}
   production: false
   frontend-url: http://localhost:5173
 
@@ -102,6 +102,12 @@ app:
   open-api-title: Mini E-commerce API Document
   open-api-prod-server: https://mini-ecommerce-api-zaiy.onrender.com
   open-api-version: v1.0.0
+
+  # Cloudinary
+  cloudinary-name: ${CLOUDINARY_NAME}
+  cloudinary-api-key: ${CLOUDINARY_API_KEY}
+  cloudinary-api-secret: ${CLOUDINARY_API_SECRET}
+  cloudinary-url: ${CLOUDINARY_URL}
 
 springdoc:
   api-docs:
