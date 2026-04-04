@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.shared.config;
+package com.sam.miniecommerceapi.config;
 
 import com.sam.miniecommerceapi.auth.config.OAuth2SuccessHandler;
 import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;

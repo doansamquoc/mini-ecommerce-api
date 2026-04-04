@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "categories")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category extends BaseEntity {
-    @FullTextField(analyzer = "standard")
+    @FullTextField(analyzer = "name_analyzer")
     @Column(name = "name", nullable = false, unique = true)
     String name;
 

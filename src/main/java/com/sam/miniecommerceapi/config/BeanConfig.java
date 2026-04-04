@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.shared.config;
+package com.sam.miniecommerceapi.config;
 
 import com.cloudinary.Cloudinary;
 import com.github.slugify.Slugify;

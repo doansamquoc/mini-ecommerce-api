@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.shared.exception;
 
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.dto.response.api.ErrorApi;
 import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,14 +12,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     ResponseEntity<ErrorApi> handleBusiness(BusinessException e, HttpServletRequest request) {
-        if (e.getData().isEmpty())
-            return ApiFactory.error(e.getErrorCode(), request.getRequestURI());
+        if (e.getData().isEmpty()) return ApiFactory.error(e.getErrorCode(), request.getRequestURI());
         return ApiFactory.error(e.getErrorCode(), request.getRequestURI(), e.getData());
     }
 
@@ -50,6 +50,12 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.AUTH_ACCESS_DENIED;
         log.warn("Access denied: {}", ade.getMessage());
         return ApiFactory.error(errorCode, request.getRequestURI());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ErrorApi> handle(MaxUploadSizeExceededException e, HttpServletRequest servletRequest) {
+        ErrorCode errorCode = ErrorCode.UPLOAD_MAX_SIZE_EXCEEDED;
+        return ApiFactory.error(errorCode, servletRequest.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)

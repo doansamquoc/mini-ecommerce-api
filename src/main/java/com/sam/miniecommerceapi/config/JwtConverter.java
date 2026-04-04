@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.shared.config;
+package com.sam.miniecommerceapi.config;
 
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import lombok.AccessLevel;

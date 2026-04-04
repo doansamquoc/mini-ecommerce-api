@@ -14,7 +14,7 @@ import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.mapper.UserMapper;
 import com.sam.miniecommerceapi.user.repository.UserRepository;
 import com.sam.miniecommerceapi.user.service.UserService;
-import com.sam.miniecommerceapi.user.util.DisplayNameUtils;
+import com.sam.miniecommerceapi.shared.util.DisplayNameUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

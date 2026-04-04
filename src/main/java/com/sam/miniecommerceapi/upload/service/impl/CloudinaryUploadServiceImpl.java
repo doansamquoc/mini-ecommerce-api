@@ -1,14 +1,18 @@
 package com.sam.miniecommerceapi.upload.service.impl;
 
 import com.cloudinary.Cloudinary;
-import com.sam.miniecommerceapi.shared.config.AppProperties;
+import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.upload.dto.response.SignatureResponse;
 import com.sam.miniecommerceapi.upload.service.UploadService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,5 +44,14 @@ public class CloudinaryUploadServiceImpl implements UploadService {
                 folder,
                 uploadPreset
         );
+    }
+
+    @Override
+    public Map upload(MultipartFile file) {
+        try {
+            return cloudinary.uploader().upload(file.getBytes(), Map.of());
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.UPLOAD_FAILED);
+        }
     }
 }

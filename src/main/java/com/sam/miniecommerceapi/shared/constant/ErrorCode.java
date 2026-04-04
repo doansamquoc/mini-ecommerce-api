@@ -104,7 +104,11 @@ public enum ErrorCode {
     REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
     USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters"),
     RESET_TOKEN_CANNOT_BLANK(4003, HttpStatus.BAD_REQUEST, "Token cannot be blank"),
-    RESET_NEW_PASSWORD_CANNOT_BLANK(4004, HttpStatus.BAD_REQUEST, "New password cannot be blank");
+    RESET_NEW_PASSWORD_CANNOT_BLANK(4004, HttpStatus.BAD_REQUEST, "New password cannot be blank"),
+
+    // Upload
+    UPLOAD_FAILED(5001, HttpStatus.BAD_REQUEST, "Upload failed"),
+    UPLOAD_MAX_SIZE_EXCEEDED(5002, HttpStatus.BAD_REQUEST, "File too large! Please upload file under 10MB");
 
     int errorCode;
     HttpStatus httpStatus;

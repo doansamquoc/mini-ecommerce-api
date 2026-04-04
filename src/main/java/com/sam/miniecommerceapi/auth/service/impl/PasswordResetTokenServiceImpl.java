@@ -3,7 +3,7 @@ package com.sam.miniecommerceapi.auth.service.impl;
 import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.repository.PasswordResetTokenRepository;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
-import com.sam.miniecommerceapi.shared.config.AppProperties;
+import com.sam.miniecommerceapi.config.AppProperties;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.shared.util.UUIDUtils;

@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.user.util;
+package com.sam.miniecommerceapi.shared.util;
 
 public class DisplayNameUtils {
     public static String generateDisplayName(String email) {

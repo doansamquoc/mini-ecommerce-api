@@ -20,11 +20,11 @@ import java.util.Set;
 @Table(name = "products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product extends BaseEntity {
-    @FullTextField(analyzer = "standard")
+    @FullTextField(analyzer = "name_analyzer")
     @Column(name = "name", nullable = false)
     String name;
 
-    @FullTextField(analyzer = "standard")
+    @FullTextField(analyzer = "name_analyzer")
     @Column(name = "description")
     String description;
 
