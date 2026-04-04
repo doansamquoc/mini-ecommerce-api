@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.product.controller;
+package com.sam.miniecommerceapi.product.controller.rest;
 
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;

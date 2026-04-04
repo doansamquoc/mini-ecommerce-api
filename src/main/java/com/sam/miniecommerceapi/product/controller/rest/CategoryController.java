@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.product.controller;
+package com.sam.miniecommerceapi.product.controller.rest;
 
 import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
 import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
