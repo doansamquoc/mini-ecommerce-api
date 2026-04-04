@@ -211,9 +211,4 @@ public class UserServiceImpl implements UserService {
 
         return repository.save(user);
     }
-
-    public User createUser(String email) {
-        if (existsByEmail(email)) throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXISTS);
-        return null;
-    }
 }
