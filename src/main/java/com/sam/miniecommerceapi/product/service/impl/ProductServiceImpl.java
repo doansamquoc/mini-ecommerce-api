@@ -14,7 +14,7 @@ import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.mapper.VariantMapper;
 import com.sam.miniecommerceapi.product.repository.ProductRepository;
-import com.sam.miniecommerceapi.product.service.AttributeOptionService;
+import com.sam.miniecommerceapi.product.service.AttributeValueService;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import com.sam.miniecommerceapi.product.service.VariantService;
@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
     CategoryService categoryService;
     VariantMapper variantMapper;
     VariantService variantService;
-    AttributeOptionService optionService;
+    AttributeValueService optionService;
 
     @Override
     @Transactional
@@ -128,21 +128,6 @@ public class ProductServiceImpl implements ProductService {
         return mapper.toDetailsResponse(product);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public PageResponse<ProductResponse> getProducts(int pageNumber, int pageSize, String keyword, String sortBy) {
-        // Handle sorting
-        Sort sort = SortingUtils.sort(sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-
-        String searchKey = (keyword == null) ? "" : keyword;
-
-        Page<ProductResponse> products = repository.searchProducts(searchKey, pageable);
-
-        return PageResponse.from(products);
-    }
-
     @Transactional
     @Override
     public ProductDetailsResponse updateProduct(Long id, ProductUpdateRequest r) {
@@ -192,8 +177,6 @@ public class ProductServiceImpl implements ProductService {
 
         product.setMinPrice(PriceUtils.calcMinPrice(savedVariants));
         Product savedProduct = repository.save(product);
-
-        Set<AttributeValue> allOptions = mapToAttributeOption(savedVariants);
 
         return mapper.toDetailsResponse(savedProduct);
     }

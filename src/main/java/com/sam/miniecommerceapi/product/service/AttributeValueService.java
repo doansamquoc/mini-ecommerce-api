@@ -4,6 +4,6 @@ import com.sam.miniecommerceapi.product.entity.AttributeValue;
 
 import java.util.Set;
 
-public interface AttributeOptionService {
+public interface AttributeValueService {
     Set<AttributeValue> findAllById(Set<Long> ids);
 }

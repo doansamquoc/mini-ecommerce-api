@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.product.service.impl;
 
 import com.sam.miniecommerceapi.product.entity.AttributeValue;
 import com.sam.miniecommerceapi.product.repository.AttributeValueRepository;
-import com.sam.miniecommerceapi.product.service.AttributeOptionService;
+import com.sam.miniecommerceapi.product.service.AttributeValueService;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AttributeOptionServiceImpl implements AttributeOptionService {
+public class AttributeValueServiceImpl implements AttributeValueService {
     AttributeValueRepository repository;
 
     /**
