@@ -1,19 +1,18 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
+import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
-import com.sam.miniecommerceapi.auth.event.LoginEvent;
-import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
+import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.service.AuthenticationService;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.config.AppProperties;
-import com.sam.miniecommerceapi.auth.security.UserPrincipal;
+import com.sam.miniecommerceapi.event.LoginEvent;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import com.sam.miniecommerceapi.notification.dto.LoginMailData;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
@@ -26,14 +25,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
-    Clock clock;
     UserService userService;
     JwtProvider jwtProvider;
     AppProperties appProperties;
@@ -79,8 +75,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private void publishLoginAlertMessage(User user, String ip, String agent) {
         PasswordResetToken passwordResetToken = passwordResetTokenService.createToken(user);
         String resetLink = appProperties.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
-
-        LoginMailData data = new LoginMailData(user.getEmail(), user.getUsername(), ip, agent, resetLink, clock);
-        publisher.publishEvent(new LoginEvent(data));
+        publisher.publishEvent(new LoginEvent(user.getEmail(), user.getUsername(), resetLink, ip, agent));
     }
 }

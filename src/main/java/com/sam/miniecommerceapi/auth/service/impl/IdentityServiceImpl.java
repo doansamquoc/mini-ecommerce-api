@@ -1,9 +1,8 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
-import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
-import com.sam.miniecommerceapi.auth.event.RegisterUserEvent;
 import com.sam.miniecommerceapi.auth.service.IdentityService;
-import com.sam.miniecommerceapi.notification.dto.WelcomeMailData;
+import com.sam.miniecommerceapi.event.RegisterUserEvent;
+import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.mapper.UserMapper;
@@ -34,7 +33,6 @@ public class IdentityServiceImpl implements IdentityService {
     }
 
     private void publishWelcomeMessage(User user) {
-        WelcomeMailData data = new WelcomeMailData(user.getEmail(), user.getUsername());
-        publisher.publishEvent(new RegisterUserEvent(data));
+        publisher.publishEvent(new RegisterUserEvent(user.getEmail(), user.getUsername()));
     }
 }

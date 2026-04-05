@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
 import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
-import com.sam.miniecommerceapi.auth.event.LoginEvent;
+import com.sam.miniecommerceapi.event.LoginEvent;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;

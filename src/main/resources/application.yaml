@@ -118,6 +118,10 @@ app:
   cloudinary-api-secret: ${CLOUDINARY_API_SECRET}
   cloudinary-url: ${CLOUDINARY_URL}
 
+  email:
+    from: noreply@miniecommerce.com
+    reply-to: dev.doansamquoc@gmail.com
+
   search:
     reindex-on-startup: true
 

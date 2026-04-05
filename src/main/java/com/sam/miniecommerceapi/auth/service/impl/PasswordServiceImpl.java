@@ -3,13 +3,11 @@ package com.sam.miniecommerceapi.auth.service.impl;
 import com.sam.miniecommerceapi.auth.dto.request.ForgotPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
 import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
-import com.sam.miniecommerceapi.auth.event.PasswordChangedEvent;
-import com.sam.miniecommerceapi.auth.event.PasswordResetEvent;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.PasswordService;
 import com.sam.miniecommerceapi.config.AppProperties;
-import com.sam.miniecommerceapi.notification.dto.PasswordChangedMailData;
-import com.sam.miniecommerceapi.notification.dto.PasswordResetMailData;
+import com.sam.miniecommerceapi.event.PasswordChangedEvent;
+import com.sam.miniecommerceapi.event.PasswordResetEvent;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
@@ -76,16 +74,10 @@ public class PasswordServiceImpl implements PasswordService {
             PasswordResetToken passwordResetToken
     ) {
         String resetLink = app.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
-
-        PasswordResetMailData data = new PasswordResetMailData(
-                user.getEmail(), user.getUsername(), ip, agent, resetLink, clock
-        );
-
-        publisher.publishEvent(new PasswordResetEvent(data));
+        publisher.publishEvent(new PasswordResetEvent(user.getEmail(), user.getUsername(), resetLink, ip, agent));
     }
 
     private void publishPasswordChangedMessage(User user) {
-        PasswordChangedMailData data = new PasswordChangedMailData(user.getEmail(), user.getPassword());
-        publisher.publishEvent(new PasswordChangedEvent(data));
+        publisher.publishEvent(new PasswordChangedEvent(user.getEmail(), user.getUsername()));
     }
 }

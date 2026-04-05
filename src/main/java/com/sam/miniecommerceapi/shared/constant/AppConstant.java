@@ -17,10 +17,10 @@ public class AppConstant {
 
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh-token";
 
-    public static final String PASSWORD_CHANGED_TEMPLATE = "mail/templates/password-changed";
-    public static final String PASSWORD_RESET_TEMPLATE = "mail/templates/password-reset";
-    public static final String LOGIN_ALERT_TEMPLATE = "mail/templates/login-alert";
-    public static final String WELCOME_TEMPLATE = "mail/templates/welcome";
+    public static final String PASSWORD_CHANGED_TEMPLATE = "email/templates/password-changed.jte";
+    public static final String PASSWORD_RESET_TEMPLATE = "email/templates/password-reset.jte";
+    public static final String LOGIN_ALERT_TEMPLATE = "email/templates/login-alert.jte";
+    public static final String WELCOME_TEMPLATE = "email/templates/welcome.jte";
 
     public static final String LOGGED_IN_USER_OR_ADMIN = "#id == authentication.principal.id or hasRole('ADMIN')";
     public static final String ADMIN = "hasRole('ADMIN')";

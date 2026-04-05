@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Setter
@@ -33,4 +34,15 @@ public class AppProperties {
     String cloudinaryApiKey;
     String cloudinaryApiSecret;
     String cloudinaryUrl;
+
+    @NestedConfigurationProperty
+    final Email email = new Email();
+
+    @Getter
+    @Setter
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class Email {
+        String from;
+        String replyTo;
+    }
 }
