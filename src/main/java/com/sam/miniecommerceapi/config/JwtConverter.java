@@ -33,12 +33,10 @@ public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken>
         Collection<GrantedAuthority> authorities = this.authoritiesConverter.convert(jwt);
 
         Long id = Long.valueOf(jwt.getSubject());
-        String email = jwt.getClaimAsString("email");
         String username = jwt.getClaimAsString("username");
 
         UserPrincipal principal = UserPrincipal.builder()
                 .id(id)
-                .email(email)
                 .username(username)
                 .authorities(authorities)
                 .jwtId(jwt.getId())
