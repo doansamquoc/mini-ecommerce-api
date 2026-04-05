@@ -74,7 +74,7 @@ class AuthenticationServiceImplTest {
         mockUser.setEmail("test@gmail.com");
         when(userService.getReference(1L)).thenReturn(mockUser);
 
-        when(jwtProvider.generateAccessToken(mockPrincipal)).thenReturn("access-token-123");
+        when(jwtProvider.generate(mockPrincipal)).thenReturn("access-token-123");
 
         RefreshToken mockRefreshToken = new RefreshToken();
         mockRefreshToken.setToken("refresh-token-456");

@@ -69,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
         User user = userService.findById(userPrincipal.getId());
 
-        String accessToken = jwtProvider.generateAccessToken(userPrincipal);
+        String accessToken = jwtProvider.generate(userPrincipal);
         RefreshToken refreshToken = refreshTokenService.createToken(userPrincipal.getId(), ip, agent);
 
         publishLoginAlertMessage(user, ip, agent);

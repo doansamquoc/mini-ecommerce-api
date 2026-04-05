@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     ) throws IOException {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        String accessToken = jwtProvider.generateAccessToken(userPrincipal);
+        String accessToken = jwtProvider.generate(userPrincipal);
         RefreshToken refreshToken = refreshTokenService.createToken(
                 userPrincipal.getId(), request.getRemoteAddr(), request.getHeader("User-Agent")
         );

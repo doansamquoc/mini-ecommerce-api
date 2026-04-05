@@ -36,7 +36,7 @@ public class TokenManagementServiceImpl implements TokenManagementService {
     private TokenDTO enrichToken(User user, String ip, String agent) {
         UserPrincipal userPrincipal = UserPrincipal.create(user);
 
-        String accessToken = jwtProvider.generateAccessToken(userPrincipal);
+        String accessToken = jwtProvider.generate(userPrincipal);
         RefreshToken refreshToken = refreshTokenService.createToken(user.getId(), ip, agent);
 
         return new TokenDTO(accessToken, refreshToken.getToken());

@@ -27,7 +27,7 @@ public class JwtProvider {
     SecretKey secretKey;
     AppProperties app;
 
-    public String generateAccessToken(UserPrincipal user) {
+    public String generate(UserPrincipal user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         Date issueTime = new Date();
         Date expirationTime = new Date(System.currentTimeMillis() + app.getAccessTokenExpiration());
