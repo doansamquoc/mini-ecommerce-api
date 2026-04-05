@@ -3,7 +3,6 @@ package com.sam.miniecommerceapi.config;
 import com.cloudinary.Cloudinary;
 import com.github.slugify.Slugify;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtBlacklistValidator;
-import com.sam.miniecommerceapi.shared.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -43,7 +42,7 @@ public class BeanConfig {
     SecretKey secretKey() {
         byte[] key = appProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
         if (key.length < 32) throw new IllegalArgumentException("JWT secret key must least 256 bit");
-        return new SecretKeySpec(key, AppConstant.ALGORITHM);
+        return new SecretKeySpec(key, MacAlgorithm.HS256.getName());
     }
 
     @Bean
@@ -66,14 +65,10 @@ public class BeanConfig {
 
     @Bean
     JwtDecoder jwtDecoder(JwtBlacklistValidator validator) {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS512).build();
-
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS256).build();
         OAuth2TokenValidator<Jwt> defaultValidator = new JwtTimestampValidator();
-
         OAuth2TokenValidator<Jwt> delegatingValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, validator);
-
         jwtDecoder.setJwtValidator(delegatingValidator);
-
         return jwtDecoder;
     }
 
@@ -108,6 +103,6 @@ public class BeanConfig {
 
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/favicon.ico"));
+        return (web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/images/**", "/static/**"));
     }
 }

@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.config;
 
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
+import com.sam.miniecommerceapi.shared.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,8 +24,8 @@ public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken>
 
     public JwtConverter() {
         this.authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        this.authoritiesConverter.setAuthoritiesClaimName("roles");
-        this.authoritiesConverter.setAuthorityPrefix("ROLE_");
+        this.authoritiesConverter.setAuthoritiesClaimName(AppConstant.JWT_AUTHORIZE_CLAIM_NAME);
+        this.authoritiesConverter.setAuthorityPrefix(AppConstant.JWT_AUTHORIZE_PREFIX);
     }
 
     @Override

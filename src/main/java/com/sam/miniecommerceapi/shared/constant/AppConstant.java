@@ -1,7 +1,6 @@
 package com.sam.miniecommerceapi.shared.constant;
 
 public class AppConstant {
-    public static final String ALGORITHM = "HmacSHA256";
     public static final String[] PUBLIC_ENDPOINTS = {
             "/",
             "/api/v1/auth/**",
@@ -11,8 +10,11 @@ public class AppConstant {
     };
     public static final String[] ADMIN_ENDPOINTS = {"/api/v1/admin/**"};
     public static final String[] SWAGGER_ENDPOINTS = {
-            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
     };
+
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh-token";
 
     public static final String PASSWORD_CHANGED_TEMPLATE = "mail/templates/password-changed";
@@ -24,4 +26,7 @@ public class AppConstant {
     public static final String ADMIN = "hasRole('ADMIN')";
     public static final String MANAGER_OR_ADMIN = "hasRole('MANAGER') or hasRole('ADMIN')";
     public static final String BLACKLIST_PREFIX = "jwt:blacklist:";
+
+    public static final String JWT_AUTHORIZE_PREFIX = "ROLE_";
+    public static final String JWT_AUTHORIZE_CLAIM_NAME = "roles";
 }
