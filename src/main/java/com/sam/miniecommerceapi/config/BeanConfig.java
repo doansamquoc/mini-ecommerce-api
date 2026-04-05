@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -103,5 +104,10 @@ public class BeanConfig {
         configs.put("api_secret", appProperties.getCloudinaryApiSecret());
         configs.put("secure", true);
         return new Cloudinary(configs);
+    }
+
+    @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return (web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/favicon.ico"));
     }
 }

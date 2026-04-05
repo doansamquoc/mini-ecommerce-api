@@ -8,5 +8,5 @@ import org.springframework.stereotype.Controller;
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ProductController {
+public class ProductMvcController {
 }

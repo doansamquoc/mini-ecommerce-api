@@ -3,6 +3,7 @@ package com.sam.miniecommerceapi.shared.constant;
 public class AppConstant {
     public static final String ALGORITHM = "HmacSHA256";
     public static final String[] PUBLIC_ENDPOINTS = {
+            "/",
             "/api/v1/auth/**",
             "/actuator/**",
             "/oauth2/authorization/**",

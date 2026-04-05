@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <title>Mini Ecommerce</title>
+</head>
+
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
+    <path fill-rule="evenodd"
+          d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+          clip-rule="evenodd"/>
+</svg>
+<button class="btn btn-primary">
+    <h1 class="text-blue-500">Can't style on this text</h1>
+    <header th:replace="~{fragments/header :: header}"></header>
+    <main th:replace="${content}"></main>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+
+</html>

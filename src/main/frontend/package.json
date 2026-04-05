@@ -1,0 +1,18 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Sam",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss -i input.css -o ../resources/static/css/output.css",
+    "watch": "npx tailwindcss -i input.css -o ../resources/static/css/output.css --watch"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "daisyui": "^5.5.19",
+    "tailwindcss": "^4.2.2"
+  }
+}

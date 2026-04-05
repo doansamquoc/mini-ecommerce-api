@@ -1,0 +1,21 @@
+@import url('https://googleapis.com');
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+    --font-sans: "Jetbrains Mono";
+    --font-display: "Oswald", sans-serif;
+}
+
+@source "../jte/**/*.jte";
+
+
+@layer base {
+    html {
+        font-family: var(--font-sans);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-display);
+    }
+}
