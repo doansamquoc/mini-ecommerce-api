@@ -39,6 +39,7 @@ public class GmailServiceImpl implements EmailService {
     AppProperties properties;
 
     @Override
+    @Async("emailExecutor")
     public void sendSimpleEmail(EmailRequest request) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -58,6 +59,7 @@ public class GmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async("emailExecutor")
     public void sendHtmlEmail(EmailRequest request) {
         try {
             MimeMessage message = sender.createMimeMessage();
@@ -73,6 +75,7 @@ public class GmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async("emailExecutor")
     public void sendTemplateEmail(TemplateEmailRequest request) {
         try {
             TemplateOutput output = new StringOutput();
@@ -84,8 +87,10 @@ public class GmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async("emailExecutor")
     public void sendWithAttachment(EmailRequest request, byte[] attachment, String attachName) {
         try {
+            log.info("Preparing send an email to: {}", request.to());
             MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = createMimeMessageHelper(message, request);
             helper.addAttachment(attachName, new ByteArrayResource(attachment), FileUtils.getContentType(attachName));
@@ -99,6 +104,7 @@ public class GmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async("emailExecutor")
     public void sendBulkEmail(BulkEmailRequest request) {
         List<String> failedRecipients = new ArrayList<>();
 
@@ -121,18 +127,6 @@ public class GmailServiceImpl implements EmailService {
 
         if (!failedRecipients.isEmpty()) {
             throw new BulkEmailException("Failed to send bulk mail to: " + failedRecipients);
-        }
-    }
-
-    @Async("emailTaskExecutor")
-    @Override
-    public CompletableFuture<Void> sendAsyncEmail(EmailRequest request) {
-        try {
-            sendHtmlEmail(request);
-            return CompletableFuture.completedFuture(null);
-        } catch (Exception e) {
-            log.error("Failed to send async email", e);
-            return CompletableFuture.failedFuture(e);
         }
     }
 

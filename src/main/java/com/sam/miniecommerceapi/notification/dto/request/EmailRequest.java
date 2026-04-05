@@ -18,5 +18,5 @@ public record EmailRequest(
         String cc,
         String bcc,
         List<String> attachments,
-        boolean html
+        Boolean html
 ) {}

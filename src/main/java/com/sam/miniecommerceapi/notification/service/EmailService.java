@@ -17,7 +17,4 @@ public interface EmailService {
     void sendWithAttachment(EmailRequest request, byte[] attachment, String attachName);
 
     void sendBulkEmail(BulkEmailRequest request);
-
-    @Async("emailTaskExecutor")
-    CompletableFuture<Void> sendAsyncEmail(EmailRequest request);
 }
