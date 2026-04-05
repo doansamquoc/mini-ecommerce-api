@@ -1,8 +1,6 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.URL;
@@ -16,18 +14,20 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VariantRequest {
-    @NotBlank(message = "PRODUCT_SKU_CANNOT_BLANK")
-    @Size(min = 2, max = 16, message = "PRODUCT_SKU_SIZE")
+    @NotBlank(message = "product.validation.sku_required")
+    @Size(min = 2, max = 16, message = "product.validation.sku_size")
     String sku;
 
-    @NotNull(message = "PRODUCT_PRICE_CANNOT_BE_NULL")
+    @NotNull(message = "product.validation.price_required")
+    @Min(value = 1000, message = "product.validation.price_min")
     BigDecimal price;
 
-    @NotNull(message = "PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL")
+    @NotNull(message = "product.validation.stock_required")
+    @PositiveOrZero(message = "product.validation.stock_min")
     Integer stockQuantity;
 
-    @NotBlank(message = "PRODUCT_IMAGE_URL_CANNOT_BE_BLANK")
-    @URL(message = "PRODUCT_IMAGE_URL_MUST_BE_URL")
+    @NotBlank(message = "product.validation.image_required")
+    @URL(message = "product.validation.image_invalid_url")
     String imageUrl;
 
     Set<Long> attributeValueIds;

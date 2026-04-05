@@ -12,15 +12,15 @@ import org.hibernate.validator.constraints.URL;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryCreationRequest {
-    @NotBlank(message = "CATEGORY_NAME_CANNOT_BE_BLANK")
-    @Size(min = 2, max = 64, message = "CATEGORY_NAME_SIZE")
+    @NotBlank(message = "category.validation.name_required")
+    @Size(min = 2, max = 64, message = "category.validation.name_size")
     String name;
 
-    @NotBlank(message = "CATEGORY_SLUG_CANNOT_BE_BLANK")
-    @Size(min = 2, max = 64, message = "CATEGORY_SLUG_SIZE")
+    @NotBlank(message = "category.validation.slug_required")
+    @Size(min = 2, max = 64, message = "category.validation.slug_size")
     String slug;
 
-    @NotBlank(message = "CATEGORY_IMAGE_URL_CANNOT_BE_BLANK")
-    @URL(message = "CATEGORY_IMAGE_URL_MUST_BE_URL")
+    @NotBlank(message = "category.validation.image_required")
+    @URL(message = "category.validation.image_invalid_url")
     String imageUrl;
 }

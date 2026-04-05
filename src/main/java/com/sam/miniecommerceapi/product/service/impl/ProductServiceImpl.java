@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
         // Validate internal SKU uniqueness in the request
         List<String> skus = request.getVariants().stream().map(VariantRequest::getSku).toList();
         if (skus.size() != new HashSet<>(skus).size()) {
-            throw new BusinessException(ErrorCode.PRODUCT_SKU_CONFLICT);
+            throw new BusinessException(ErrorCode.PRODUCT_SKU_ALREADY_EXISTS);
         }
 
         // Validate SKU existence in the database
@@ -128,10 +128,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = findById(id);
 
         // Validate slug. Slug must be different current slug and not already exists
-        if (!r.getSlug().equals(product.getSlug()) && existsBySlug(r.getSlug()))
-            throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
-        // If through the above validate. Update slug equals current slug. We not update it by set slug is null.
-        r.setSlug(null);
+        // Generate slug.
 
         // Update product
         mapper.updateProduct(r, product);
@@ -196,7 +193,9 @@ public class ProductServiceImpl implements ProductService {
 
     private void validateSkus(List<VariantRequest> requests) {
         List<String> skus = requests.stream().map(VariantRequest::getSku).toList();
-        if (skus.size() != new HashSet<>(skus).size()) throw new BusinessException(ErrorCode.PRODUCT_SKU_CONFLICT);
+        if (skus.size() != new HashSet<>(skus).size()) {
+            throw new BusinessException(ErrorCode.PRODUCT_SKU_ALREADY_EXISTS);
+        }
         variantService.validateSkuNotExists(skus);
     }
 }

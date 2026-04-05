@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.user.service.impl;
 
 import com.sam.miniecommerceapi.auth.service.SocialAccountService;
 import com.sam.miniecommerceapi.shared.constant.AppConstant;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.constant.SocialProvider;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findByIdentifier(String identifier) {
-        return repository.findByIdentifier(identifier).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return repository.findByIdentifier(identifier).orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
     /**
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findByEmail(String email) {
-        return repository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return repository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
     /**
@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
     @Override

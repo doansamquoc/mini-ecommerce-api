@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.shared.dto.response.pagination;
+package com.sam.miniecommerceapi.shared.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

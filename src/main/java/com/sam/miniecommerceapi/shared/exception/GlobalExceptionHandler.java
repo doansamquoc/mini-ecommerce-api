@@ -1,10 +1,12 @@
 package com.sam.miniecommerceapi.shared.exception;
 
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.dto.response.api.ErrorApi;
-import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -14,56 +16,115 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
 public class GlobalExceptionHandler {
+    MessageSource messageSource;
+
     @ExceptionHandler(BusinessException.class)
-    ResponseEntity<ErrorApi> handleBusiness(BusinessException e, HttpServletRequest request) {
-        if (e.getData().isEmpty()) return ApiFactory.error(e.getErrorCode(), request.getRequestURI());
-        return ApiFactory.error(e.getErrorCode(), request.getRequestURI(), e.getData());
+    ResponseEntity<ErrorResponse> handle(BusinessException e, HttpServletRequest servletRequest, Locale locale) {
+        String i18nMessage = messageSource.getMessage(e.getErrorCode().getMessageKey(), e.getArgs(), locale);
+        ErrorResponse response = ErrorResponse.of(
+                e.getErrorCode(),
+                i18nMessage,
+                servletRequest.getRequestURI(),
+                servletRequest.getMethod(),
+                e.getFieldErrors()
+        );
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<ErrorApi> handleNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
-        Throwable cause = e.getCause();
-        while (cause != null) {
-            if (cause instanceof BusinessException be) {
-                return ApiFactory.error(be.getErrorCode(), request.getServletPath(), cause.getMessage());
-            }
-            cause = cause.getCause();
-        }
-        return ApiFactory.error(ErrorCode.REQUEST_INVALID, request.getServletPath());
+    ResponseEntity<ErrorResponse> handle(HttpMessageNotReadableException e, HttpServletRequest request, Locale locale) {
+        ErrorCode errorCode = ErrorCode.INVALID_REQUEST_BODY;
+        String i18nMessage = messageSource.getMessage(errorCode.getMessageKey(), null, locale);
+        String detail = e.getMostSpecificCause().getMessage();
+        ErrorResponse response = ErrorResponse.of(errorCode, i18nMessage, detail, request.getRequestURI(), request.getMethod());
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<ErrorApi> handleValidation(MethodArgumentNotValidException e, HttpServletRequest request) {
-        FieldError fieldError = e.getFieldError();
-        if (fieldError == null || fieldError.getDefaultMessage() == null) {
-            throw new IllegalStateException("Validation error without message!");
-        }
-        ErrorCode errorCode = ErrorCode.valueOf(fieldError.getDefaultMessage());
-        return ApiFactory.error(errorCode, request.getServletPath());
+    ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e, HttpServletRequest request, Locale locale) {
+        Map<String, List<String>> fieldErrors = e.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.groupingBy(
+                        FieldError::getField,
+                        Collectors.mapping(fe -> messageSource.getMessage(
+                                fe.getDefaultMessage(),
+                                fe.getArguments(),
+                                locale
+                        ), Collectors.toList()))
+                );
+        ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
+        String i18nMessage = messageSource.getMessage(errorCode.getMessageKey(), null, locale);
+        ErrorResponse response = ErrorResponse.of(
+                errorCode,
+                i18nMessage,
+                request.getRequestURI(),
+                request.getMethod(),
+                fieldErrors
+        );
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
-    ResponseEntity<ErrorApi> handleAccessDenied(AuthorizationDeniedException ade, HttpServletRequest request) {
+    ResponseEntity<ErrorResponse> handleAccessDenied(AuthorizationDeniedException ade,
+                                                     HttpServletRequest request,
+                                                     Locale locale) {
         ErrorCode errorCode = ErrorCode.AUTH_ACCESS_DENIED;
+        String i18nMessage = messageSource.getMessage(errorCode.getMessageKey(), null, locale);
         log.warn("Access denied: {}", ade.getMessage());
-        return ApiFactory.error(errorCode, request.getRequestURI());
+
+        ErrorResponse response = ErrorResponse.of(
+                errorCode,
+                i18nMessage,
+                request.getRequestURI(),
+                request.getMethod()
+        );
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    ResponseEntity<ErrorApi> handle(MaxUploadSizeExceededException e, HttpServletRequest servletRequest) {
+    ResponseEntity<ErrorResponse> handle(MaxUploadSizeExceededException e,
+                                         HttpServletRequest request,
+                                         Locale locale) {
         ErrorCode errorCode = ErrorCode.UPLOAD_MAX_SIZE_EXCEEDED;
-        return ApiFactory.error(errorCode, servletRequest.getRequestURI());
+        String i18nMessage = messageSource.getMessage(errorCode.getMessageKey(), null, locale);
+        String detail = e.getMessage();
+
+        ErrorResponse response = ErrorResponse.of(
+                errorCode,
+                i18nMessage,
+                detail,
+                request.getRequestURI(),
+                request.getMethod()
+        );
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
+
     @ExceptionHandler(Exception.class)
-    ResponseEntity<ErrorApi> handleGeneric(Exception e, HttpServletRequest request) {
+    ResponseEntity<ErrorResponse> handleGeneric(Exception e, HttpServletRequest request, Locale locale) {
         ErrorCode errorCode = ErrorCode.SERVER_INTERNAL;
-        String message = e.getMessage();
-        if (message == null || message.isBlank()) message = errorCode.getMessage();
-        log.error("Exception type: {}", e.getClass());
-        return ApiFactory.error(errorCode, request.getServletPath(), message);
+        String i18nMessage = messageSource.getMessage(errorCode.getMessageKey(), null, locale);
+        String detail = e.getMessage();
+        if (detail == null || detail.isBlank()) {
+            detail = errorCode.getMessageKey();
+        }
+        log.error("Unhandled exception: {}", e.getClass().getName(), e);
+        ErrorResponse response = ErrorResponse.of(
+                errorCode,
+                i18nMessage,
+                detail,
+                request.getRequestURI(),
+                request.getMethod()
+        );
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 }

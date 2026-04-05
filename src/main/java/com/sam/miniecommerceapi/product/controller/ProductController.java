@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.product.controller.rest;
+package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
@@ -7,9 +7,8 @@ import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.service.ProductSearchService;
 import com.sam.miniecommerceapi.product.service.ProductService;
-import com.sam.miniecommerceapi.shared.dto.response.api.SuccessApi;
-import com.sam.miniecommerceapi.shared.dto.response.api.factory.ApiFactory;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityManager;
@@ -46,21 +45,22 @@ public class ProductController {
 
     @Operation(summary = "Create product")
     @PostMapping
-    ResponseEntity<SuccessApi<ProductDetailsResponse>> createProduct(@Valid @RequestBody ProductCreationRequest r) {
+    ResponseEntity<ApiResponse<ProductDetailsResponse>> createProduct(@Valid @RequestBody ProductCreationRequest r) {
         ProductDetailsResponse response = productService.createProduct(r);
-        return ApiFactory.success(response, "Create product successfully.");
+        return ResponseEntity.ok(ApiResponse.of(response));
+
     }
 
     @GetMapping("/{slug}")
     @Operation(summary = "Get product by slug")
-    ResponseEntity<SuccessApi<ProductDetailsResponse>> getProductBySlug(@PathVariable String slug) {
+    ResponseEntity<ApiResponse<ProductDetailsResponse>> getProductBySlug(@PathVariable String slug) {
         ProductDetailsResponse response = productService.getProductBySlug(slug);
-        return ApiFactory.success(response, "Get product successfully.");
+        return ResponseEntity.ok(ApiResponse.of(response));
     }
 
     @Operation(summary = "Search products", description = "Hibernate Search Engine (Lucene)")
     @GetMapping("/search")
-    ResponseEntity<SuccessApi<PageResponse<ProductResponse>>> searchProducts(
+    ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> searchProducts(
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20") int pageSize,
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -74,16 +74,18 @@ public class ProductController {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         PageResponse<ProductResponse> responses = searchService.searchProducts(keyword, minPrice, categoryName, pageable);
-        return ApiFactory.success(responses, "Success");
+        return ResponseEntity.ok(ApiResponse.of(responses));
+
     }
 
     @Operation(summary = "Update product by ID")
     @PutMapping("/{id}")
-    ResponseEntity<SuccessApi<ProductDetailsResponse>> updateProduct(
+    ResponseEntity<ApiResponse<ProductDetailsResponse>> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductUpdateRequest r
     ) {
         ProductDetailsResponse response = productService.updateProduct(id, r);
-        return ApiFactory.success(response, "Update product successfully.");
+        return ResponseEntity.ok(ApiResponse.of(response));
+
     }
 }

@@ -8,7 +8,7 @@ import com.sam.miniecommerceapi.product.mapper.CategoryMapper;
 import com.sam.miniecommerceapi.product.repository.CategoryRepository;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

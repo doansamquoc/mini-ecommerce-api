@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.product.controller.mvc;
+package com.sam.miniecommerceapi.product.controller;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

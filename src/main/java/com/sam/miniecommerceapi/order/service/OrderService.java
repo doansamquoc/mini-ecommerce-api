@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderRequest;
 import com.sam.miniecommerceapi.order.dto.response.OrderResponse;
 import com.sam.miniecommerceapi.shared.constant.OrderStatus;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 

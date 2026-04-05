@@ -10,107 +10,87 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ErrorCode {
-    // Server
-    SERVER_INTERNAL(9999, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    // --- SERVER (50xx) ---
+    SERVER_INTERNAL(HttpStatus.INTERNAL_SERVER_ERROR, "system.error.internal", 5000),
+    INVALID_REQUEST_BODY(HttpStatus.BAD_REQUEST, "system.error.invalid_body", 5001),
+    VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "system.error.validation_failed", 5002),
 
-    // Auth 10xx
-    AUTH_UNAUTHORIZED(1001, HttpStatus.UNAUTHORIZED, "Unauthorized access"),
-    AUTH_ACCESS_DENIED(1002, HttpStatus.FORBIDDEN, "Access denied"),
-    AUTH_INVALID_CREDENTIALS(1003, HttpStatus.BAD_REQUEST, "Wrong credentials"),
-    AUTH_FAILED(1004, HttpStatus.UNAUTHORIZED, "Authentication failed"),
+    // --- AUTH (10xx) ---
+    AUTH_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "auth.error.unauthorized", 1001),
+    AUTH_ACCESS_DENIED(HttpStatus.FORBIDDEN, "auth.error.access_denied", 1002),
+    AUTH_INVALID_CREDENTIALS(HttpStatus.BAD_REQUEST, "auth.error.invalid_credentials", 1003),
+    AUTH_FAILED(HttpStatus.UNAUTHORIZED, "auth.error.authentication_failed", 1004),
 
-    // Token 11xx
-    TOKEN_REVOKED(1101, HttpStatus.UNAUTHORIZED, "Token revoked"),
-    TOKEN_EXPIRED(1102, HttpStatus.UNAUTHORIZED, "Token expired"),
-    TOKEN_NOT_FOUND(1103, HttpStatus.NOT_FOUND, "Token not found"),
-    TOKEN_ALREADY_USED(1104, HttpStatus.BAD_REQUEST, "Token already used"),
-    TOKEN_INVALID(1105, HttpStatus.UNAUTHORIZED, "Invalid token"),
+    // --- TOKEN (11xx) ---
+    TOKEN_REVOKED(HttpStatus.UNAUTHORIZED, "auth.token.revoked", 1101),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "auth.token.expired", 1102),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "auth.token.invalid", 1103),
 
-    // Account 12xx
-    ACCOUNT_LOCKED(1201, HttpStatus.LOCKED, "Account locked"),
-    ACCOUNT_DISABLED(1202, HttpStatus.BAD_REQUEST, "Account disabled"),
-    ACCOUNT_EXPIRED(1203, HttpStatus.BAD_REQUEST, "Account expired"),
+    // --- ACCOUNT (12xx) ---
+    ACCOUNT_LOCKED(HttpStatus.LOCKED, "account.error.locked", 1201),
+    ACCOUNT_DISABLED(HttpStatus.BAD_REQUEST, "account.error.disabled", 1202),
+    ACCOUNT_EXPIRED(HttpStatus.BAD_REQUEST, "account.error.expired", 1203),
 
-    // User 2xxx
-    USER_EMAIL_ALREADY_EXISTS(2001, HttpStatus.CONFLICT, "Email already exists"),
-    USER_NOT_FOUND(2002, HttpStatus.NOT_FOUND, "User not found"),
+    // --- USER (20xx) ---
+    USER_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "user.error.email_exists", 2001),
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "user.error.not_found", 2002),
+    USER_PASSWORD_TOO_SHORT(HttpStatus.BAD_REQUEST, "user.validation.password_length", 2003),
+    RESET_TOKEN_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "user.validation.token_required", 2004),
+    RESET_NEW_PASSWORD_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "user.validation.password_required", 2005),
 
-    // Product 30xx
-    PRODUCT_NOT_FOUND(3001, HttpStatus.NOT_FOUND, "Product not found"),
-    PRODUCT_NAME_CONFLICT(3002, HttpStatus.CONFLICT, "Product name conflict"),
-    PRODUCT_SLUG_CONFLICT(3003, HttpStatus.CONFLICT, "Product slug conflict"),
-    PRODUCT_SKU_ALREADY_EXISTS(3004, HttpStatus.CONFLICT, "Product sku already exists"),
-    PRODUCT_SKU_CONFLICT(3005, HttpStatus.CONFLICT, "Product sku conflict"),
-    PRODUCT_ATTRIBUTE_OPTION_NOT_FOUND(
-            3010, HttpStatus.NOT_FOUND, "Product attribute option not found"),
-    PRODUCT_NAME_CANNOT_BE_BLANK(3011, HttpStatus.BAD_REQUEST, "Product name cannot be lank"),
-    PRODUCT_NAME_SIZE(
-            3012, HttpStatus.BAD_REQUEST, "Product name must be at least 2 to 255 characters"),
-    PRODUCT_SLUG_CANNOT_BLANK(3013, HttpStatus.BAD_REQUEST, "Product slug cannot be lank"),
-    PRODUCT_SLUG_SIZE(
-            3014, HttpStatus.BAD_REQUEST, "Product slug must be at least 2 to 255 characters"),
-    PRODUCT_DESCRIPTION_SIZE(
-            3015, HttpStatus.BAD_REQUEST, "Product description must be at least 2 characters"),
-    PRODUCT_IMAGE_URL_CANNOT_BE_BLANK(
-            3016, HttpStatus.BAD_REQUEST, "Product image url cannot be blank"),
-    PRODUCT_IMAGE_URL_MUST_BE_URL(3017, HttpStatus.BAD_REQUEST, "Product image url must be an url"),
-    PRODUCT_SKU_CANNOT_BE_BLANK(3018, HttpStatus.BAD_REQUEST, "Product sku cannot be blank"),
-    PRODUCT_SKU_SIZE(
-            3019, HttpStatus.BAD_REQUEST, "Product sku must be at least 2 to 16 characters"),
-    PRODUCT_PRICE_CANNOT_BE_NULL(3020, HttpStatus.BAD_REQUEST, "Product price cannot be null"),
-    PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(
-            3021, HttpStatus.BAD_REQUEST, "Product stock quantity cannot be null"),
-    PRODUCT_VARIANT_NOT_FOUND(3022, HttpStatus.NOT_FOUND, "Product variant not found"),
-    PRODUCT_VARIANT_NOT_ENOUGH(3023, HttpStatus.BAD_REQUEST, "Product variant is not enough"),
-    PRODUCT_OUT_OF_STOCK(3024, HttpStatus.BAD_REQUEST, "Product is not enough or out of stock"),
+    // --- PRODUCT (30xx) ---
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "product.error.not_found", 3000),
+    PRODUCT_SLUG_CONFLICT(HttpStatus.CONFLICT, "product.error.slug_conflict", 3001),
+    PRODUCT_SKU_ALREADY_EXISTS(HttpStatus.CONFLICT, "product.error.sku_conflict", 3002),
+    PRODUCT_NAME_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "product.validation.name_required", 3003),
+    PRODUCT_NAME_SIZE(HttpStatus.BAD_REQUEST, "product.validation.name_size", 3004),
+    PRODUCT_SLUG_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "product.validation.slug_required", 3005),
+    PRODUCT_SLUG_SIZE(HttpStatus.BAD_REQUEST, "product.validation.slug_size", 3006),
+    PRODUCT_DESCRIPTION_SIZE(HttpStatus.BAD_REQUEST, "product.validation.description_size", 3007),
+    PRODUCT_IMAGE_URL_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "product.validation.image_required", 3008),
+    PRODUCT_IMAGE_URL_MUST_BE_URL(HttpStatus.BAD_REQUEST, "product.validation.image_invalid_url", 3009),
+    PRODUCT_SKU_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "product.validation.sku_required", 3010),
+    PRODUCT_SKU_SIZE(HttpStatus.BAD_REQUEST, "product.validation.sku_size", 3011),
+    PRODUCT_PRICE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "product.validation.price_required", 3012),
+    PRODUCT_STOCK_QUANTITY_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "product.validation.stock_required", 3013),
+    PRODUCT_VARIANT_NOT_FOUND(HttpStatus.NOT_FOUND, "product.error.variant_not_found", 3014),
+    PRODUCT_VARIANT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "product.error.variant_not_enough", 3015),
+    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "product.error.out_of_stock", 3016),
+    PRODUCT_ATTRIBUTE_VALUE_NOT_FOUND(HttpStatus.NOT_FOUND, "product.error.attribute_value_not_found", 3017),
 
-    // Category 31xx
-    CATEGORY_NAME_CANNOT_BE_BLANK(3101, HttpStatus.BAD_REQUEST, "Category name cannot be blank"),
-    CATEGORY_NAME_SIZE(
-            3102, HttpStatus.BAD_REQUEST, "Category names must be at least 2 to 64 characters"),
+    // --- CATEGORY (31xx) ---
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "category.error.not_found", 3100),
+    CATEGORY_NAME_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "category.validation.name_required", 3101),
+    CATEGORY_NAME_SIZE(HttpStatus.BAD_REQUEST, "category.validation.name_size", 3102),
+    CATEGORY_SLUG_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "category.validation.slug_required", 3103),
+    CATEGORY_SLUG_SIZE(HttpStatus.BAD_REQUEST, "category.validation.slug_size", 3104),
+    CATEGORY_IMAGE_URL_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "category.validation.image_required", 3105),
+    CATEGORY_IMAGE_URL_MUST_BE_URL(HttpStatus.BAD_REQUEST, "category.validation.image_invalid_url", 3106),
+    CATEGORY_NAME_CONFLICT(HttpStatus.CONFLICT, "category.error.name_conflict", 3107),
+    CATEGORY_SLUG_CONFLICT(HttpStatus.CONFLICT, "category.error.slug_conflict", 3108),
 
-    CATEGORY_SLUG_CANNOT_BE_BLANK(3103, HttpStatus.BAD_REQUEST, "Category slug cannot be blank"),
-    CATEGORY_SLUG_SIZE(
-            3104, HttpStatus.BAD_REQUEST, "Category slug must be at least 2 to 64 characters"),
+    // --- ORDER (32xx) ---
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "order.error.not_found", 3200),
+    ORDER_CANNOT_UPDATE(HttpStatus.BAD_REQUEST, "order.error.cannot_update", 3201),
+    ORDER_INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "order.error.invalid_quantity", 3202),
+    ORDER_EMPTY(HttpStatus.BAD_REQUEST, "order.error.empty_items", 3203),
+    ORDER_CANNOT_BE_CANCELED(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_cancel", 3204),
+    ORDER_CANCELLATION_DEADLINE_PASSED(HttpStatus.NOT_ACCEPTABLE, "order.error.deadline_passed", 3205),
+    ORDER_CANNOT_BE_CONFIRMED(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_confirm", 3206),
+    ORDER_CANNOT_BE_DELIVERING(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_delivering", 3207),
+    ORDER_CANNOT_BE_DELIVERED(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_deliver", 3208),
+    ORDER_CANNOT_BE_PAYMENT_PENDING(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_be_pending", 3209),
+    ORDER_CANNOT_BE_PAID(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_be_paid", 3210),
+    ORDER_CANNOT_BE_FAILED(HttpStatus.NOT_ACCEPTABLE, "order.error.cannot_be_failed", 3211),
+    ORDER_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "order.error.item_not_found", 3212),
 
-    CATEGORY_IMAGE_URL_CANNOT_BE_BLANK(
-            3105, HttpStatus.BAD_REQUEST, "Category image url cannot be blank"),
-    CATEGORY_IMAGE_URL_MUST_BE_URL(
-            3106, HttpStatus.BAD_REQUEST, "Category image url must be an url"),
+    // --- UPLOAD & REQUEST (4xxx) ---
+    REQUEST_INVALID(HttpStatus.BAD_REQUEST, "request.error.invalid", 4000),
+    UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "upload.error.failed", 4001),
+    UPLOAD_MAX_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "upload.error.size_limit", 4002);
 
-    CATEGORY_NAME_CONFLICT(3107, HttpStatus.CONFLICT, "Category name conflict"),
-    CATEGORY_SLUG_CONFLICT(3108, HttpStatus.CONFLICT, "Category slug conflict"),
-
-    CATEGORY_NOT_FOUND(3199, HttpStatus.NOT_FOUND, "Category not found"),
-
-    // Order 32xx
-    ORDER_NOT_FOUND(3200, HttpStatus.NOT_FOUND, "Order not found"),
-    ORDER_CANNOT_UPDATE(3201, HttpStatus.BAD_REQUEST, "Order cannot update"),
-    ORDER_INVALID_QUANTITY(3202, HttpStatus.BAD_REQUEST, "Order invalid quantity"),
-    ORDER_EMPTY(3203, HttpStatus.BAD_REQUEST, "Order item cannot be empty"),
-    ORDER_CANNOT_BE_CANCELED(3204, HttpStatus.NOT_ACCEPTABLE, "Order cannot be canceled"),
-    ORDER_CANCELLATION_DEADLINE_PASSED(3205, HttpStatus.NOT_ACCEPTABLE, "Order cancellation deadline passed"),
-    ORDER_CANNOT_BE_CONFIRMED(3206, HttpStatus.NOT_ACCEPTABLE, "Order cannot be confirmed"),
-    ORDER_CANNOT_BE_DELIVERING(3207, HttpStatus.NOT_ACCEPTABLE, "Order cannot be delivering"),
-    ORDER_CANNOT_BE_DELIVERED(3208, HttpStatus.NOT_ACCEPTABLE, "Order cannot be delivered"),
-    ORDER_CANNOT_BE_PAYMENT_PENDING(3209, HttpStatus.NOT_ACCEPTABLE, "Order cannot be pending payment"),
-    ORDER_CANNOT_BE_PAID(3210, HttpStatus.NOT_ACCEPTABLE, "Order cannot be payment paid"),
-    ORDER_CANNOT_BE_FAILED(3211, HttpStatus.NOT_ACCEPTABLE, "Order cannot be payment failed"),
-
-    // Order item
-    ORDER_ITEM_NOT_FOUND(3300, HttpStatus.NOT_FOUND, "Order item not found"),
-
-    // Request 4xxx
-    REQUEST_INVALID(4001, HttpStatus.BAD_REQUEST, "Invalid request"),
-    USER_PASSWORD_TOO_SHORT(4002, HttpStatus.BAD_REQUEST, "Password must be at least 6 characters"),
-    RESET_TOKEN_CANNOT_BLANK(4003, HttpStatus.BAD_REQUEST, "Token cannot be blank"),
-    RESET_NEW_PASSWORD_CANNOT_BLANK(4004, HttpStatus.BAD_REQUEST, "New password cannot be blank"),
-
-    // Upload
-    UPLOAD_FAILED(5001, HttpStatus.BAD_REQUEST, "Upload failed"),
-    UPLOAD_MAX_SIZE_EXCEEDED(5002, HttpStatus.BAD_REQUEST, "File too large! Please upload file under 10MB");
-
-    int errorCode;
     HttpStatus httpStatus;
-    String message;
+    String messageKey;
+    int code;
 }
+

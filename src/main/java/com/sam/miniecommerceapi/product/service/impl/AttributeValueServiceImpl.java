@@ -29,7 +29,7 @@ public class AttributeValueServiceImpl implements AttributeValueService {
     @Override
     public Set<AttributeValue> findAllById(Set<Long> ids) {
         List<AttributeValue> options = repository.findAllById(ids);
-        if (options.size() != ids.size()) throw new BusinessException(ErrorCode.PRODUCT_ATTRIBUTE_OPTION_NOT_FOUND);
+        if (options.size() != ids.size()) throw new BusinessException(ErrorCode.PRODUCT_ATTRIBUTE_VALUE_NOT_FOUND);
         return new LinkedHashSet<>(options);
     }
 }

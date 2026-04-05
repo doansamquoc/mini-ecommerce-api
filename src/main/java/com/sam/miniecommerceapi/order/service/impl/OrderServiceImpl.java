@@ -15,7 +15,7 @@ import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.product.service.VariantService;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.constant.OrderStatus;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;

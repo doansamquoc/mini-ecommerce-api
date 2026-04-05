@@ -1,10 +1,12 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -13,10 +15,13 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VariantUpdateRequest {
-    Long id; // IMPORTANT: null = create new, not null = update
+    Long id;
     String sku;
+    @Min(value = 1000, message = "product.validation.price_min")
     BigDecimal price;
+    @PositiveOrZero(message = "product.validation.stock_min")
     Integer stockQuantity;
-    String variantImageUrl;
+    @URL(message = "product.validation.image_invalid_url")
+    String imageUrl;
     Set<Long> attributeOptionIds;
 }

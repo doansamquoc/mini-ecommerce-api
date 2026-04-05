@@ -89,10 +89,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     private RefreshToken findByToken(String token) {
-        return repository.findByToken(token).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
+        return repository.findByToken(token).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_INVALID));
     }
 
     private RefreshToken findByUser(User user) {
-        return repository.findByUser(user).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
+        return repository.findByUser(user).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_INVALID));
     }
 }

@@ -50,7 +50,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     @Override
     public PasswordResetToken findByUser(User user) {
-        return repository.findByUser(user).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_NOT_FOUND));
+        return repository.findByUser(user).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_INVALID));
     }
 
     @Override

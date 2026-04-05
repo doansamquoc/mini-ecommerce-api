@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.cart.dto.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,9 +11,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartCreationRequest {
-    @NotNull(message = "CART_PRODUCT_ID_CANNOT_BE_NULL")
+    @NotNull(message = "product.validation.id_required")
     Long productVariantId;
 
-    @NotNull(message = "CART_QUANTITY_CANNOT_BE_NULL")
+    @NotNull(message = "cart.validation.quantity_required")
+    @Min(value = 1, message = "cart.validation.quantity_size")
     Integer quantity;
 }

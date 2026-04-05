@@ -11,8 +11,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest {
-    @NotBlank(message = "INVALID_REQUEST")
     String identifier;
-    @NotBlank(message = "INVALID_REQUEST")
     String password;
 }

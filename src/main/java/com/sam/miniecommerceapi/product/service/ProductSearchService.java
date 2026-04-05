@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.product.service;
 
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;

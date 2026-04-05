@@ -6,7 +6,7 @@ import com.sam.miniecommerceapi.cart.entity.Cart;
 import com.sam.miniecommerceapi.cart.mapper.CartMapper;
 import com.sam.miniecommerceapi.cart.repository.CartRepository;
 import com.sam.miniecommerceapi.cart.service.CartService;
-import com.sam.miniecommerceapi.shared.dto.response.pagination.PageResponse;
+import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
 import com.sam.miniecommerceapi.shared.exception.BusinessException;
 import com.sam.miniecommerceapi.product.entity.Variant;
