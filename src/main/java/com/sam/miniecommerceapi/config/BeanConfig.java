@@ -42,7 +42,7 @@ public class BeanConfig {
     SecretKey secretKey() {
         byte[] key = appProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
         if (key.length < 32) throw new IllegalArgumentException("JWT secret key must least 256 bit");
-        return new SecretKeySpec(key, MacAlgorithm.HS256.getName());
+        return new SecretKeySpec(key, MacAlgorithm.HS512.getName());
     }
 
     @Bean
@@ -65,7 +65,7 @@ public class BeanConfig {
 
     @Bean
     JwtDecoder jwtDecoder(JwtBlacklistValidator validator) {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS256).build();
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS512).build();
         OAuth2TokenValidator<Jwt> defaultValidator = new JwtTimestampValidator();
         OAuth2TokenValidator<Jwt> delegatingValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, validator);
         jwtDecoder.setJwtValidator(delegatingValidator);
