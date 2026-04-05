@@ -1,9 +1,11 @@
 package com.sam.miniecommerceapi.auth.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sam.miniecommerceapi.shared.constant.AppConstant;
 import com.sam.miniecommerceapi.shared.constant.Role;
 import com.sam.miniecommerceapi.user.entity.User;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -24,20 +26,17 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserPrincipal implements UserDetails, OAuth2User {
     Long id;
-    String email;
     String username;
-    @JsonIgnore
     String password;
-    Collection<? extends GrantedAuthority> authorities;
     String jwtId;
     Instant expiresAt;
     @Builder.Default
     Map<String, Object> attributes = new HashMap<>();
+    Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(User user) {
         return UserPrincipal.builder()
                 .id(user.getId())
-                .email(user.getEmail())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .authorities(extractAuthorities(user.getRoles()))
@@ -52,7 +51,9 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     }
 
     private static Collection<? extends GrantedAuthority> extractAuthorities(Set<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toSet());
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(AppConstant.JWT_AUTHORIZE_PREFIX + role.name()))
+                .collect(Collectors.toSet());
     }
 
     @Override

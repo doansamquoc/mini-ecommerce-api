@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.shared.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +35,7 @@ public class JwtProvider {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(Objects::nonNull)
-                .map(a -> a.replace("ROLE_", ""))
+                .map(a -> a.replace(AppConstant.JWT_AUTHORIZE_PREFIX, ""))
                 .toList();
 
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
@@ -45,7 +46,6 @@ public class JwtProvider {
                 .jwtID(UUID.randomUUID().toString())
                 .claim("roles", roles)
                 .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
                 .build();
 
 
@@ -55,7 +55,7 @@ public class JwtProvider {
         try {
             jwsObject.sign(new MACSigner(secretKey));
         } catch (JOSEException e) {
-            log.error("Generate access token failed, error {}", e.getMessage());
+            log.error("Generate access token failed {}", e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
 
