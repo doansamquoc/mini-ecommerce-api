@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.product.repository;
 
+import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.Variant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VariantRepository extends JpaRepository<Variant, Long> {
@@ -19,6 +21,8 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
     List<String> findExistingSkus(Collection<String> skus);
 
     List<Variant> findAllByProductId(Long productId);
+
+    Optional<Variant> findByProductIdAndId(Long productId, Long id);
 
     @Transactional
     @Modifying
@@ -34,4 +38,10 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
             + "WHERE v.id = :id"
     )
     void increaseStock(@Param("id") long id, @Param("quantity") int quantity);
+
+    Optional<Variant> findByProductAndId(Product product, Long id);
+
+    void deleteByProductIdAndId(Long productId, Long id);
+
+    void deleteAllByProductId(Long productId);
 }

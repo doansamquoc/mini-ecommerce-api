@@ -57,7 +57,10 @@ public enum ErrorCode {
     PRODUCT_VARIANT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "product.error.variant_not_enough", 3015),
     PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "product.error.out_of_stock", 3016),
     PRODUCT_ATTRIBUTE_VALUE_NOT_FOUND(HttpStatus.NOT_FOUND, "product.error.attribute_value_not_found", 3017),
-
+    PRODUCT_ATTRIBUTE_EXISTS(HttpStatus.CONFLICT, "product.error.attribute_name_exists", 3018),
+    PRODUCT_ATTRIBUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "product.error.attribute_not_found", 3019),
+    PRODUCT_ATTRIBUTE_TERM_NAME_EXISTS(HttpStatus.CONFLICT, "product.error.attribute_term_name_exists", 3020),
+    PRODUCT_ATTRIBUTE_TERM_NOT_FOUND(HttpStatus.NOT_FOUND, "product.error.attribute_term_not_found", 3021),
     // --- CATEGORY (31xx) ---
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "category.error.not_found", 3100),
     CATEGORY_NAME_CANNOT_BE_BLANK(HttpStatus.BAD_REQUEST, "category.validation.name_required", 3101),

@@ -12,15 +12,16 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
         componentModel = "spring",
-        uses = {VariantMapper.class, AttributeOptionMapper.class},
+        uses = {VariantMapper.class, AttributeTermMapper.class, CategoryMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface ProductMapper {
     @Mapping(target = "category.id", source = "categoryId")
-    Product toProduct(ProductCreationRequest request);
+    Product toEntity(ProductCreationRequest request);
 
-    void updateProduct(ProductUpdateRequest request, @MappingTarget Product product);
+    void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
 
+    @Mapping(target = "categoryId", source = "category.id")
     ProductResponse toResponse(Product product);
 
     @Mapping(target = "variants", source = "variants")

@@ -11,13 +11,13 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "attribute_values")
+@Table(name = "attribute_terms")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AttributeValue extends BaseEntity {
-    @Column(name = "value", nullable = false)
-    String value;
-
+public class AttributeTerm extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_id", nullable = false)
     Attribute attribute;
+
+    @Column(name = "name", nullable = false)
+    String name;
 }

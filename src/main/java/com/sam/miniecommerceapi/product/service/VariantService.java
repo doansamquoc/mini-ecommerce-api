@@ -1,32 +1,29 @@
 package com.sam.miniecommerceapi.product.service;
 
+import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
+import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.entity.Variant;
 
 import java.util.List;
 
 public interface VariantService {
-    boolean existsBySku(String sku);
 
-    void validateSkuNotExists(List<String> skus);
+    VariantResponse update(Long productId, Long variantId, VariantRequest request);
 
-    List<Variant> getProductVariantsByProductId(Long id);
+    VariantResponse create(Long productId, VariantRequest request);
+
+    VariantResponse read(Long productId, Long variantId);
+
+    List<VariantResponse> readAll(Long productId);
+
+    void delete(Long productId, Long variantId);
+
+    void deleteAll(Long productId);
 
     int deductStock(Long id, int quantity);
 
     void increaseStock(Long id, int quantity);
 
-    void updateVariant(Variant variant, VariantUpdateRequest r);
-
-    Variant findById(Long id);
-
-    void deleteVariant(Variant variant);
-
-    List<Variant> saveAll(List<Variant> finalVariants);
-
-    Variant save(Variant variant);
-
-    boolean existsById(Long id);
-
-    List<Variant> findAllByIds(List<Long> productVariantIds);
+    Variant findById(Long variantId);
 }

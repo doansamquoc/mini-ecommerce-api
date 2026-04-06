@@ -17,5 +17,5 @@ public class VariantResponse {
     BigDecimal price;
     Integer stockQuantity;
     String imageUrl;
-    Set<AttributeValueResponse> values;
+    Set<AttributeTermResponse> values;
 }

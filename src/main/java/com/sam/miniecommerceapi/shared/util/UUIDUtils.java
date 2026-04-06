@@ -8,6 +8,7 @@ public class UUIDUtils {
     }
 
     public static String generateSlugSuffix() {
-        return Long.toString(System.currentTimeMillis()).substring(0, 4) + ".html";
+        String nano = Long.toString(System.nanoTime());
+        return nano.substring(nano.length() - 4) + ".html";
     }
 }

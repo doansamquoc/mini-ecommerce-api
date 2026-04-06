@@ -23,5 +23,5 @@ public class VariantUpdateRequest {
     Integer stockQuantity;
     @URL(message = "product.validation.image_invalid_url")
     String imageUrl;
-    Set<Long> attributeOptionIds;
+    Set<Long> attributeValueIds;
 }

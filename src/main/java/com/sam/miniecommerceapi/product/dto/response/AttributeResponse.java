@@ -13,5 +13,4 @@ import java.util.Set;
 public class AttributeResponse {
     Long id;
     String name;
-    Set<String> values;
 }

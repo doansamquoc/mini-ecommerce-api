@@ -2,6 +2,7 @@ package com.sam.miniecommerceapi.product.service.impl;
 
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
+import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.service.ProductSearchService;
 import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
 import jakarta.persistence.EntityManager;
@@ -23,6 +24,7 @@ import java.util.List;
 public class ProductSearchServiceImpl implements ProductSearchService {
     @PersistenceContext
     EntityManager entityManager;
+    ProductMapper mapper;
 
     @Override
     public PageResponse<ProductResponse> searchProducts(
@@ -70,13 +72,6 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
     private ProductResponse toResponse(Product product) {
-        return ProductResponse.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .minPrice(product.getMinPrice())
-                .slug(product.getSlug())
-                .imageUrl(product.getImageUrl())
-                .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
-                .build();
+        return mapper.toResponse(product);
     }
 }

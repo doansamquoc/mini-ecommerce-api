@@ -2,7 +2,6 @@ package com.sam.miniecommerceapi.product.repository;
 
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -16,24 +15,10 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT new com.sam.miniecommerceapi.product.dto.response.ProductResponse(" +
-            "p.id, p.name, p.minPrice, p.slug, p.imageUrl, c.name) " +
-            "FROM Product p JOIN p.category c")
-    Page<ProductResponse> findAllSummary(Pageable pageable);
-
-    @Query("SELECT new com.sam.miniecommerceapi.product.dto.response.ProductResponse" +
-            "(p.id, p.name, p.minPrice, p.slug, p.imageUrl, c.name) " +
-            "FROM Product p JOIN p.category c " +
-            "WHERE (:keyword IS NULL OR :keyword = '' OR " +
-            "LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-    Page<ProductResponse> searchProducts(@Param("keyword") String keyword, Pageable pageable);
-
     @EntityGraph(attributePaths = {"variants", "variants.values", "variants.values.attribute"})
     Optional<Product> findBySlug(@Param("slug") String slug);
 
-    @EntityGraph(attributePaths = {"variants", "variants.values", "variants.values.attribute"})
+    @EntityGraph(attributePaths = {"variants", "variants.values", "variants.values.attribute", "category"})
     Optional<Product> findDetailsById(@Param("id") Long id);
 
     boolean existsBySlug(String slug);

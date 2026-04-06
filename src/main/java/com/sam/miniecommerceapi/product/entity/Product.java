@@ -33,8 +33,8 @@ public class Product extends BaseEntity {
     String slug;
 
     @GenericField
-    @Column(name = "min_price")
-    BigDecimal minPrice;
+    @Column(name = "reguler_price")
+    BigDecimal regularPrice;
 
     @IndexedEmbedded
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,10 +47,4 @@ public class Product extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Variant> variants = new LinkedHashSet<>();
-
-    public void addVariant(Variant variant) {
-        if (variants == null) variants = new LinkedHashSet<>();
-        variants.add(variant);
-        variant.setProduct(this);
-    }
 }

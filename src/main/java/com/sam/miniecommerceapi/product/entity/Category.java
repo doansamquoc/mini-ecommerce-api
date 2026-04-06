@@ -31,6 +31,6 @@ public class Category extends BaseEntity {
     @Column(name = "slug")
     String slug;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", orphanRemoval = true)
     List<Product> products;
 }

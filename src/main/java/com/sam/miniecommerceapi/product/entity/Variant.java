@@ -42,7 +42,7 @@ public class Variant extends BaseEntity {
             joinColumns = @JoinColumn(name = "variant_id"),
             inverseJoinColumns = @JoinColumn(name = "value_id")
     )
-    Set<AttributeValue> values = new LinkedHashSet<>();
+    Set<AttributeTerm> values = new LinkedHashSet<>();
 
     @Version
     Long version;
