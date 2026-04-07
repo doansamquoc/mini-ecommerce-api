@@ -38,11 +38,11 @@ public class Variant extends BaseEntity {
     @ManyToMany
     @Builder.Default
     @JoinTable(
-            name = "variant_values",
+            name = "variant_attributes",
             joinColumns = @JoinColumn(name = "variant_id"),
-            inverseJoinColumns = @JoinColumn(name = "value_id")
+            inverseJoinColumns = @JoinColumn(name = "attribute_term_id")
     )
-    Set<AttributeTerm> values = new LinkedHashSet<>();
+    Set<AttributeTerm> variantAttributes = new LinkedHashSet<>();
 
     @Version
     Long version;

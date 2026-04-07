@@ -8,5 +8,5 @@ public record ProductResponse(
         BigDecimal regularPrice,
         String slug,
         String imageUrl,
-        Long categoryId
+        CategoryResponse category
 ) {}

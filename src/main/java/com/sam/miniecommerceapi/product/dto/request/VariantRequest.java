@@ -30,5 +30,5 @@ public class VariantRequest {
     @URL(message = "product.validation.image_invalid_url")
     String imageUrl;
 
-    Set<Long> attributeValueIds;
+    Set<Long> attributeTermIds;
 }

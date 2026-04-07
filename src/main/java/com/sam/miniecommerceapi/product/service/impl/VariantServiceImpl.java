@@ -2,10 +2,12 @@ package com.sam.miniecommerceapi.product.service.impl;
 
 import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
+import com.sam.miniecommerceapi.product.entity.AttributeTerm;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.product.mapper.VariantMapper;
 import com.sam.miniecommerceapi.product.repository.VariantRepository;
+import com.sam.miniecommerceapi.product.service.AttributeTermService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import com.sam.miniecommerceapi.product.service.VariantService;
 import com.sam.miniecommerceapi.shared.constant.ErrorCode;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class VariantServiceImpl implements VariantService {
     VariantMapper mapper;
     VariantRepository repository;
     ProductService productService;
+    AttributeTermService termService;
 
     @Override
     public VariantResponse update(Long productId, Long id, VariantRequest request) {
@@ -36,10 +40,14 @@ public class VariantServiceImpl implements VariantService {
 
     @Override
     public VariantResponse create(Long productId, VariantRequest request) {
-        if (existsBySku(request.getSku())) throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
         Product product = productService.findById(productId);
-        Variant variant = mapper.toUpdate(request);
+        if (existsBySku(request.getSku())) throw new BusinessException(ErrorCode.PRODUCT_SKU_ALREADY_EXISTS);
+        Set<AttributeTerm> attributeTerms = termService.findAllById(request.getAttributeTermIds());
+
+        Variant variant = mapper.toEntity(request);
         variant.setProduct(product);
+        variant.setVariantAttributes(attributeTerms);
+
         return mapper.toResponse(save(variant));
     }
 
