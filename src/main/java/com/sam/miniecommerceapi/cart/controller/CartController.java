@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/carts")
+@RequestMapping("/api/v1/cart")
 @Tag(name = "Cart Endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CartController {
