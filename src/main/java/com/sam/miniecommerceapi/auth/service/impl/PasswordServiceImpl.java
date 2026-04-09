@@ -18,43 +18,31 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PasswordServiceImpl implements PasswordService {
-    Clock clock;
     UserService userService;
     AppProperties app;
     PasswordEncoder encoder;
     ApplicationEventPublisher publisher;
     PasswordResetTokenService passwordResetTokenService;
 
-    /**
-     * Forgot password. Find an account with email. If account not found then continue without send mail message
-     *
-     * @param r     ForgotPasswordRequest
-     * @param ip    Client IP
-     * @param agent User Agent
-     */
     @Override
-    public void forgotPassword(ForgotPasswordRequest r, String ip, String agent) {
-        userService.findOptionalByEmail(r.getEmail()).ifPresent(user -> {
+    public void forgotPassword(ForgotPasswordRequest req) {
+        userService.findOptionalByEmail(req.getEmail()).ifPresent(user -> {
             PasswordResetToken passwordResetToken = passwordResetTokenService.createToken(user);
-
             passwordResetTokenService.createToken(user);
-
-            publishForgotPasswordMessage(user, ip, agent, passwordResetToken);
+            publishForgotPasswordMessage(user, passwordResetToken);
         });
     }
 
     @Override
-    public void resetPassword(ResetPasswordRequest r, String ip, String agent) {
-        PasswordResetToken passwordResetToken = passwordResetTokenService.findByToken(r.getToken());
+    public void resetPassword(ResetPasswordRequest req) {
+        PasswordResetToken passwordResetToken = passwordResetTokenService.findByToken(req.getToken());
         User user = passwordResetToken.getUser();
 
-        String hashPassword = encoder.encode(r.getNewPassword());
+        String hashPassword = encoder.encode(req.getNewPassword());
 
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder().password(hashPassword).build();
         userService.updateUser(user.getId(), userUpdateRequest);
@@ -63,18 +51,13 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     @Override
-    public PasswordResetToken validateResetToken(String resetTokenStr) {
-        return passwordResetTokenService.validateToken(resetTokenStr);
+    public void validateResetToken(String resetTokenStr) {
+	    passwordResetTokenService.validateToken(resetTokenStr);
     }
 
-    private void publishForgotPasswordMessage(
-            User user,
-            String ip,
-            String agent,
-            PasswordResetToken passwordResetToken
-    ) {
+    private void publishForgotPasswordMessage(User user, PasswordResetToken passwordResetToken) {
         String resetLink = app.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
-        publisher.publishEvent(new PasswordResetEvent(user.getEmail(), user.getUsername(), resetLink, ip, agent));
+        publisher.publishEvent(new PasswordResetEvent(user.getEmail(), user.getUsername(), resetLink));
     }
 
     private void publishPasswordChangedMessage(User user) {

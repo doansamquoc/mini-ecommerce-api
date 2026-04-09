@@ -3,23 +3,16 @@ package com.sam.miniecommerceapi.auth.service.impl;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 import com.sam.miniecommerceapi.auth.dto.request.LoginRequest;
-import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.service.AuthenticationService;
-import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
-import com.sam.miniecommerceapi.config.AppProperties;
-import com.sam.miniecommerceapi.event.LoginEvent;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.user.entity.User;
-import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,13 +23,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
-	UserService userService;
 	JwtProvider jwtProvider;
-	AppProperties appProperties;
 	AuthenticationManager manager;
-	ApplicationEventPublisher publisher;
-	RefreshTokenService refreshTokenService;
-	PasswordResetTokenService passwordResetTokenService;
+	RefreshTokenService tokenService;
 
 	UserPrincipal authenticate(String identifier, String password) {
 		try {
@@ -61,20 +50,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public TokenDTO login(LoginRequest r, String ip, String agent) {
-		UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
-		User user = userService.findById(userPrincipal.getId());
-
-		String accessToken = jwtProvider.generate(userPrincipal);
-		RefreshToken refreshToken = refreshTokenService.createToken(userPrincipal.getId(), ip, agent);
-
-		publishLoginAlertMessage(user, ip, agent);
+	public TokenDTO login(LoginRequest request) {
+		UserPrincipal userPrincipal = authenticate(request.getIdentifier(), request.getPassword());
+		String accessToken = jwtProvider.createToken(userPrincipal);
+		RefreshToken refreshToken = tokenService.createToken(userPrincipal.getId());
 		return new TokenDTO(accessToken, refreshToken.getToken());
-	}
-
-	private void publishLoginAlertMessage(User user, String ip, String agent) {
-		PasswordResetToken passwordResetToken = passwordResetTokenService.createToken(user);
-		String resetLink = appProperties.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
-		publisher.publishEvent(new LoginEvent(user.getEmail(), user.getUsername(), resetLink, ip, agent));
 	}
 }

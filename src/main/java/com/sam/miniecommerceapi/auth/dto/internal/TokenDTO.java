@@ -1,15 +1,6 @@
 package com.sam.miniecommerceapi.auth.dto.internal;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class TokenDTO {
-    String accessToken;
-    String refreshToken;
-}
+public record TokenDTO(
+	String accessToken,
+	String refreshToken
+) {}

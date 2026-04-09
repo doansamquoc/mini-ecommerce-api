@@ -30,11 +30,9 @@ public class RefreshToken extends BaseEntity {
 	@Column(name = "revoked", nullable = false)
 	boolean revoked;
 
-	@Column(name = "device")
-	String device;
-
-	@Column(name = "ip")
-	String ip;
+	public void revoke() {
+		this.revoked = true;
+	}
 
 	public boolean isExpired() {
 		return Instant.now().isAfter(this.expiresAt);

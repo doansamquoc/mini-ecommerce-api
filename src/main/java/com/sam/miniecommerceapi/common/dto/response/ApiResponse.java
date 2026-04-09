@@ -19,4 +19,8 @@ public record ApiResponse<T>(boolean success, String message, T data, LocalDateT
 	public static <T> ApiResponse<T> of(String message, T data) {
 		return new ApiResponse<>(true, message, data, LocalDateTime.now());
 	}
+
+	public static <T> ApiResponse<T> ofMessage(String message) {
+		return new ApiResponse<>(true, message, null, LocalDateTime.now());
+	}
 }

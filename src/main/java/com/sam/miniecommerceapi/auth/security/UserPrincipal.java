@@ -25,79 +25,78 @@ import java.util.stream.Collectors;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserPrincipal implements UserDetails, OAuth2User {
-    Long id;
-    String username;
-    String password;
-    String jwtId;
-    Instant expiresAt;
-    @Builder.Default
-    Map<String, Object> attributes = new HashMap<>();
-    Collection<? extends GrantedAuthority> authorities;
+	Long id;
+	String username;
+	String password;
+	String jwtId;
+	Instant expiresAt;
+	@Builder.Default
+	Map<String, Object> attributes = new HashMap<>();
+	Collection<? extends GrantedAuthority> authorities;
 
-    public static UserPrincipal create(User user) {
-        return UserPrincipal.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(extractAuthorities(user.getRoles()))
-                .build();
-    }
+	public static UserPrincipal create(User user) {
+		return UserPrincipal.builder()
+			.id(user.getId())
+			.username(user.getUsername())
+			.password(user.getPassword())
+			.authorities(extractAuthorities(user.getRoles()))
+			.build();
+	}
 
-    public static UserPrincipal create(User user, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(user);
-        userPrincipal.attributes = attributes;
+	public static UserPrincipal create(User user, Map<String, Object> attributes) {
+		UserPrincipal userPrincipal = UserPrincipal.create(user);
+		userPrincipal.attributes = attributes;
+		return userPrincipal;
+	}
 
-        return userPrincipal;
-    }
+	private static Collection<? extends GrantedAuthority> extractAuthorities(Set<Role> roles) {
+		return roles.stream()
+			.map(role -> new SimpleGrantedAuthority(AppConstant.JWT_AUTHORIZE_PREFIX + role.name()))
+			.collect(Collectors.toSet());
+	}
 
-    private static Collection<? extends GrantedAuthority> extractAuthorities(Set<Role> roles) {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(AppConstant.JWT_AUTHORIZE_PREFIX + role.name()))
-                .collect(Collectors.toSet());
-    }
+	@Override
+	public Map<String, Object> getAttributes() {
+		return attributes;
+	}
 
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
+	@Override
+	public @NullMarked Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.authorities;
+	}
 
-    @Override
-    public @NullMarked Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
+	@Override
+	public @Nullable String getPassword() {
+		return this.password;
+	}
 
-    @Override
-    public @Nullable String getPassword() {
-        return this.password;
-    }
+	@Override
+	public @NullMarked String getUsername() {
+		return this.username;
+	}
 
-    @Override
-    public @NullMarked String getUsername() {
-        return this.username;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public @NullMarked String getName() {
-        return String.valueOf(id);
-    }
+	@Override
+	public @NullMarked String getName() {
+		return String.valueOf(id);
+	}
 }

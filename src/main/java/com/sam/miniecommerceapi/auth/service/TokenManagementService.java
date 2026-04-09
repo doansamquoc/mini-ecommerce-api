@@ -3,5 +3,5 @@ package com.sam.miniecommerceapi.auth.service;
 import com.sam.miniecommerceapi.auth.dto.internal.TokenDTO;
 
 public interface TokenManagementService {
-    TokenDTO refreshAccessToken(String refreshTokenStr, String ip, String agent);
+	TokenDTO refreshToken(String refreshTokenStr);
 }

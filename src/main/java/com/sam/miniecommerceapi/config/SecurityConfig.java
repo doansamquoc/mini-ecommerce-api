@@ -1,8 +1,10 @@
 package com.sam.miniecommerceapi.config;
 
+import com.sam.miniecommerceapi.auth.config.CookieBearerTokenResolver;
 import com.sam.miniecommerceapi.auth.config.OAuth2SuccessHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAccessDeniedHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAuthenticationEntryPoint;
+import com.sam.miniecommerceapi.auth.repository.OAuth2AuthorizationRequestRepository;
 import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
@@ -25,12 +27,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
+	JwtDecoder jwtDecoder;
+	JwtConverter jwtConverter;
 	JwtAccessDeniedHandler accessDeniedHandler;
 	CustomOAuth2UserService oAuth2UserService;
 	OAuth2SuccessHandler oAuth2SuccessHandler;
+	CookieBearerTokenResolver cookieBearerTokenResolver;
 	JwtAuthenticationEntryPoint authenticationEntryPoint;
-	JwtConverter jwtConverter;
-	JwtDecoder jwtDecoder;
+	OAuth2AuthorizationRequestRepository requestRepository;
+
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -46,11 +51,13 @@ public class SecurityConfig {
 				auth.anyRequest().authenticated();
 			});
 		httpSecurity.oauth2Login(oauth2 -> {
+			oauth2.authorizationEndpoint(endpoint -> endpoint.authorizationRequestRepository(requestRepository));
 			oauth2.userInfoEndpoint(u -> u.userService(oAuth2UserService));
 			oauth2.successHandler(oAuth2SuccessHandler);
 		});
 		httpSecurity.oauth2ResourceServer(
 			oauth2 -> {
+				oauth2.bearerTokenResolver(cookieBearerTokenResolver);
 				oauth2.authenticationEntryPoint(authenticationEntryPoint);
 				oauth2.accessDeniedHandler(accessDeniedHandler);
 				oauth2.jwt(

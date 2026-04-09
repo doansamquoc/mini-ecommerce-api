@@ -16,18 +16,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    UserService userService;
+	UserService userService;
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+	@Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+		OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String email = oAuth2User.getAttribute("email");
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        String providerId = oAuth2User.getAttribute("sub");
+		String email = oAuth2User.getAttribute("email");
+		String provider = userRequest.getClientRegistration().getRegistrationId();
+		String providerId = oAuth2User.getAttribute("sub");
 
-        User user = userService.oauth2Process(email, provider, providerId);
+		User user = userService.oauth2Process(email, provider, providerId);
 
-        return UserPrincipal.create(user, oAuth2User.getAttributes());
-    }
+		return UserPrincipal.create(user, oAuth2User.getAttributes());
+	}
 }

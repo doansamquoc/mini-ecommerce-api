@@ -14,7 +14,12 @@ public class AppConstant {
 		"/swagger-ui/**",
 		"/swagger-ui.html"
 	};
-	public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh-token";
+	public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+	public static final String REFRESH_TOKEN_COOKIE_PATH = "/api/v1/auth";
+
+	public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
+	public static final String ACCESS_TOKEN_COOKIE_PATH = "/";
+
 	public static final String PASSWORD_CHANGED_TEMPLATE = "email/templates/password-changed.jte";
 	public static final String PASSWORD_RESET_TEMPLATE = "email/templates/password-reset.jte";
 	public static final String LOGIN_ALERT_TEMPLATE = "email/templates/login-alert.jte";

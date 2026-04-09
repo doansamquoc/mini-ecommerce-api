@@ -3,9 +3,9 @@ package com.sam.miniecommerceapi.auth.service.impl;
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.auth.repository.RefreshTokenRepository;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
-import com.sam.miniecommerceapi.config.AppProperties;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.config.AppProperties;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
@@ -20,9 +20,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RefreshTokenServiceImpl implements RefreshTokenService {
-	AppProperties appProperties;
+	AppProperties properties;
 	RefreshTokenRepository repository;
-	EntityManager entityManager;
+	EntityManager manager;
 
 	@Override
 	public void validate(RefreshToken refreshToken) {
@@ -31,8 +31,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 	}
 
 	@Override
-	public RefreshToken validateToken(User user) {
-		RefreshToken token = findByUser(user);
+	public RefreshToken validateToken(Long userId) {
+		RefreshToken token = findByUserId(userId);
 		if (token.isExpired() || token.isRevoked()) {
 			throw BusinessException.of(ErrorCode.TOKEN_EXPIRED);
 		}
@@ -49,24 +49,15 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 	}
 
 	@Override
-	public RefreshToken createToken(Long userId, String ip, String agent) {
-		User userRef = entityManager.getReference(User.class, userId);
-
+	public RefreshToken createToken(Long userId) {
+		User userRef = manager.getReference(User.class, userId);
 		RefreshToken refreshToken = RefreshToken.builder()
 			.user(userRef)
 			.token(UUID.randomUUID().toString())
-			.expiresAt(Instant.now().plusMillis(appProperties.getRefreshTokenExpiration()))
+			.expiresAt(Instant.now().plusMillis(properties.getRefreshTokenExpiration()))
 			.revoked(false)
-			.ip(ip)
-			.device(agent)
 			.build();
 		return repository.save(refreshToken);
-	}
-
-	@Override
-	public void revoke(RefreshToken refreshToken) {
-		refreshToken.setRevoked(true);
-		repository.save(refreshToken);
 	}
 
 	@Override
@@ -76,21 +67,28 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 	}
 
 	@Override
-	public void revoke(User user) {
-		RefreshToken refreshToken = findByUser(user);
+	public void revoke(Long userId) {
+		RefreshToken refreshToken = findByUserId(userId);
 		revoke(refreshToken);
 	}
 
+
 	@Override
-	public void revokeAllByUser(User user) {
-		repository.revokeAllByUser(user);
+	public void revoke(RefreshToken refreshToken) {
+		refreshToken.revoke();
+		repository.save(refreshToken);
+	}
+
+	@Override
+	public void revokeAllByUserId(Long userId) {
+		repository.revokeAllByUser(userId);
 	}
 
 	private RefreshToken findByToken(String token) {
 		return repository.findByToken(token).orElseThrow(() -> BusinessException.of(ErrorCode.TOKEN_INVALID));
 	}
 
-	private RefreshToken findByUser(User user) {
-		return repository.findByUser(user).orElseThrow(() -> BusinessException.of(ErrorCode.TOKEN_INVALID));
+	private RefreshToken findByUserId(Long userId) {
+		return repository.findByUserId(userId).orElseThrow(() -> BusinessException.of(ErrorCode.TOKEN_INVALID));
 	}
 }

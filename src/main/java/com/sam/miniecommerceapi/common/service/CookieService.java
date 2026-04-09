@@ -32,21 +32,26 @@ public class CookieService {
 			.build();
 	}
 
-	private ResponseCookie create(String name, String value, long maxAge, String path) {
-		return build(name, value, maxAge, path);
-	}
-
 	public ResponseCookie createRefreshToken(String value) {
 		long maxAgeInSeconds = app.getRefreshTokenExpiration() / 1000;
-		return create(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, maxAgeInSeconds, "/api/v1/auth/refresh");
+		return build(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, maxAgeInSeconds, AppConstant.REFRESH_TOKEN_COOKIE_PATH);
 	}
 
 	public ResponseCookie deleteRefreshToken() {
-		return delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/api/v1/auth/refresh");
+		return delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, AppConstant.REFRESH_TOKEN_COOKIE_PATH);
+	}
+
+	public ResponseCookie createAccessToken(String value) {
+		long maxAgeInSeconds = app.getAccessTokenExpiration() / 1000;
+		return build(AppConstant.ACCESS_TOKEN_COOKIE_NAME, value, maxAgeInSeconds, AppConstant.ACCESS_TOKEN_COOKIE_PATH);
+	}
+
+	public ResponseCookie deleteAccessToken() {
+		return delete(AppConstant.ACCESS_TOKEN_COOKIE_NAME, AppConstant.ACCESS_TOKEN_COOKIE_PATH);
 	}
 
 	private ResponseCookie delete(String name, String path) {
-		return build(name, null, 0, path);
+		return build(name, "", 0, path);
 	}
 
 	public void addCookie(HttpServletResponse response, ResponseCookie cookie) {

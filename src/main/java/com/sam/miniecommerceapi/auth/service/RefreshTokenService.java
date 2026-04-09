@@ -4,19 +4,20 @@ import com.sam.miniecommerceapi.auth.entity.RefreshToken;
 import com.sam.miniecommerceapi.user.entity.User;
 
 public interface RefreshTokenService {
-    void validate(RefreshToken refreshToken);
 
-    RefreshToken validateToken(User user);
+	void validate(RefreshToken refreshToken);
 
-    RefreshToken validateToken(String refreshTokenStr);
+	RefreshToken validateToken(Long userId);
 
-    RefreshToken createToken(Long userId, String ip, String agent);
+	RefreshToken validateToken(String refreshTokenStr);
 
-    void revoke(RefreshToken refreshToken);
+	RefreshToken createToken(Long userId);
 
-    void revoke(String token);
+	void revoke(String token);
 
-    void revoke(User user);
+	void revoke(Long userId);
 
-    void revokeAllByUser(User user);
+	void revoke(RefreshToken refreshToken);
+
+	void revokeAllByUserId(Long userId);
 }

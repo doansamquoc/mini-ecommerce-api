@@ -54,8 +54,6 @@ class AuthenticationServiceImplTest {
 
     String identifier = "testuser";
     String password = "password123";
-    String ip = "127.0.0.1";
-    String agent = "Mozilla/5.0";
 
     @Test
     @DisplayName("Login successfully - Return tokens")
@@ -74,11 +72,11 @@ class AuthenticationServiceImplTest {
         mockUser.setEmail("test@gmail.com");
         when(userService.getReference(1L)).thenReturn(mockUser);
 
-        when(jwtProvider.generate(mockPrincipal)).thenReturn("access-token-123");
+        when(jwtProvider.createToken(mockPrincipal)).thenReturn("access-token-123");
 
         RefreshToken mockRefreshToken = new RefreshToken();
         mockRefreshToken.setToken("refresh-token-456");
-        when(refreshTokenService.createToken(anyLong(), anyString(), anyString())).thenReturn(mockRefreshToken);
+        when(refreshTokenService.createToken(anyLong())).thenReturn(mockRefreshToken);
 
         PasswordResetToken mockResetToken = new PasswordResetToken();
         mockResetToken.setToken("reset-token-123");
@@ -86,7 +84,7 @@ class AuthenticationServiceImplTest {
 
         when(appProperties.getFrontendUrl()).thenReturn("http://localhost:3000");
 
-        TokenDTO result = authenticationService.login(request, ip, agent);
+        TokenDTO result = authenticationService.login(request);
 
         assertThat(result.getAccessToken()).isEqualTo("access-token-123");
         assertThat(result.getRefreshToken()).isEqualTo("refresh-token-456");

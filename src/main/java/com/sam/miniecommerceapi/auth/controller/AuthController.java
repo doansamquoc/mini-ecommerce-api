@@ -7,19 +7,20 @@ import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.response.AuthResponse;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.service.*;
-import com.sam.miniecommerceapi.common.annotation.ClientIp;
-import com.sam.miniecommerceapi.common.annotation.UserAgent;
+import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.common.service.CookieService;
+import com.sam.miniecommerceapi.common.util.CookieUtils;
+import com.sam.miniecommerceapi.config.AppProperties;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,94 +32,85 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication Endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
-    CookieService cookieService;
-    PasswordService passwordService;
-    IdentityService identityService;
-    AuthenticationService authenticationService;
-    TokenBlacklistService tokenBlacklistService;
-    TokenManagementService tokenManagementService;
+	AppProperties properties;
+	PasswordService passwordService;
+	IdentityService identityService;
+	AuthenticationService authenticationService;
+	TokenBlacklistService tokenBlacklistService;
+	TokenManagementService tokenManagementService;
+	RefreshTokenService tokenService;
 
-    @Operation(summary = "Login", description = "In program, the IP and UserAgent auto inject by annotation")
-    @PostMapping("/login")
-    ResponseEntity<ApiResponse<AuthResponse>> authenticate(
-            @Valid @RequestBody LoginRequest loginRequest,
-            @ClientIp String ip,
-            @UserAgent String agent
-    ) {
-        TokenDTO token = authenticationService.login(loginRequest, ip, agent);
-        String cookie = cookieService.createRefreshToken(token.getRefreshToken()).toString();
-        AuthResponse authResponse = new AuthResponse(token.getAccessToken());
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie).body(ApiResponse.of(authResponse));
-    }
+	@PostMapping("/login")
+	@Operation(summary = "Login")
+	ResponseEntity<ApiResponse<?>> authenticate(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse res) {
+		TokenDTO token = authenticationService.login(loginRequest);
+		long refreshTokenMaxAgeInSeconds = properties.getRefreshTokenExpiration() / 1000;
+		long accessTokenMaxAgeInSeconds = properties.getAccessTokenExpiration() / 1000;
 
-    @PostMapping("/register")
-    @Operation(summary = "Register a new user")
-    ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody UserCreationRequest r) {
-        UserResponse response = identityService.registerUser(r);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
-    }
+		CookieUtils.addRefreshToken(res, token.refreshToken(), refreshTokenMaxAgeInSeconds);
+		CookieUtils.addAccessToken(res, token.accessToken(), accessTokenMaxAgeInSeconds);
+		return ResponseEntity.ok(ApiResponse.of());
+	}
 
-    @Operation(
-            summary = "Forgot password",
-            description = "In program, the IP and UserAgent auto inject by annotation. Sent an email to reset password"
-    )
-    @PostMapping("/forgot-password")
-    ResponseEntity<ApiResponse<String>> forgotPassword(
-            @Valid @RequestBody ForgotPasswordRequest r,
-            @ClientIp String ip,
-            @UserAgent String agent
-    ) {
-        passwordService.forgotPassword(r, ip, agent);
-        return ResponseEntity.ok(ApiResponse.of());
-    }
+	@PostMapping("/register")
+	@Operation(summary = "Register a new user")
+	ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody UserCreationRequest r) {
+		UserResponse response = identityService.registerUser(r);
+		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
+	}
 
-    @PostMapping("/reset-password")
-    @Operation(
-            summary = "Reset password",
-            description = "In program, the IP and UserAgent auto inject by annotation"
-    )
-    ResponseEntity<ApiResponse<String>> resetPassword(
-            @Valid @RequestBody ResetPasswordRequest r,
-            @ClientIp String ip,
-            @UserAgent String agent
-    ) {
-        passwordService.resetPassword(r, ip, agent);
-        return ResponseEntity.ok(ApiResponse.of());
-    }
+	@PostMapping("/forgot-password")
+	@Operation(summary = "Forgot password")
+	ResponseEntity<ApiResponse<String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
+		passwordService.forgotPassword(req);
+		return ResponseEntity.ok(ApiResponse.of());
+	}
 
-    @Operation(summary = "Verify reset password token.")
-    @GetMapping("/verify-token")
-    ResponseEntity<ApiResponse<String>> verifyPasswordResetToken(@RequestParam("token") String token) {
-        passwordService.validateResetToken(token);
-        return ResponseEntity.ok(ApiResponse.of());
-    }
+	@PostMapping("/reset-password")
+	@Operation(summary = "Reset password")
+	ResponseEntity<ApiResponse<String>> resetPassword(@Valid @RequestBody ResetPasswordRequest req) {
+		passwordService.resetPassword(req);
+		return ResponseEntity.ok(ApiResponse.of());
+	}
 
-    @Operation(summary = "Refresh", description = "Refresh new access token")
-    @GetMapping("/refresh")
-    ResponseEntity<ApiResponse<AuthResponse>> refresh(
-            @CookieValue(name = "refresh-token", required = false) String refreshTokenStr,
-            @ClientIp String ip,
-            @UserAgent String agent
-    ) {
-        TokenDTO token = tokenManagementService.refreshAccessToken(refreshTokenStr, ip, agent);
-        String cookie = cookieService.createRefreshToken(token.getRefreshToken()).toString();
-        AuthResponse response = new AuthResponse(token.getAccessToken());
-        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, cookie).body(ApiResponse.of(response));
-    }
+	@GetMapping("/verify-token")
+	@Operation(summary = "Verify reset password token.")
+	ResponseEntity<ApiResponse<String>> verifyPasswordResetToken(@RequestParam("token") String token) {
+		passwordService.validateResetToken(token);
+		return ResponseEntity.ok(ApiResponse.of());
+	}
 
-    @Operation(summary = "Logout")
-    @PostMapping("/logout")
-    ResponseEntity<ApiResponse<String>> logout(@AuthenticationPrincipal UserPrincipal user) {
-        long remainingTimeInMs = user.getExpiresAt().toEpochMilli() - System.currentTimeMillis();
+	@GetMapping("/refresh")
+	@Operation(summary = "Refresh Token.", description = "Refresh new refresh, access token.")
+	ResponseEntity<ApiResponse<AuthResponse>> refresh(
+		HttpServletResponse res,
+		@CookieValue(name = AppConstant.REFRESH_TOKEN_COOKIE_NAME, required = false) String tokenStr
+	) {
+		TokenDTO token = tokenManagementService.refreshToken(tokenStr);
+		long refreshTokenMaxAgeInSeconds = properties.getRefreshTokenExpiration() / 1000;
+		long accessTokenMaxAgeInSeconds = properties.getAccessTokenExpiration() / 1000;
 
-        if (remainingTimeInMs > 0) {
-            tokenBlacklistService.addToBlacklist(user.getJwtId(), remainingTimeInMs);
-        }
+		CookieUtils.addRefreshToken(res, token.refreshToken(), refreshTokenMaxAgeInSeconds);
+		CookieUtils.addAccessToken(res, token.accessToken(), accessTokenMaxAgeInSeconds);
+		return ResponseEntity.ok(ApiResponse.of());
+	}
 
-        String cookie = cookieService.deleteRefreshToken().toString();
-        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, cookie).build();
-    }
+	@PostMapping("/logout")
+	@Operation(summary = "Logout")
+	ResponseEntity<ApiResponse<String>> logout(
+		HttpServletResponse res,
+		@AuthenticationPrincipal UserPrincipal user,
+		@CookieValue(name = AppConstant.REFRESH_TOKEN_COOKIE_NAME, required = false) String tokenStr
+	) {
+		long remainingTimeInMs = user.getExpiresAt().toEpochMilli() - System.currentTimeMillis();
+		if (remainingTimeInMs > 0) {
+			tokenBlacklistService.addToBlacklist(user.getJwtId(), remainingTimeInMs);
+		}
 
-    // TODO: In the future add device checking (session) feature
+		tokenService.revoke(tokenStr);
+		CookieUtils.deleteRefreshToken(res);
+		CookieUtils.deleteAccessToken(res);
 
+		return ResponseEntity.ok(ApiResponse.of());
+	}
 }

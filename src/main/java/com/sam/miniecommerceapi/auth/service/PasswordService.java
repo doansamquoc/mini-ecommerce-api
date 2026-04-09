@@ -2,12 +2,11 @@ package com.sam.miniecommerceapi.auth.service;
 
 import com.sam.miniecommerceapi.auth.dto.request.ForgotPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
-import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 
 public interface PasswordService {
-    void forgotPassword(ForgotPasswordRequest r, String ip, String agent);
+	void forgotPassword(ForgotPasswordRequest req);
 
-    void resetPassword(ResetPasswordRequest r, String ip, String agent);
+	void resetPassword(ResetPasswordRequest req);
 
-    PasswordResetToken validateResetToken(String resetTokenStr);
+	void validateResetToken(String resetTokenStr);
 }
