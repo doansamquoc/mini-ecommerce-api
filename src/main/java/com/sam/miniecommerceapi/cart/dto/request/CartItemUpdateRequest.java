@@ -3,9 +3,9 @@ package com.sam.miniecommerceapi.cart.dto.request;
 import jakarta.validation.constraints.NotNull;
 
 public record CartItemUpdateRequest(
-        @NotNull(message = "message.validation.id_required")
-        Long variantId,
+	@NotNull(message = "cart.product_id.required")
+	Long variantId,
 
-        @NotNull(message = "message.validation.quantity_required")
-        int quantity
+	@NotNull(message = "cart.quantity.required")
+	int quantity
 ) {}

@@ -10,6 +10,6 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SortMeta {
-    String sortBy;
-    Sort.Direction direction;
+	String sortBy;
+	Sort.Direction direction;
 }

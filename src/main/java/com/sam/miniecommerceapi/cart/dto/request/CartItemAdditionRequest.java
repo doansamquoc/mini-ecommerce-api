@@ -4,10 +4,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record CartItemAdditionRequest(
-        @NotNull(message = "message.validation.id_required")
-        Long variantId,
+	@NotNull(message = "cart.product_id.required")
+	Long variantId,
 
-        @NotNull(message = "message.validation.quantity_required")
-        @Min(value = 1, message = "message.validation.quantity_min")
-        int quantity
+	@NotNull(message = "cart.quantity.required")
+	@Min(value = 1, message = "cart.quantity.min")
+	int quantity
 ) {}

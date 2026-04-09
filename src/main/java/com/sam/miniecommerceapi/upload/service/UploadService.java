@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 public interface UploadService {
-    SignatureResponse generateSignature();
+	SignatureResponse generateSignature();
 
-    Map upload(MultipartFile file);
+	Map upload(MultipartFile file);
 }

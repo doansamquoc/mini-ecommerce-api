@@ -1,6 +1,9 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
 import com.github.slugify.Slugify;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.common.util.UUIDUtils;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
@@ -11,9 +14,6 @@ import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.repository.ProductRepository;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import com.sam.miniecommerceapi.product.service.ProductService;
-import com.sam.miniecommerceapi.common.constant.ErrorCode;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.common.util.UUIDUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

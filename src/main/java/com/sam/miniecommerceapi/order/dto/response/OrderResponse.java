@@ -17,15 +17,15 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponse {
-    Long id;
-    BigDecimal totalPrice;
-    Instant orderDate;
-    OrderStatus status;
-    String shippingAddress;
-    String phoneNumber;
-    PaymentMethod paymentMethod;
-    List<OrderItemResponse> orderItems;
-    String canceledReason;
-    Instant canceledAt;
-    Instant deliveredAt;
+	Long id;
+	BigDecimal totalPrice;
+	Instant orderDate;
+	OrderStatus status;
+	String shippingAddress;
+	String phoneNumber;
+	PaymentMethod paymentMethod;
+	List<OrderItemResponse> orderItems;
+	String canceledReason;
+	Instant canceledAt;
+	Instant deliveredAt;
 }

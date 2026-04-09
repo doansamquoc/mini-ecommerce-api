@@ -11,10 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageMeta {
-    int currentPage;
-    int pageNumber;
-    int pageSize;
-    long totalElements;
-    int totalPages;
-    List<SortMeta> sort;
+	int currentPage;
+	int pageNumber;
+	int pageSize;
+	long totalElements;
+	int totalPages;
+	List<SortMeta> sort;
 }

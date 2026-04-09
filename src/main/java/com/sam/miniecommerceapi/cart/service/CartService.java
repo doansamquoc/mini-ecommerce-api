@@ -5,11 +5,11 @@ import com.sam.miniecommerceapi.cart.entity.Cart;
 import org.springframework.data.domain.Pageable;
 
 public interface CartService {
-    Cart createCart(Long userId);
+	Cart createCart(Long userId);
 
-    Cart getAllOrCreateCart(Long userId);
+	Cart getAllOrCreateCart(Long userId);
 
-    Cart getOrCreateCart(Long userId);
+	Cart getOrCreateCart(Long userId);
 
-    CartResponse getCart(Long userId, Pageable pageable);
+	CartResponse getCart(Long userId, Pageable pageable);
 }

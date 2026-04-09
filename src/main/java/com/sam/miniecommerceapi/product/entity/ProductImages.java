@@ -14,11 +14,11 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "product_images")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductImages extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    Product product;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", nullable = false)
+	Product product;
 
-    String imageUrl;
+	String imageUrl;
 
-    Integer sortOrder;
+	Integer sortOrder;
 }

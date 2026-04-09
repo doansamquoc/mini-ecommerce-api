@@ -1,5 +1,7 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
@@ -10,8 +12,6 @@ import com.sam.miniecommerceapi.product.repository.VariantRepository;
 import com.sam.miniecommerceapi.product.service.AttributeDefinitionService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import com.sam.miniecommerceapi.product.service.VariantService;
-import com.sam.miniecommerceapi.common.constant.ErrorCode;
-import com.sam.miniecommerceapi.common.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

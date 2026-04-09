@@ -11,12 +11,12 @@ import org.hibernate.validator.constraints.URL;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryUpdateRequest {
-    @Size(min = 2, max = 64, message = "category.validation.name_size")
-    String name;
+	@Size(min = 2, max = 64, message = "category.validation.name_size")
+	String name;
 
-    @Size(min = 2, max = 64, message = "category.validation.slug_size")
-    String slug;
+	@Size(min = 2, max = 64, message = "category.validation.slug_size")
+	String slug;
 
-    @URL(message = "category.validation.image_invalid_url")
-    String imageUrl;
+	@URL(message = "category.validation.image_invalid_url")
+	String imageUrl;
 }

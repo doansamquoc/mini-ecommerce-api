@@ -14,9 +14,9 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItemResponse {
-    Long id;
-    VariantResponse variant;
-    Integer quantity;
-    BigDecimal unitPrice;
-    BigDecimal totalPrice;
+	Long id;
+	VariantResponse variant;
+	Integer quantity;
+	BigDecimal unitPrice;
+	BigDecimal totalPrice;
 }

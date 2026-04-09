@@ -7,27 +7,27 @@ import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;
 import com.sam.miniecommerceapi.product.entity.Category;
 
 public interface CategoryService {
-    PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize);
+	PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize);
 
-    CategoryResponse getCategoryById(Long id);
+	CategoryResponse getCategoryById(Long id);
 
-    CategoryResponse getCategorySlug(String slug);
+	CategoryResponse getCategorySlug(String slug);
 
-    CategoryResponse getCategoryByName(String name);
+	CategoryResponse getCategoryByName(String name);
 
-    CategoryResponse createCategory(CategoryCreationRequest r);
+	CategoryResponse createCategory(CategoryCreationRequest r);
 
-    CategoryResponse updateCategory(Long id, CategoryUpdateRequest r);
+	CategoryResponse updateCategory(Long id, CategoryUpdateRequest r);
 
-    Category getReference(Long id);
+	Category getReference(Long id);
 
-    Category findById(Long id);
+	Category findById(Long id);
 
-    Category findByName(String name);
+	Category findByName(String name);
 
-    Category findBySlug(String slug);
+	Category findBySlug(String slug);
 
-    boolean existedByName(String name);
+	boolean existedByName(String name);
 
-    boolean existedBySlug(String slug);
+	boolean existedBySlug(String slug);
 }

@@ -1,10 +1,10 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.service.ProductSearchService;
-import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AccessLevel;
@@ -22,56 +22,49 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductSearchServiceImpl implements ProductSearchService {
-    @PersistenceContext
-    EntityManager entityManager;
-    ProductMapper mapper;
+	@PersistenceContext
+	EntityManager entityManager;
+	ProductMapper mapper;
 
-    @Override
-    public PageResponse<ProductResponse> searchProducts(
-            String keyword,
-            BigDecimal minPrice,
-            String categoryName,
-            Pageable pageable
-    ) {
-        SearchSession searchSession = Search.session(entityManager);
+	@Override
+	public PageResponse<ProductResponse> searchProducts(
+		String keyword,
+		BigDecimal minPrice,
+		String categoryName,
+		Pageable pageable
+	) {
+		SearchSession searchSession = Search.session(entityManager);
 
-        var result = searchSession.search(Product.class).where(f -> {
+		var result = searchSession.search(Product.class).where(f -> {
+			var bool = f.bool();
+			boolean hasCondition = false;
 
-            var bool = f.bool();
-            boolean hasCondition = false;
+			if (keyword != null && !keyword.isBlank()) {
+				int fuzziness = keyword.length() > 3 ? 2 : 0;
+				bool.must(f.match().fields("name", "description").matching(keyword).fuzzy(fuzziness).toPredicate());
+				hasCondition = true;
+			}
 
-            if (keyword != null && !keyword.isBlank()) {
-                int fuzziness = keyword.length() > 3 ? 2 : 0;
-                bool.must(f.match()
-                        .fields("name", "description")
-                        .matching(keyword)
-                        .fuzzy(fuzziness)
-                        .toPredicate()
-                );
-                hasCondition = true;
-            }
+			if (minPrice != null) {
+				bool.must(f.match().field("minPrice").matching(minPrice).toPredicate());
+				hasCondition = true;
+			}
 
-            if (minPrice != null) {
-                bool.must(f.match().field("minPrice").matching(minPrice).toPredicate());
-                hasCondition = true;
-            }
+			if (categoryName != null && !categoryName.isBlank()) {
+				bool.must(f.match().field("category.name").matching(categoryName).toPredicate());
+				hasCondition = true;
+			}
 
-            if (categoryName != null && !categoryName.isBlank()) {
-                bool.must(f.match().field("category.name").matching(categoryName).toPredicate());
-                hasCondition = true;
-            }
+			if (!hasCondition) return f.matchAll();
 
-            if (!hasCondition) return f.matchAll();
+			return bool;
+		}).fetch((int) pageable.getOffset(), pageable.getPageSize());
 
-            return bool;
+		List<ProductResponse> content = result.hits().stream().map(this::toResponse).toList();
+		return PageResponse.fromSearchResult(content, result.total().hitCount(), pageable);
+	}
 
-        }).fetch((int) pageable.getOffset(), pageable.getPageSize());
-
-        List<ProductResponse> content = result.hits().stream().map(this::toResponse).toList();
-        return PageResponse.fromSearchResult(content, result.total().hitCount(), pageable);
-    }
-
-    private ProductResponse toResponse(Product product) {
-        return mapper.toResponse(product);
-    }
+	private ProductResponse toResponse(Product product) {
+		return mapper.toResponse(product);
+	}
 }

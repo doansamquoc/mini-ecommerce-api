@@ -20,29 +20,29 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-    JwtGrantedAuthoritiesConverter authoritiesConverter;
+	JwtGrantedAuthoritiesConverter authoritiesConverter;
 
-    public JwtConverter() {
-        this.authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        this.authoritiesConverter.setAuthoritiesClaimName(AppConstant.JWT_AUTHORIZE_CLAIM_NAME);
-        this.authoritiesConverter.setAuthorityPrefix(AppConstant.JWT_AUTHORIZE_PREFIX);
-    }
+	public JwtConverter() {
+		this.authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+		this.authoritiesConverter.setAuthoritiesClaimName(AppConstant.JWT_AUTHORIZE_CLAIM_NAME);
+		this.authoritiesConverter.setAuthorityPrefix(AppConstant.JWT_AUTHORIZE_PREFIX);
+	}
 
-    @Override
-    public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
-        Collection<GrantedAuthority> authorities = this.authoritiesConverter.convert(jwt);
+	@Override
+	public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
+		Collection<GrantedAuthority> authorities = this.authoritiesConverter.convert(jwt);
 
-        Long id = Long.valueOf(jwt.getSubject());
-        String username = jwt.getClaimAsString("username");
+		Long id = Long.valueOf(jwt.getSubject());
+		String username = jwt.getClaimAsString("username");
 
-        UserPrincipal principal = UserPrincipal.builder()
-                .id(id)
-                .username(username)
-                .authorities(authorities)
-                .jwtId(jwt.getId())
-                .expiresAt(jwt.getExpiresAt())
-                .build();
+		UserPrincipal principal = UserPrincipal.builder()
+			.id(id)
+			.username(username)
+			.authorities(authorities)
+			.jwtId(jwt.getId())
+			.expiresAt(jwt.getExpiresAt())
+			.build();
 
-        return new UsernamePasswordAuthenticationToken(principal, jwt, authorities);
-    }
+		return new UsernamePasswordAuthenticationToken(principal, jwt, authorities);
+	}
 }

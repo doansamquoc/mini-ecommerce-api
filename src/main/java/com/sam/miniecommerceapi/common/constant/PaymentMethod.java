@@ -6,6 +6,4 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public enum PaymentMethod {
-	COD, PAYPAL, STRIPE;
-}
+public enum PaymentMethod {COD, PAYPAL, STRIPE}

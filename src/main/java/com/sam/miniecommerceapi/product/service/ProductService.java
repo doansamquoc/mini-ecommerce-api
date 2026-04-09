@@ -9,21 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ProductService {
 
-    ProductResponse createProduct(ProductCreationRequest request);
+	ProductResponse createProduct(ProductCreationRequest request);
 
-    ProductResponse updateProduct(Long id, ProductUpdateRequest request);
+	ProductResponse updateProduct(Long id, ProductUpdateRequest request);
 
-    @Transactional(readOnly = true)
-    ProductDetailsResponse getProductDetailsById(Long id);
+	@Transactional(readOnly = true)
+	ProductDetailsResponse getProductDetailsById(Long id);
 
-    @Transactional(readOnly = true)
-    ProductDetailsResponse getProductDetailsBySlug(String slug);
+	@Transactional(readOnly = true)
+	ProductDetailsResponse getProductDetailsBySlug(String slug);
 
-    @Transactional
-    void deleteProduct(Long id);
+	@Transactional
+	void deleteProduct(Long id);
 
-    @Transactional
-    void deleteAllProduct();
+	@Transactional
+	void deleteAllProduct();
 
-    Product findById(Long id);
+	Product findById(Long id);
 }

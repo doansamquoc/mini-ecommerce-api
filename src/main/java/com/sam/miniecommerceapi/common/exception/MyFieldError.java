@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MyFieldError {
-    String field;
-    String message;
+	String field;
+	String message;
 }

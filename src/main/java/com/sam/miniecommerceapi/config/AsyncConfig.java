@@ -10,14 +10,14 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-    @Bean(name = "emailExecutor")
-    public Executor emailExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("EmailAsync-");
-        executor.initialize();
-        return executor;
-    }
+	@Bean(name = "emailExecutor")
+	public Executor emailExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(5);
+		executor.setMaxPoolSize(10);
+		executor.setQueueCapacity(100);
+		executor.setThreadNamePrefix("EmailAsync-");
+		executor.initialize();
+		return executor;
+	}
 }

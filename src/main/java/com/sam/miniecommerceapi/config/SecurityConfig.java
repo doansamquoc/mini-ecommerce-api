@@ -1,10 +1,10 @@
 package com.sam.miniecommerceapi.config;
 
 import com.sam.miniecommerceapi.auth.config.OAuth2SuccessHandler;
-import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;
-import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAccessDeniedHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAuthenticationEntryPoint;
+import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;
+import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,40 +25,40 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
-    JwtAccessDeniedHandler accessDeniedHandler;
-    CustomOAuth2UserService oAuth2UserService;
-    OAuth2SuccessHandler oAuth2SuccessHandler;
-    JwtAuthenticationEntryPoint authenticationEntryPoint;
-    JwtConverter jwtConverter;
-    JwtDecoder jwtDecoder;
+	JwtAccessDeniedHandler accessDeniedHandler;
+	CustomOAuth2UserService oAuth2UserService;
+	OAuth2SuccessHandler oAuth2SuccessHandler;
+	JwtAuthenticationEntryPoint authenticationEntryPoint;
+	JwtConverter jwtConverter;
+	JwtDecoder jwtDecoder;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors(Customizer.withDefaults());
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.authorizeHttpRequests(
-                auth -> {
-                    auth.requestMatchers(AppConstant.PUBLIC_ENDPOINTS).permitAll();
-                    auth.requestMatchers(AppConstant.SWAGGER_ENDPOINTS).permitAll();
-                    auth.requestMatchers(AppConstant.ADMIN_ENDPOINTS).hasRole("ADMIN");
-                    auth.anyRequest().authenticated();
-                });
-        httpSecurity.oauth2Login(oauth2 -> {
-            oauth2.userInfoEndpoint(u -> u.userService(oAuth2UserService));
-            oauth2.successHandler(oAuth2SuccessHandler);
-        });
-        httpSecurity.oauth2ResourceServer(
-                oauth2 -> {
-                    oauth2.authenticationEntryPoint(authenticationEntryPoint);
-                    oauth2.accessDeniedHandler(accessDeniedHandler);
-                    oauth2.jwt(
-                            jwt -> {
-                                jwt.decoder(jwtDecoder);
-                                jwt.jwtAuthenticationConverter(jwtConverter);
-                            });
-                });
-        return httpSecurity.build();
-    }
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.cors(Customizer.withDefaults());
+		httpSecurity.csrf(AbstractHttpConfigurer::disable);
+		httpSecurity.sessionManagement(
+			session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		httpSecurity.authorizeHttpRequests(
+			auth -> {
+				auth.requestMatchers(AppConstant.PUBLIC_ENDPOINTS).permitAll();
+				auth.requestMatchers(AppConstant.SWAGGER_ENDPOINTS).permitAll();
+				auth.requestMatchers(AppConstant.ADMIN_ENDPOINTS).hasRole("ADMIN");
+				auth.anyRequest().authenticated();
+			});
+		httpSecurity.oauth2Login(oauth2 -> {
+			oauth2.userInfoEndpoint(u -> u.userService(oAuth2UserService));
+			oauth2.successHandler(oAuth2SuccessHandler);
+		});
+		httpSecurity.oauth2ResourceServer(
+			oauth2 -> {
+				oauth2.authenticationEntryPoint(authenticationEntryPoint);
+				oauth2.accessDeniedHandler(accessDeniedHandler);
+				oauth2.jwt(
+					jwt -> {
+						jwt.decoder(jwtDecoder);
+						jwt.jwtAuthenticationConverter(jwtConverter);
+					});
+			});
+		return httpSecurity.build();
+	}
 }

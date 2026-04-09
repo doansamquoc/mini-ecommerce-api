@@ -11,14 +11,14 @@ import java.util.Optional;
 
 @Repository
 public interface AttributeDefinitionRepository extends JpaRepository<AttributeDefinition, Long> {
-    boolean existsByCategoryIdAndAttributeKey(Long categoryId, String attributeKey);
+	boolean existsByCategoryIdAndAttributeKey(Long categoryId, String attributeKey);
 
-    Optional<AttributeDefinition> findByAttributeKey(String attributeKey);
+	Optional<AttributeDefinition> findByAttributeKey(String attributeKey);
 
-    void deleteByCategoryId(Long categoryId);
+	void deleteByCategoryId(Long categoryId);
 
-    List<AttributeDefinition> findAllByCategoryId(Long categoryId);
+	List<AttributeDefinition> findAllByCategoryId(Long categoryId);
 
-    @Query("SELECT ad.attributeKey FROM AttributeDefinition ad WHERE ad.category.id = :categoryId")
-    List<String> findAttributeKeysByCategoryId(@Param("categoryId") Long categoryId);
+	@Query("SELECT ad.attributeKey FROM AttributeDefinition ad WHERE ad.category.id = :categoryId")
+	List<String> findAttributeKeysByCategoryId(@Param("categoryId") Long categoryId);
 }

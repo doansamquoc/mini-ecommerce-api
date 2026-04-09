@@ -6,6 +6,4 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum SocialProvider {
-    GOOGLE, FACEBOOK
-}
+public enum SocialProvider {GOOGLE, FACEBOOK}

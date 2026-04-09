@@ -13,23 +13,17 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Modifying
-    @Query("DELETE FROM Cart c WHERE c.id = :cartId AND c.user.id = :userId")
-    void deleteCart(@Param("cartId") Long cartId, @Param("userId") Long userId);
+	@Modifying
+	@Query("DELETE FROM Cart c WHERE c.id = :cartId AND c.user.id = :userId")
+	void deleteCart(@Param("cartId") Long cartId, @Param("userId") Long userId);
 
-    void deleteCartByUserId(Long userId);
+	void deleteCartByUserId(Long userId);
 
-    boolean existsByUserId(Long userId);
+	boolean existsByUserId(Long userId);
 
-    @EntityGraph(attributePaths = {
-            "cartItems",
-            "cartItems.variant",
-            "cartItems.variant.product",
-            "cartItems.variant.variantAttributes",
-            "cartItems.variant.variantAttributes.attribute"
-    })
-    @Query("SELECT DISTINCT c FROM Cart c WHERE c.user.id = :userId")
-    Optional<Cart> findFullByUserId(@Param("userId") Long userId);
+	@EntityGraph(attributePaths = {"cartItems", "cartItems.variant", "cartItems.variant.product"})
+	@Query("SELECT DISTINCT c FROM Cart c WHERE c.user.id = :userId")
+	Optional<Cart> findFullByUserId(@Param("userId") Long userId);
 
-    Long user(User user);
+	Long user(User user);
 }

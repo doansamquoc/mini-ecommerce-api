@@ -1,12 +1,12 @@
 package com.sam.miniecommerceapi.notification.service.impl;
 
+import com.sam.miniecommerceapi.common.util.FileUtils;
 import com.sam.miniecommerceapi.config.AppProperties;
 import com.sam.miniecommerceapi.notification.dto.request.BulkEmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.EmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.TemplateEmailRequest;
 import com.sam.miniecommerceapi.notification.exception.BulkEmailException;
 import com.sam.miniecommerceapi.notification.service.EmailService;
-import com.sam.miniecommerceapi.common.util.FileUtils;
 import gg.jte.TemplateEngine;
 import gg.jte.TemplateOutput;
 import gg.jte.output.StringOutput;
@@ -33,108 +33,108 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GmailServiceImpl implements EmailService {
-    JavaMailSender sender;
-    TemplateEngine engine;
-    AppProperties properties;
+	JavaMailSender sender;
+	TemplateEngine engine;
+	AppProperties properties;
 
-    @Override
-    @Async("emailExecutor")
-    public void sendSimpleEmail(EmailRequest request) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(properties.getEmail().getFrom());
-            message.setTo(request.to());
-            message.setSubject(request.subject());
-            message.setText(request.body());
+	@Override
+	@Async("emailExecutor")
+	public void sendSimpleEmail(EmailRequest request) {
+		try {
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setFrom(properties.getEmail().getFrom());
+			message.setTo(request.to());
+			message.setSubject(request.subject());
+			message.setText(request.body());
 
-            if (request.cc() != null) message.setCc(request.cc());
-            if (request.bcc() != null) message.setBcc(request.bcc());
+			if (request.cc() != null) message.setCc(request.cc());
+			if (request.bcc() != null) message.setBcc(request.bcc());
 
-            sender.send(message);
-            log.info("Simple mail sent to: {}", request.to());
-        } catch (MailException e) {
-            log.error("Failed to send simple email", e);
-        }
-    }
+			sender.send(message);
+			log.info("Simple mail sent to: {}", request.to());
+		} catch (MailException e) {
+			log.error("Failed to send simple email", e);
+		}
+	}
 
-    @Override
-    @Async("emailExecutor")
-    public void sendHtmlEmail(EmailRequest request) {
-        try {
-            MimeMessage message = sender.createMimeMessage();
-            MimeMessageHelper helper = createMimeMessageHelper(message, request);
-            helper.setReplyTo(properties.getEmail().getReplyTo());
+	@Override
+	@Async("emailExecutor")
+	public void sendHtmlEmail(EmailRequest request) {
+		try {
+			MimeMessage message = sender.createMimeMessage();
+			MimeMessageHelper helper = createMimeMessageHelper(message, request);
+			helper.setReplyTo(properties.getEmail().getReplyTo());
 
-            sender.send(message);
-            log.info("HTML email sent to: {}", request.to());
-        } catch (MessagingException e) {
-            log.error("Failed to send HTML email", e);
-            throw new RuntimeException(e);
-        }
-    }
+			sender.send(message);
+			log.info("HTML email sent to: {}", request.to());
+		} catch (MessagingException e) {
+			log.error("Failed to send HTML email", e);
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    @Async("emailExecutor")
-    public void sendTemplateEmail(TemplateEmailRequest request) {
-        try {
-            TemplateOutput output = new StringOutput();
-            engine.render(request.templateName(), request.variables(), output);
-            sendHtmlEmail(new EmailRequest(request.to(), request.subject(), output.toString(), null, null, null, true));
-        } catch (MailException e) {
-            log.error("Failed to send template email", e);
-        }
-    }
+	@Override
+	@Async("emailExecutor")
+	public void sendTemplateEmail(TemplateEmailRequest request) {
+		try {
+			TemplateOutput output = new StringOutput();
+			engine.render(request.templateName(), request.variables(), output);
+			sendHtmlEmail(new EmailRequest(request.to(), request.subject(), output.toString(), null, null, null, true));
+		} catch (MailException e) {
+			log.error("Failed to send template email", e);
+		}
+	}
 
-    @Override
-    @Async("emailExecutor")
-    public void sendWithAttachment(EmailRequest request, byte[] attachment, String attachName) {
-        try {
-            log.info("Preparing send an email to: {}", request.to());
-            MimeMessage message = sender.createMimeMessage();
-            MimeMessageHelper helper = createMimeMessageHelper(message, request);
-            helper.addAttachment(attachName, new ByteArrayResource(attachment), FileUtils.getContentType(attachName));
+	@Override
+	@Async("emailExecutor")
+	public void sendWithAttachment(EmailRequest request, byte[] attachment, String attachName) {
+		try {
+			log.info("Preparing send an email to: {}", request.to());
+			MimeMessage message = sender.createMimeMessage();
+			MimeMessageHelper helper = createMimeMessageHelper(message, request);
+			helper.addAttachment(attachName, new ByteArrayResource(attachment), FileUtils.getContentType(attachName));
 
-            sender.send(message);
-            log.info("Email with attachment sent to: {}", request.to());
-        } catch (MessagingException e) {
-            log.error("Failed to send email with attachment", e);
-            throw new RuntimeException(e);
-        }
-    }
+			sender.send(message);
+			log.info("Email with attachment sent to: {}", request.to());
+		} catch (MessagingException e) {
+			log.error("Failed to send email with attachment", e);
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    @Async("emailExecutor")
-    public void sendBulkEmail(BulkEmailRequest request) {
-        List<String> failedRecipients = new ArrayList<>();
+	@Override
+	@Async("emailExecutor")
+	public void sendBulkEmail(BulkEmailRequest request) {
+		List<String> failedRecipients = new ArrayList<>();
 
-        for (String recipient : request.recipients()) {
-            try {
-                sendTemplateEmail(
-                        new TemplateEmailRequest(
-                                recipient,
-                                request.subject(),
-                                request.templateName(),
-                                request.variables()
-                        )
-                );
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                failedRecipients.add(recipient);
-                log.error("Failed to send email to: {}", recipient, e);
-            }
-        }
+		for (String recipient : request.recipients()) {
+			try {
+				sendTemplateEmail(
+					new TemplateEmailRequest(
+						recipient,
+						request.subject(),
+						request.templateName(),
+						request.variables()
+					)
+				);
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				failedRecipients.add(recipient);
+				log.error("Failed to send email to: {}", recipient, e);
+			}
+		}
 
-        if (!failedRecipients.isEmpty()) {
-            throw new BulkEmailException("Failed to send bulk mail to: " + failedRecipients);
-        }
-    }
+		if (!failedRecipients.isEmpty()) {
+			throw new BulkEmailException("Failed to send bulk mail to: " + failedRecipients);
+		}
+	}
 
-    private MimeMessageHelper createMimeMessageHelper(MimeMessage message, EmailRequest request) throws MessagingException {
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
-        helper.setFrom(properties.getEmail().getFrom());
-        helper.setTo(request.to());
-        helper.setSubject(request.subject());
-        helper.setText(request.body(), true);
-        return helper;
-    }
+	private MimeMessageHelper createMimeMessageHelper(MimeMessage message, EmailRequest request) throws MessagingException {
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
+		helper.setFrom(properties.getEmail().getFrom());
+		helper.setTo(request.to());
+		helper.setSubject(request.subject());
+		helper.setText(request.body(), true);
+		return helper;
+	}
 }

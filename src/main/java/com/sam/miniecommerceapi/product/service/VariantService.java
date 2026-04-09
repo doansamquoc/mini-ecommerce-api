@@ -9,23 +9,23 @@ import java.util.List;
 
 public interface VariantService {
 
-    VariantResponse update(Long productId, Long variantId, VariantRequest request);
+	VariantResponse update(Long productId, Long variantId, VariantRequest request);
 
-    VariantResponse create(Long productId, VariantCreationRequest request);
+	VariantResponse create(Long productId, VariantCreationRequest request);
 
-    VariantResponse read(Long productId, Long variantId);
+	VariantResponse read(Long productId, Long variantId);
 
-    List<VariantResponse> readAll(Long productId);
+	List<VariantResponse> readAll(Long productId);
 
-    void delete(Long productId, Long variantId);
+	void delete(Long productId, Long variantId);
 
-    void deleteAll(Long productId);
+	void deleteAll(Long productId);
 
-    int deductStock(Long id, int quantity);
+	int deductStock(Long id, int quantity);
 
-    void increaseStock(Long id, int quantity);
+	void increaseStock(Long id, int quantity);
 
-    Variant findById(Long variantId);
+	Variant findById(Long variantId);
 
-    Variant findGraphById(Long id);
+	Variant findGraphById(Long id);
 }

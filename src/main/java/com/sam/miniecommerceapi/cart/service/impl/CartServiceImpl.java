@@ -47,9 +47,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public CartResponse getCart(Long userId, Pageable pageable) {
 		Cart cart = getAllOrCreateCart(userId);
-		Set<CartItemResponse> itemResponses = cart.getCartItems().stream()
-			.map(itemMapper::toResponse)
-			.collect(Collectors.toSet());
+		Set<CartItemResponse> itemResponses = cart.getCartItems().stream().map(itemMapper::toResponse).collect(Collectors.toSet());
 		return new CartResponse(cart.getId(), userId, itemResponses, cart.getTotalItems(), cart.getTotalPrice());
 	}
 

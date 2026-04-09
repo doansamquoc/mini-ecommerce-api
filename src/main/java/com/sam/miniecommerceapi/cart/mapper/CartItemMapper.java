@@ -4,25 +4,26 @@ import com.sam.miniecommerceapi.cart.dto.request.CartItemAdditionRequest;
 import com.sam.miniecommerceapi.cart.dto.response.CartItemResponse;
 import com.sam.miniecommerceapi.cart.entity.CartItem;
 import org.hibernate.Hibernate;
-import org.mapstruct.Condition;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(
+	componentModel = "spring",
+	unmappedTargetPolicy = ReportingPolicy.IGNORE,
+	nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface CartItemMapper {
-    @Condition
-    default boolean isInitialized(Object object) {
-        return Hibernate.isInitialized(object);
-    }
+	@Condition
+	default boolean isInitialized(Object object) {
+		return Hibernate.isInitialized(object);
+	}
 
-    CartItem toEntity(CartItemAdditionRequest request);
+	CartItem toEntity(CartItemAdditionRequest request);
 
-    @Mapping(source = "variant.id", target = "variantId")
-    @Mapping(source = "variant.product.name", target = "productName")
-    @Mapping(source = "variant.sku", target = "sku")
-    @Mapping(source = "variant.imageUrl", target = "imageUrl")
-    @Mapping(source = "variant.price", target = "price")
-    @Mapping(target = "subTotal", expression = "java(cartItem.getSubTotal())")
-    CartItemResponse toResponse(CartItem cartItem);
+	@Mapping(source = "variant.id", target = "variantId")
+	@Mapping(source = "variant.product.name", target = "productName")
+	@Mapping(source = "variant.sku", target = "sku")
+	@Mapping(source = "variant.imageUrl", target = "imageUrl")
+	@Mapping(source = "variant.price", target = "price")
+	@Mapping(target = "subTotal", expression = "java(cartItem.getSubTotal())")
+	CartItemResponse toResponse(CartItem cartItem);
 }

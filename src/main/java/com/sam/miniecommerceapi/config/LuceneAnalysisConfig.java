@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class LuceneAnalysisConfig implements LuceneAnalysisConfigurer {
-    @Override
-    public void configure(LuceneAnalysisConfigurationContext context) {
-        log.info("Lucene Analysis Configured");
-        context.analyzer("name_analyzer").custom().tokenizer("standard").tokenFilter("lowercase").tokenFilter("asciiFolding");
-    }
+	@Override
+	public void configure(LuceneAnalysisConfigurationContext context) {
+		log.info("Lucene Analysis Configured");
+		context.analyzer("name_analyzer").custom().tokenizer("standard").tokenFilter("lowercase").tokenFilter("asciiFolding");
+	}
 }

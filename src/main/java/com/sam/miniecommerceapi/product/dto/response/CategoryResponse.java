@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryResponse {
-    Long id;
-    String name;
-    String slug;
-    String imageUrl;
+	Long id;
+	String name;
+	String slug;
+	String imageUrl;
 }

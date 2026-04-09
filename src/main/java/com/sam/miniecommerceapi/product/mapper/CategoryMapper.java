@@ -7,12 +7,17 @@ import com.sam.miniecommerceapi.product.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(
+	componentModel = "spring",
+	unmappedTargetPolicy = ReportingPolicy.IGNORE,
+	nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface CategoryMapper {
-    Category toEntity(CategoryCreationRequest request);
+	Category toEntity(CategoryCreationRequest request);
 
-    Category toEntity(CategoryUpdateRequest request, @MappingTarget Category category);
+	Category toEntity(CategoryUpdateRequest request, @MappingTarget Category category);
 
-    CategoryResponse toResponse(Category category);
+	CategoryResponse toResponse(Category category);
 }

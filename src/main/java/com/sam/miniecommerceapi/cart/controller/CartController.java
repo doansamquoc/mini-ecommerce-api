@@ -37,7 +37,7 @@ public class CartController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
 	}
 
-	@Operation(summary = "Get all products in cart by current user")
+	@Operation(summary = "Get all products in cart by current user.")
 	@GetMapping
 	ResponseEntity<ApiResponse<CartResponse>> getProductsInCart(
 		@CurrentUserId Long userId,

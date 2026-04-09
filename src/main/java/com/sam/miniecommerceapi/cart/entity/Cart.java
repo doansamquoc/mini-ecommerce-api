@@ -23,8 +23,8 @@ public class Cart extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	User user;
 
-	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
+	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	Set<CartItem> cartItems = new LinkedHashSet<>();
 
 	public BigDecimal getTotalPrice() {

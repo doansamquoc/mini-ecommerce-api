@@ -20,20 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ConditionalOnBooleanProperty(name = "app.search.reindex-on-startup")
 public class HibernateSearchIndexer implements CommandLineRunner {
-    EntityManager manager;
+	EntityManager manager;
 
-    @Override
-    @Transactional
-    public void run(String... args) {
-        try {
-            log.info("Starting mass indexing...");
-            SearchSession searchSession = Search.session(manager);
-            MassIndexer indexer = searchSession.massIndexer(Product.class).threadsToLoadObjects(7);
-            indexer.startAndWait();
-            log.info("Mass indexing completed!");
-        } catch (InterruptedException ie) {
-            log.error("Indexing was interrupted", ie);
-            Thread.currentThread().interrupt();
-        }
-    }
+	@Override
+	@Transactional
+	public void run(String... args) {
+		try {
+			log.info("Starting mass indexing...");
+			SearchSession searchSession = Search.session(manager);
+			MassIndexer indexer = searchSession.massIndexer(Product.class).threadsToLoadObjects(7);
+			indexer.startAndWait();
+			log.info("Mass indexing completed!");
+		} catch (InterruptedException ie) {
+			log.error("Indexing was interrupted", ie);
+			Thread.currentThread().interrupt();
+		}
+	}
 }

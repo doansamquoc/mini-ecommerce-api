@@ -5,11 +5,11 @@ import com.sam.miniecommerceapi.order.entity.OrderItem;
 import java.util.List;
 
 public interface OrderItemService {
-    OrderItem save(OrderItem orderItem);
+	OrderItem save(OrderItem orderItem);
 
-    List<OrderItem> saveAll(List<OrderItem> orderItems);
+	List<OrderItem> saveAll(List<OrderItem> orderItems);
 
-    void delete(OrderItem orderItem);
+	void delete(OrderItem orderItem);
 
-    void deleteAll(List<OrderItem> orderItems);
+	void deleteAll(List<OrderItem> orderItems);
 }

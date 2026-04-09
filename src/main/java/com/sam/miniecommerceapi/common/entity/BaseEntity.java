@@ -17,16 +17,16 @@ import java.time.Instant;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class BaseEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
-  Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
+	Long id;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  Instant createdAt;
+	@CreationTimestamp
+	@Column(name = "created_at", updatable = false)
+	Instant createdAt;
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  Instant updatedAt;
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	Instant updatedAt;
 }

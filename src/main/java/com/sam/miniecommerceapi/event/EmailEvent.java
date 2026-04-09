@@ -11,7 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class EmailEvent {
-    String to;
-    String subject;
-    Map<String, Object> variables;
+	String to;
+	String subject;
+	Map<String, Object> variables;
 }

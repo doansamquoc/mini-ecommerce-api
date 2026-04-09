@@ -11,10 +11,10 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
-    Long id;
-    String username;
-    String displayName;
-    String email;
-    String phone;
-    String createdAt;
+	Long id;
+	String username;
+	String displayName;
+	String email;
+	String phone;
+	String createdAt;
 }

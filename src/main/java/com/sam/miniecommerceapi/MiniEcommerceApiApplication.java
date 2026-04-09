@@ -7,9 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @SpringBootApplication
 public class MiniEcommerceApiApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(MiniEcommerceApiApplication.class, args);
-    }
-
+	public static void main(String[] args) {
+		SpringApplication.run(MiniEcommerceApiApplication.class, args);
+	}
 }

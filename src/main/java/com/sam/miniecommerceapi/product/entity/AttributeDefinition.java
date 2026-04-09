@@ -13,22 +13,22 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "attribute_definitions", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"category", "attribute_key"})
+	@UniqueConstraint(columnNames = {"category", "attribute_key"})
 })
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AttributeDefinition extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id", nullable = false)
-    Category category;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "category_id", nullable = false)
+	Category category;
 
-    @Column(name = "attribute_key", nullable = false)
-    String attributeKey;
-    String attributeName;
+	@Column(name = "attribute_key", nullable = false)
+	String attributeKey;
+	String attributeName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "data_type")
-    DataType dataType;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "data_type")
+	DataType dataType;
 
-    @Builder.Default
-    boolean required = false;
+	@Builder.Default
+	boolean required = false;
 }

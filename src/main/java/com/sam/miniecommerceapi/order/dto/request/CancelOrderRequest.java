@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CancelOrderRequest {
-    @NotBlank(message = "ORDER_CANCELLATION_REASEON_CANNOT_BE_NULL")
-    String cancellationReason;
+	@NotBlank(message = "ORDER_CANCELLATION_REASEON_CANNOT_BE_NULL")
+	String cancellationReason;
 }
