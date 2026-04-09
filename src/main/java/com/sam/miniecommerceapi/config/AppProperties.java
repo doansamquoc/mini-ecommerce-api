@@ -8,6 +8,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Configuration
@@ -16,6 +18,9 @@ import org.springframework.context.annotation.Configuration;
 public class AppProperties {
 	@NestedConfigurationProperty
 	final Email email = new Email();
+
+	@NestedConfigurationProperty
+	final Oauth2 oauth2 = new Oauth2();
 	String secretKey;
 	Long refreshTokenExpiration;
 	Long accessTokenExpiration;
@@ -33,6 +38,13 @@ public class AppProperties {
 	String cloudinaryApiKey;
 	String cloudinaryApiSecret;
 	String cloudinaryUrl;
+
+	@Getter
+	@Setter
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	public static class Oauth2 {
+		List<String> authorizedRedirectUris;
+	}
 
 	@Getter
 	@Setter

@@ -133,6 +133,10 @@ app:
   search:
     reindex-on-startup: true
 
+  oauth2:
+    authorized-redirect-uris:
+      - http://localhost:5173/oauth2/callback
+
 springdoc:
   api-docs:
     path: /v3/api-docs
