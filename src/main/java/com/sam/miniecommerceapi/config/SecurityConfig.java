@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.config;
 
 import com.sam.miniecommerceapi.auth.config.CookieBearerTokenResolver;
+import com.sam.miniecommerceapi.auth.config.OAuth2FailureHandler;
 import com.sam.miniecommerceapi.auth.config.OAuth2SuccessHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAccessDeniedHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAuthenticationEntryPoint;
@@ -32,10 +33,10 @@ public class SecurityConfig {
 	JwtAccessDeniedHandler accessDeniedHandler;
 	CustomOAuth2UserService oAuth2UserService;
 	OAuth2SuccessHandler oAuth2SuccessHandler;
+	OAuth2FailureHandler oAuth2FailureHandler;
 	CookieBearerTokenResolver cookieBearerTokenResolver;
 	JwtAuthenticationEntryPoint authenticationEntryPoint;
 	OAuth2AuthorizationRequestRepository requestRepository;
-
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -54,6 +55,7 @@ public class SecurityConfig {
 			oauth2.authorizationEndpoint(endpoint -> endpoint.authorizationRequestRepository(requestRepository));
 			oauth2.userInfoEndpoint(u -> u.userService(oAuth2UserService));
 			oauth2.successHandler(oAuth2SuccessHandler);
+			oauth2.failureHandler(oAuth2FailureHandler);
 		});
 		httpSecurity.oauth2ResourceServer(
 			oauth2 -> {
