@@ -7,9 +7,9 @@ import com.sam.miniecommerceapi.user.entity.User;
 import java.util.Optional;
 
 public interface SocialAccountService {
-    Optional<SocialAccount> findSocialAccount(SocialProvider provider, String providerId);
+	Optional<SocialAccount> findSocialAccount(SocialProvider provider, String providerId);
 
-    void createSocialAccount(User user, SocialProvider provider, String providerId);
+	void createSocialAccount(User user, SocialProvider provider, String providerId);
 
-    boolean existsBySocialAccount(SocialProvider provider, String providerId);
+	boolean existsBySocialAccount(SocialProvider provider, String providerId);
 }

@@ -6,7 +6,6 @@ import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.entity.Variant;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 

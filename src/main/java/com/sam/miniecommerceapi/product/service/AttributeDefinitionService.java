@@ -8,23 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 public interface AttributeDefinitionService {
-    AttributeDefinitionResponse createAttribute(AttributeDefinitionCreationRequest request);
+	AttributeDefinitionResponse createAttribute(AttributeDefinitionCreationRequest request);
 
-    AttributeDefinitionResponse getById(Long id);
+	AttributeDefinitionResponse getById(Long id);
 
-    AttributeDefinitionResponse getByAttributeKey(String attributeKey);
+	AttributeDefinitionResponse getByAttributeKey(String attributeKey);
 
-    List<AttributeDefinitionResponse> getAllByCategoryId(Long categoryId);
+	List<AttributeDefinitionResponse> getAllByCategoryId(Long categoryId);
 
-    List<AttributeDefinitionResponse> getAllAttributes();
+	List<AttributeDefinitionResponse> getAllAttributes();
 
-    AttributeDefinitionResponse updateAttribute(Long id, AttributeDefinitionUpdateRequest request);
+	AttributeDefinitionResponse updateAttribute(Long id, AttributeDefinitionUpdateRequest request);
 
-    void deleteAll();
+	void deleteAll();
 
-    void deleteByCategoryId(Long categoryId);
+	void deleteByCategoryId(Long categoryId);
 
-    void deleteById(Long id);
+	void deleteById(Long id);
 
-    void attributeNormalizer(Long categoryId, Map<String, Object> attributes);
+	void attributeNormalizer(Long categoryId, Map<String, Object> attributes);
 }

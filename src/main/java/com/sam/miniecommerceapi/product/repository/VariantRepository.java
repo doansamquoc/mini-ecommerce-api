@@ -16,37 +16,31 @@ import java.util.Optional;
 
 @Repository
 public interface VariantRepository extends JpaRepository<Variant, Long> {
-    boolean existsBySku(String sku);
+	boolean existsBySku(String sku);
 
-    @Query("SELECT v.sku FROM Variant v WHERE v.sku IN :skus")
-    List<String> findExistingSkus(Collection<String> skus);
+	@Query("SELECT v.sku FROM Variant v WHERE v.sku IN :skus")
+	List<String> findExistingSkus(Collection<String> skus);
 
-    List<Variant> findAllByProductId(Long productId);
+	List<Variant> findAllByProductId(Long productId);
 
-    Optional<Variant> findByProductIdAndId(Long productId, Long id);
+	Optional<Variant> findByProductIdAndId(Long productId, Long id);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE Variant v "
-            + "SET v.stockQuantity = v.stockQuantity - :quantity "
-            + "WHERE v.id = :id AND v.stockQuantity >= :quantity"
-    )
-    int deductStock(@Param("id") long id, @Param("quantity") int quantity);
+	@Transactional
+	@Modifying
+	@Query("UPDATE Variant v SET v.stockQuantity = v.stockQuantity - :quantity WHERE v.id = :id AND v.stockQuantity >= :quantity")
+	int deductStock(@Param("id") long id, @Param("quantity") int quantity);
 
-    @Modifying
-    @Query("UPDATE Variant v "
-            + "SET v.stockQuantity = v.stockQuantity + :quantity "
-            + "WHERE v.id = :id"
-    )
-    void increaseStock(@Param("id") long id, @Param("quantity") int quantity);
+	@Modifying
+	@Query("UPDATE Variant v SET v.stockQuantity = v.stockQuantity + :quantity WHERE v.id = :id")
+	void increaseStock(@Param("id") long id, @Param("quantity") int quantity);
 
-    Optional<Variant> findByProductAndId(Product product, Long id);
+	Optional<Variant> findByProductAndId(Product product, Long id);
 
-    void deleteByProductIdAndId(Long productId, Long id);
+	void deleteByProductIdAndId(Long productId, Long id);
 
-    void deleteAllByProductId(Long productId);
+	void deleteAllByProductId(Long productId);
 
-    @EntityGraph(attributePaths = {"product"})
-    @Query("SELECT v FROM Variant v WHERE v.id = :id")
-    Optional<Variant> findGraphById(Long id);
+	@EntityGraph(attributePaths = {"product"})
+	@Query("SELECT v FROM Variant v WHERE v.id = :id")
+	Optional<Variant> findGraphById(Long id);
 }

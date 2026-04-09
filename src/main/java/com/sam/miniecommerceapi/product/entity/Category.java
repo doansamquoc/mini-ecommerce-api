@@ -21,16 +21,16 @@ import java.util.List;
 @Table(name = "categories")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category extends BaseEntity {
-    @FullTextField(analyzer = "name_analyzer")
-    @Column(name = "name", nullable = false, unique = true)
-    String name;
+	@FullTextField(analyzer = "name_analyzer")
+	@Column(name = "name", nullable = false, unique = true)
+	String name;
 
-    @Column(name = "image_url")
-    String imageUrl;
+	@Column(name = "image_url")
+	String imageUrl;
 
-    @Column(name = "slug")
-    String slug;
+	@Column(name = "slug")
+	String slug;
 
-    @OneToMany(mappedBy = "category", orphanRemoval = true)
-    List<Product> products;
+	@OneToMany(mappedBy = "category", orphanRemoval = true)
+	List<Product> products;
 }

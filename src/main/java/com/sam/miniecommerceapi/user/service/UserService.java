@@ -9,37 +9,37 @@ import com.sam.miniecommerceapi.user.entity.User;
 import java.util.Optional;
 
 public interface UserService {
-    User oauth2Process(String email, String provider, String providerId);
+	User oauth2Process(String email, String provider, String providerId);
 
-    User findByIdentifier(String identifier);
+	User findByIdentifier(String identifier);
 
-    User findByEmail(String email);
+	User findByEmail(String email);
 
-    Optional<User> findOptionalByEmail(String email);
+	Optional<User> findOptionalByEmail(String email);
 
-    UserResponse updateUser(Long id, UserUpdateRequest r);
+	UserResponse updateUser(Long id, UserUpdateRequest r);
 
-    PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize);
+	PageResponse<UserResponse> getAllUsers(int pageNumber, int pageSize);
 
-    UserResponse getUser(Long id);
+	UserResponse getUser(Long id);
 
-    void deleteUser(Long id);
+	void deleteUser(Long id);
 
-    void restoreUser(Long id);
+	void restoreUser(Long id);
 
-    User getReference(Long id);
+	User getReference(Long id);
 
-    boolean existsByUsername(String username);
+	boolean existsByUsername(String username);
 
-    boolean existsByEmail(String email);
+	boolean existsByEmail(String email);
 
-    boolean existsByPhone(String phone);
+	boolean existsByPhone(String phone);
 
-    boolean existsById(Long id);
+	boolean existsById(Long id);
 
-    User saveUser(User user);
+	User saveUser(User user);
 
-    User findById(Long id);
+	User findById(Long id);
 
-    User createUser(UserCreationRequest request);
+	User createUser(UserCreationRequest request);
 }

@@ -19,21 +19,21 @@ import java.util.Set;
 @Table(name = "carts")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Cart extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	User user;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    Set<CartItem> cartItems = new LinkedHashSet<>();
+	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	Set<CartItem> cartItems = new LinkedHashSet<>();
 
-    public BigDecimal getTotalPrice() {
-        return this.cartItems.stream()
-                .map(item -> item.getVariant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+	public BigDecimal getTotalPrice() {
+		return this.cartItems.stream()
+			.map(item -> item.getVariant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
 
-    public int getTotalItems() {
-        return this.cartItems.size();
-    }
+	public int getTotalItems() {
+		return this.cartItems.size();
+	}
 }

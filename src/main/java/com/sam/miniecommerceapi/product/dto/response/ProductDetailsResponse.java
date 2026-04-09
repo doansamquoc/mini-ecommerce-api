@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,13 +13,13 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDetailsResponse {
-    Long id;
-    String name;
-    String slug;
-    String description;
-    BigDecimal regularPrice;
-    String imageUrl;
-    CategoryResponse category;
-    Set<VariantResponse> variants;
-    Map<String, Set<Object>> attributes;
+	Long id;
+	String name;
+	String slug;
+	String description;
+	BigDecimal regularPrice;
+	String imageUrl;
+	CategoryResponse category;
+	Set<VariantResponse> variants;
+	Map<String, Set<Object>> attributes;
 }

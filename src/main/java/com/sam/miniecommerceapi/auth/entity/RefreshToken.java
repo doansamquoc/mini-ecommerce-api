@@ -17,26 +17,26 @@ import java.time.Instant;
 @Table(name = "refresh_tokens")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RefreshToken extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	User user;
 
-    @Column(name = "token", unique = true, nullable = false)
-    String token;
+	@Column(name = "token", unique = true, nullable = false)
+	String token;
 
-    @Column(name = "expires_at", nullable = false)
-    Instant expiresAt;
+	@Column(name = "expires_at", nullable = false)
+	Instant expiresAt;
 
-    @Column(name = "revoked", nullable = false)
-    boolean revoked;
+	@Column(name = "revoked", nullable = false)
+	boolean revoked;
 
-    @Column(name = "device")
-    String device;
+	@Column(name = "device")
+	String device;
 
-    @Column(name = "ip")
-    String ip;
+	@Column(name = "ip")
+	String ip;
 
-    public boolean isExpired() {
-        return Instant.now().isAfter(this.expiresAt);
-    }
+	public boolean isExpired() {
+		return Instant.now().isAfter(this.expiresAt);
+	}
 }

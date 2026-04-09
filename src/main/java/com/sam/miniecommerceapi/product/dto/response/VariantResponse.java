@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Set;
 
 @Data
 @Builder
@@ -13,10 +12,10 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VariantResponse {
-    Long id;
-    String sku;
-    BigDecimal price;
-    Integer stockQuantity;
-    String imageUrl;
-    Map<String, Object> attributes;
+	Long id;
+	String sku;
+	BigDecimal price;
+	Integer stockQuantity;
+	String imageUrl;
+	Map<String, Object> attributes;
 }

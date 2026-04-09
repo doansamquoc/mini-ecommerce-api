@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderUpdateRequest {
-    String phoneNumber;
-    String shippingAddress;
-    OrderStatus status;
-    PaymentMethod paymentMethod;
+	String phoneNumber;
+	String shippingAddress;
+	OrderStatus status;
+	PaymentMethod paymentMethod;
 }

@@ -14,20 +14,20 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TokenBlacklistServiceImpl implements TokenBlacklistService {
-    RedisTemplate<String, Object> redisTemplate;
+	RedisTemplate<String, Object> redisTemplate;
 
-    @Override
-    public void addToBlacklist(String tokenId, long remainingTimeInMs) {
-        redisTemplate.opsForValue().set(
-                AppConstant.BLACKLIST_PREFIX + tokenId,
-                "revoked",
-                remainingTimeInMs,
-                TimeUnit.MILLISECONDS
-        );
-    }
+	@Override
+	public void addToBlacklist(String tokenId, long remainingTimeInMs) {
+		redisTemplate.opsForValue().set(
+			AppConstant.BLACKLIST_PREFIX + tokenId,
+			"revoked",
+			remainingTimeInMs,
+			TimeUnit.MILLISECONDS
+		);
+	}
 
-    @Override
-    public boolean isBlacklisted(String token) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(AppConstant.BLACKLIST_PREFIX + token));
-    }
+	@Override
+	public boolean isBlacklisted(String token) {
+		return redisTemplate.hasKey(AppConstant.BLACKLIST_PREFIX + token);
+	}
 }

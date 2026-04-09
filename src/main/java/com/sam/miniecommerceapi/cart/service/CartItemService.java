@@ -7,9 +7,9 @@ import com.sam.miniecommerceapi.cart.dto.response.CartItemResponse;
 import java.util.List;
 
 public interface CartItemService {
-    CartItemResponse addToCart(Long userId, CartItemAdditionRequest request);
+	CartItemResponse addToCart(Long userId, CartItemAdditionRequest request);
 
-    CartItemResponse updateCartItem(Long userId, CartItemUpdateRequest request);
+	CartItemResponse updateCartItem(Long userId, CartItemUpdateRequest request);
 
-    List<CartItemResponse> getAllItems(Long userId);
+	List<CartItemResponse> getAllItems(Long userId);
 }
