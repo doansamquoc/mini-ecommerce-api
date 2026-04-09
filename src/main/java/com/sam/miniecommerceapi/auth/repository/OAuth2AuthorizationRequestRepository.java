@@ -2,7 +2,6 @@ package com.sam.miniecommerceapi.auth.repository;
 
 import com.cloudinary.utils.StringUtils;
 import com.sam.miniecommerceapi.common.util.CookieUtils;
-import com.sam.miniecommerceapi.config.AppProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

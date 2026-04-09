@@ -6,7 +6,6 @@ import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.common.service.CookieService;
 import com.sam.miniecommerceapi.common.util.CookieUtils;
 import com.sam.miniecommerceapi.config.AppProperties;
 import jakarta.servlet.http.Cookie;
@@ -19,8 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
 @Component
@@ -30,7 +31,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	JwtProvider jwtProvider;
 	AppProperties properties;
 	RefreshTokenService tokenService;
-	CookieService cookieService;
 	OAuth2AuthorizationRequestRepository authorizationRequestRepository;
 
 	@Override
@@ -46,7 +46,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	@Override
 	protected String determineTargetUrl(HttpServletRequest req, HttpServletResponse res, Authentication auth) {
-		Optional<String> redirectUri = cookieService.getCookie(req, "").map(Cookie::getValue);
+		Optional<String> redirectUri = Optional.ofNullable(WebUtils.getCookie(req, "redirect_uri")).map(Cookie::getValue);
 		if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
 			throw BusinessException.of(ErrorCode.REQUEST_INVALID);
 		}
@@ -70,6 +70,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	}
 
 	private boolean isAuthorizedRedirectUri(String uri) {
-		return true;
+		return properties.getOauth2().getAuthorizedRedirectUris().stream().anyMatch(authorizedRedirectUri -> {
+			URI authURI = URI.create(authorizedRedirectUri);
+			URI clientURI = URI.create(uri);
+			return authURI.getHost().equalsIgnoreCase(clientURI.getHost()) && authURI.getPort() == clientURI.getPort();
+		});
 	}
 }

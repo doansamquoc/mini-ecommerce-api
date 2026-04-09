@@ -1,7 +1,6 @@
 package com.sam.miniecommerceapi.auth.service;
 
 import com.sam.miniecommerceapi.auth.entity.RefreshToken;
-import com.sam.miniecommerceapi.user.entity.User;
 
 public interface RefreshTokenService {
 
