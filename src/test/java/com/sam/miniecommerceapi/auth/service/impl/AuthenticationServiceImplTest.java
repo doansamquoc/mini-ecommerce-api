@@ -32,8 +32,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceImplTest {
     @Mock
-    Clock clock;
-    @Mock
     UserService userService;
     @Mock
     JwtProvider jwtProvider;
@@ -86,8 +84,8 @@ class AuthenticationServiceImplTest {
 
         TokenDTO result = authenticationService.login(request);
 
-        assertThat(result.getAccessToken()).isEqualTo("access-token-123");
-        assertThat(result.getRefreshToken()).isEqualTo("refresh-token-456");
+        assertThat(result.accessToken()).isEqualTo("access-token-123");
+        assertThat(result.refreshToken()).isEqualTo("refresh-token-456");
 
         verify(publisher, times(1)).publishEvent(any(LoginEvent.class));
     }
