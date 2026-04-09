@@ -6,7 +6,7 @@ import com.sam.miniecommerceapi.notification.dto.request.EmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.TemplateEmailRequest;
 import com.sam.miniecommerceapi.notification.exception.BulkEmailException;
 import com.sam.miniecommerceapi.notification.service.EmailService;
-import com.sam.miniecommerceapi.shared.util.FileUtils;
+import com.sam.miniecommerceapi.common.util.FileUtils;
 import gg.jte.TemplateEngine;
 import gg.jte.TemplateOutput;
 import gg.jte.output.StringOutput;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service

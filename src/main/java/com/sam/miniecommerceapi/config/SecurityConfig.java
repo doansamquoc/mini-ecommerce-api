@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.config;
 
 import com.sam.miniecommerceapi.auth.config.OAuth2SuccessHandler;
 import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;
-import com.sam.miniecommerceapi.shared.constant.AppConstant;
+import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAccessDeniedHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAuthenticationEntryPoint;
 import lombok.AccessLevel;

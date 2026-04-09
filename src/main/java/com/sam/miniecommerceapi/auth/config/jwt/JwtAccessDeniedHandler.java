@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.auth.config.jwt;
 
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;

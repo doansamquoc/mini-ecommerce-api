@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.notification.dto.request.BulkEmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.EmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.TemplateEmailRequest;
 import com.sam.miniecommerceapi.notification.service.EmailService;
-import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

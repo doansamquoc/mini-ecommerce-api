@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.upload.controller;
 
-import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.upload.dto.response.SignatureResponse;
 import com.sam.miniecommerceapi.upload.service.UploadService;
 import io.swagger.v3.oas.annotations.Operation;

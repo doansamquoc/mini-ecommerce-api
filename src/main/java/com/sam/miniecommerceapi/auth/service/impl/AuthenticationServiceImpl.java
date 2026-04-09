@@ -11,8 +11,8 @@ import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.config.AppProperties;
 import com.sam.miniecommerceapi.event.LoginEvent;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
@@ -30,51 +30,51 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
-    UserService userService;
-    JwtProvider jwtProvider;
-    AppProperties appProperties;
-    AuthenticationManager manager;
-    ApplicationEventPublisher publisher;
-    RefreshTokenService refreshTokenService;
-    PasswordResetTokenService passwordResetTokenService;
+	UserService userService;
+	JwtProvider jwtProvider;
+	AppProperties appProperties;
+	AuthenticationManager manager;
+	ApplicationEventPublisher publisher;
+	RefreshTokenService refreshTokenService;
+	PasswordResetTokenService passwordResetTokenService;
 
-    UserPrincipal authenticate(String identifier, String password) {
-        try {
-            Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(identifier, password));
-            return (UserPrincipal) auth.getPrincipal();
-        } catch (BadCredentialsException bce) {
-            log.warn("Wrong password [{}].", identifier);
-            throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
-        } catch (LockedException le) {
-            log.warn("Account [{}] is locked.", identifier);
-            throw new BusinessException(ErrorCode.ACCOUNT_LOCKED);
-        } catch (DisabledException de) {
-            log.warn("Account [{}] not activated.", identifier);
-            throw new BusinessException(ErrorCode.ACCOUNT_DISABLED);
-        } catch (AccountExpiredException aee) {
-            log.warn("Account [{}] has expired.", identifier);
-            throw new BusinessException(ErrorCode.ACCOUNT_EXPIRED);
-        } catch (AuthenticationException ae) {
-            log.error("Authenticate unknown error [{}].", ae.getMessage());
-            throw new BusinessException(ErrorCode.AUTH_FAILED);
-        }
-    }
+	UserPrincipal authenticate(String identifier, String password) {
+		try {
+			Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(identifier, password));
+			return (UserPrincipal) auth.getPrincipal();
+		} catch (BadCredentialsException bce) {
+			log.warn("Wrong password [{}].", identifier);
+			throw BusinessException.of(ErrorCode.AUTH_INVALID_CREDENTIALS);
+		} catch (LockedException le) {
+			log.warn("Account [{}] is locked.", identifier);
+			throw BusinessException.of(ErrorCode.ACCOUNT_LOCKED);
+		} catch (DisabledException de) {
+			log.warn("Account [{}] not activated.", identifier);
+			throw BusinessException.of(ErrorCode.ACCOUNT_DISABLED);
+		} catch (AccountExpiredException aee) {
+			log.warn("Account [{}] has expired.", identifier);
+			throw BusinessException.of(ErrorCode.ACCOUNT_EXPIRED);
+		} catch (AuthenticationException ae) {
+			log.error("Authenticate unknown error [{}].", ae.getMessage());
+			throw BusinessException.of(ErrorCode.AUTH_FAILED);
+		}
+	}
 
-    @Override
-    public TokenDTO login(LoginRequest r, String ip, String agent) {
-        UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
-        User user = userService.findById(userPrincipal.getId());
+	@Override
+	public TokenDTO login(LoginRequest r, String ip, String agent) {
+		UserPrincipal userPrincipal = authenticate(r.getIdentifier(), r.getPassword());
+		User user = userService.findById(userPrincipal.getId());
 
-        String accessToken = jwtProvider.generate(userPrincipal);
-        RefreshToken refreshToken = refreshTokenService.createToken(userPrincipal.getId(), ip, agent);
+		String accessToken = jwtProvider.generate(userPrincipal);
+		RefreshToken refreshToken = refreshTokenService.createToken(userPrincipal.getId(), ip, agent);
 
-        publishLoginAlertMessage(user, ip, agent);
-        return new TokenDTO(accessToken, refreshToken.getToken());
-    }
+		publishLoginAlertMessage(user, ip, agent);
+		return new TokenDTO(accessToken, refreshToken.getToken());
+	}
 
-    private void publishLoginAlertMessage(User user, String ip, String agent) {
-        PasswordResetToken passwordResetToken = passwordResetTokenService.createToken(user);
-        String resetLink = appProperties.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
-        publisher.publishEvent(new LoginEvent(user.getEmail(), user.getUsername(), resetLink, ip, agent));
-    }
+	private void publishLoginAlertMessage(User user, String ip, String agent) {
+		PasswordResetToken passwordResetToken = passwordResetTokenService.createToken(user);
+		String resetLink = appProperties.getFrontendUrl() + "/reset-password?token=" + passwordResetToken.getToken();
+		publisher.publishEvent(new LoginEvent(user.getEmail(), user.getUsername(), resetLink, ip, agent));
+	}
 }

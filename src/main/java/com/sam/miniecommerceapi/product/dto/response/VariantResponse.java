@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -17,5 +18,5 @@ public class VariantResponse {
     BigDecimal price;
     Integer stockQuantity;
     String imageUrl;
-    Set<AttributeWithTermResponse> attributes;
+    Map<String, Object> attributes;
 }

@@ -1,128 +1,136 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
+import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
-import com.sam.miniecommerceapi.product.entity.AttributeTerm;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.product.mapper.VariantMapper;
 import com.sam.miniecommerceapi.product.repository.VariantRepository;
-import com.sam.miniecommerceapi.product.service.AttributeTermService;
+import com.sam.miniecommerceapi.product.service.AttributeDefinitionService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import com.sam.miniecommerceapi.product.service.VariantService;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VariantServiceImpl implements VariantService {
-    VariantMapper mapper;
-    VariantRepository repository;
-    ProductService productService;
-    AttributeTermService termService;
+	VariantMapper mapper;
+	VariantRepository repository;
+	ProductService productService;
+	AttributeDefinitionService definitionService;
 
-    @Override
-    public VariantResponse update(Long productId, Long id, VariantRequest request) {
-        if (existsBySku(request.getSku())) throw new BusinessException(ErrorCode.PRODUCT_SLUG_CONFLICT);
-        Variant variant = findByProductIdAndId(productId, id);
-        mapper.toUpdate(request, variant);
-        return mapper.toResponse(save(variant));
-    }
+	@Override
+	public VariantResponse update(Long productId, Long id, VariantRequest request) {
+		if (existsBySku(request.getSku())) {
+			throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS, "sku", "product.sku.conflict", request.getSku());
+		}
+		Variant variant = findByProductIdAndId(productId, id);
+		mapper.toUpdate(request, variant);
+		return mapper.toResponse(save(variant));
+	}
 
-    @Override
-    public VariantResponse create(Long productId, VariantRequest request) {
-        Product product = productService.findById(productId);
-        if (existsBySku(request.getSku())) throw new BusinessException(ErrorCode.PRODUCT_SKU_ALREADY_EXISTS);
-        Set<AttributeTerm> attributeTerms = termService.findAllById(request.getAttributeTermIds());
+	@Override
+	public VariantResponse create(Long productId, VariantCreationRequest request) {
+		if (existsBySku(request.sku())) {
+			throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS, "sku", "product.sku.conflict", request.sku());
+		}
 
-        Variant variant = mapper.toEntity(request);
-        variant.setProduct(product);
-        variant.setVariantAttributes(attributeTerms);
+		Product product = productService.findById(productId);
+		definitionService.attributeNormalizer(product.getCategory().getId(), request.attributes());
 
-        return mapper.toResponse(save(variant));
-    }
+		Variant variant = mapper.toEntity(request);
+		variant.setProduct(product);
 
-    @Override
-    public VariantResponse read(Long productId, Long variantId) {
-        Variant variant = findByProductIdAndId(productId, variantId);
-        return mapper.toResponse(variant);
-    }
+		return mapper.toResponse(save(variant));
+	}
 
-    @Override
-    public List<VariantResponse> readAll(Long productId) {
-        List<Variant> variants = findAllByProductId(productId);
-        return mapper.toResponseList(variants);
-    }
+	@Override
+	public VariantResponse read(Long productId, Long variantId) {
+		Variant variant = findByProductIdAndId(productId, variantId);
+		return mapper.toResponse(variant);
+	}
 
-    @Override
-    public void delete(Long productId, Long variantId) {
-        repository.deleteByProductIdAndId(productId, variantId);
-    }
+	@Override
+	public List<VariantResponse> readAll(Long productId) {
+		List<Variant> variants = findAllByProductId(productId);
+		return mapper.toResponseList(variants);
+	}
 
-    @Override
-    public void deleteAll(Long productId) {
-        repository.findAllByProductId(productId);
-    }
+	@Override
+	public void delete(Long productId, Long variantId) {
+		repository.deleteByProductIdAndId(productId, variantId);
+	}
 
-    List<Variant> findAllByProductId(Long productId) {
-        return repository.findAllByProductId(productId);
-    }
+	@Override
+	public void deleteAll(Long productId) {
+		repository.findAllByProductId(productId);
+	}
 
-    Variant findByProductIdAndId(Long productId, Long id) {
-        return repository.findByProductIdAndId(productId, id).orElseThrow(
-                () -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND)
-        );
-    }
+	List<Variant> findAllByProductId(Long productId) {
+		return repository.findAllByProductId(productId);
+	}
 
-    public boolean existsBySku(String sku) {
-        return repository.existsBySku(sku);
-    }
+	Variant findByProductIdAndId(Long productId, Long id) {
+		return repository.findByProductIdAndId(productId, id).orElseThrow(
+			() -> BusinessException.of(ErrorCode.PRODUCT_VARIANT_NOT_FOUND)
+		);
+	}
 
-    public void validateSkuNotExists(List<String> skus) {
-        List<String> existedSkus = repository.findExistingSkus(skus);
-        if (!existedSkus.isEmpty()) {
-            throw new BusinessException(
-                    ErrorCode.PRODUCT_SKU_ALREADY_EXISTS, Map.of("skus", existedSkus));
-        }
-    }
+	public boolean existsBySku(String sku) {
+		return repository.existsBySku(sku);
+	}
 
-    @Override
-    public int deductStock(Long id, int quantity) {
-        return repository.deductStock(id, quantity);
-    }
+	public void validateSkuNotExists(List<String> skus) {
+		List<String> existedSkus = repository.findExistingSkus(skus);
+		if (!existedSkus.isEmpty()) throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS);
+	}
 
-    @Override
-    public void increaseStock(Long id, int quantity) {
-        repository.increaseStock(id, quantity);
-    }
+	@Override
+	public int deductStock(Long id, int quantity) {
+		return repository.deductStock(id, quantity);
+	}
 
-    @Override
-    public Variant findById(Long variantId) {
-        return repository.findById(variantId).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
-    }
+	@Override
+	public void increaseStock(Long id, int quantity) {
+		repository.increaseStock(id, quantity);
+	}
 
-    public List<Variant> saveAll(List<Variant> variants) {
-        return repository.saveAll(variants);
-    }
+	@Override
+	public Variant findById(Long variantId) {
+		return repository.findById(variantId).orElseThrow(
+			() -> BusinessException.of(ErrorCode.PRODUCT_VARIANT_NOT_FOUND)
+		);
+	}
 
-    public Variant save(Variant variant) {
-        return repository.save(variant);
-    }
+	@Override
+	public Variant findGraphById(Long id) {
+		return repository.findGraphById(id).orElseThrow(
+			() -> BusinessException.of(ErrorCode.PRODUCT_VARIANT_NOT_FOUND)
+		);
+	}
 
-    public boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
+	public List<Variant> saveAll(List<Variant> variants) {
+		return repository.saveAll(variants);
+	}
 
-    public List<Variant> findAllByIds(List<Long> productVariantIds) {
-        return repository.findAllById(productVariantIds);
-    }
+	public Variant save(Variant variant) {
+		return repository.save(variant);
+	}
+
+	public boolean existsById(Long id) {
+		return repository.existsById(id);
+	}
+
+	public List<Variant> findAllByIds(List<Long> productVariantIds) {
+		return repository.findAllById(productVariantIds);
+	}
 }

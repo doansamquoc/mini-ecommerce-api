@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.service.impl;
 
 import com.sam.miniecommerceapi.auth.service.TokenBlacklistService;
-import com.sam.miniecommerceapi.shared.constant.AppConstant;
+import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -2,6 +2,7 @@ package com.sam.miniecommerceapi.product.repository;
 
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.Variant;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -44,4 +45,8 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
     void deleteByProductIdAndId(Long productId, Long id);
 
     void deleteAllByProductId(Long productId);
+
+    @EntityGraph(attributePaths = {"product"})
+    @Query("SELECT v FROM Variant v WHERE v.id = :id")
+    Optional<Variant> findGraphById(Long id);
 }

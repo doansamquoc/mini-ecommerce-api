@@ -36,73 +36,69 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BeanConfig {
-    AppProperties appProperties;
+	AppProperties appProperties;
 
-    @Bean
-    SecretKey secretKey() {
-        byte[] key = appProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
-        if (key.length < 32) throw new IllegalArgumentException("JWT secret key must least 256 bit");
-        return new SecretKeySpec(key, MacAlgorithm.HS512.getName());
-    }
+	@Bean
+	SecretKey secretKey() {
+		byte[] key = appProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
+		if (key.length < 32) throw new IllegalArgumentException("JWT secret key must least 256 bit");
+		return new SecretKeySpec(key, MacAlgorithm.HS512.getName());
+	}
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cors = new CorsConfiguration().applyPermitDefaultValues();
-        cors.setAllowedOrigins(List.of("http://localhost:*"));
-        cors.setAllowedHeaders(List.of("*"));
-        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        cors.setAllowCredentials(true);
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration cors = new CorsConfiguration().applyPermitDefaultValues();
+		cors.setAllowedOrigins(List.of("http://localhost:*"));
+		cors.setAllowedHeaders(List.of("*"));
+		cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+		cors.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cors);
-        return source;
-    }
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", cors);
+		return source;
+	}
 
-    @Bean
-    JwtDecoder jwtDecoder(JwtBlacklistValidator validator) {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS512).build();
-        OAuth2TokenValidator<Jwt> defaultValidator = new JwtTimestampValidator();
-        OAuth2TokenValidator<Jwt> delegatingValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, validator);
-        jwtDecoder.setJwtValidator(delegatingValidator);
-        return jwtDecoder;
-    }
+	@Bean
+	JwtDecoder jwtDecoder(JwtBlacklistValidator validator) {
+		NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey()).macAlgorithm(MacAlgorithm.HS512).build();
+		OAuth2TokenValidator<Jwt> defaultValidator = new JwtTimestampValidator();
+		OAuth2TokenValidator<Jwt> delegatingValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, validator);
+		jwtDecoder.setJwtValidator(delegatingValidator);
+		return jwtDecoder;
+	}
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+		return configuration.getAuthenticationManager();
+	}
 
-    @Bean
-    public Clock clock() {
-        return Clock.systemDefaultZone();
-    }
+	@Bean
+	public Clock clock() {
+		return Clock.systemDefaultZone();
+	}
 
-    @Bean
-    Slugify slugify() {
-        return Slugify.builder()
-                .lowerCase(true)
-                .transliterator(true)
-                .customReplacement("đ", "d")
-                .build();
-    }
+	@Bean
+	Slugify slugify() {
+		return Slugify.builder().lowerCase(true).transliterator(true).customReplacement("đ", "d").build();
+	}
 
-    @Bean
-    Cloudinary cloudinary() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put("cloud_name", appProperties.getCloudinaryName());
-        configs.put("api_key", appProperties.getCloudinaryApiKey());
-        configs.put("api_secret", appProperties.getCloudinaryApiSecret());
-        configs.put("secure", true);
-        return new Cloudinary(configs);
-    }
+	@Bean
+	Cloudinary cloudinary() {
+		Map<String, Object> configs = new HashMap<>();
+		configs.put("cloud_name", appProperties.getCloudinaryName());
+		configs.put("api_key", appProperties.getCloudinaryApiKey());
+		configs.put("api_secret", appProperties.getCloudinaryApiSecret());
+		configs.put("secure", true);
+		return new Cloudinary(configs);
+	}
 
-    @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/images/**", "/static/**"));
-    }
+	@Bean
+	WebSecurityCustomizer webSecurityCustomizer() {
+		return (web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/images/**", "/static/**"));
+	}
 }

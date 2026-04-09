@@ -4,9 +4,9 @@ import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.repository.PasswordResetTokenRepository;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.config.AppProperties;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
-import com.sam.miniecommerceapi.shared.util.UUIDUtils;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.common.util.UUIDUtils;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -50,18 +50,18 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     @Override
     public PasswordResetToken findByUser(User user) {
-        return repository.findByUser(user).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_INVALID));
+        return repository.findByUser(user).orElseThrow(() -> BusinessException.of(ErrorCode.TOKEN_INVALID));
     }
 
     @Override
     public PasswordResetToken findByToken(String token) {
-        return repository.findByToken(token).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_INVALID));
+        return repository.findByToken(token).orElseThrow(() -> BusinessException.of(ErrorCode.TOKEN_INVALID));
     }
 
     @Override
     public PasswordResetToken validateToken(String token) {
         PasswordResetToken passwordResetToken = findByToken(token);
-        if (passwordResetToken.isExpired()) throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
+        if (passwordResetToken.isExpired()) throw BusinessException.of(ErrorCode.TOKEN_EXPIRED);
         return passwordResetToken;
     }
 }

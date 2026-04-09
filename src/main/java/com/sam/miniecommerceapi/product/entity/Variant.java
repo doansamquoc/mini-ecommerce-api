@@ -1,13 +1,16 @@
 package com.sam.miniecommerceapi.product.entity;
 
-import com.sam.miniecommerceapi.shared.entity.BaseEntity;
+import com.sam.miniecommerceapi.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -16,7 +19,9 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "variants")
+@Table(name = "variants", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_sku", columnNames = "sku")
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Variant extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,14 +40,9 @@ public class Variant extends BaseEntity {
     @Column(name = "image_url")
     String imageUrl;
 
-    @ManyToMany
-    @Builder.Default
-    @JoinTable(
-            name = "variant_attributes",
-            joinColumns = @JoinColumn(name = "variant_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_term_id")
-    )
-    Set<AttributeTerm> variantAttributes = new LinkedHashSet<>();
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "attributes", columnDefinition = "jsonb")
+    Map<String, Object> attributes;
 
     @Version
     Long version;

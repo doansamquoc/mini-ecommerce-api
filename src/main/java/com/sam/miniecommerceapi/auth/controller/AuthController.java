@@ -7,10 +7,10 @@ import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
 import com.sam.miniecommerceapi.auth.dto.response.AuthResponse;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.service.*;
-import com.sam.miniecommerceapi.shared.annotation.ClientIp;
-import com.sam.miniecommerceapi.shared.annotation.UserAgent;
-import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
-import com.sam.miniecommerceapi.shared.service.CookieService;
+import com.sam.miniecommerceapi.common.annotation.ClientIp;
+import com.sam.miniecommerceapi.common.annotation.UserAgent;
+import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.common.service.CookieService;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
-@Tag(name = "Authentication endpoints")
+@Tag(name = "Authentication Endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
     CookieService cookieService;
@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "Register User")
+    @Operation(summary = "Register a new user")
     ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody UserCreationRequest r) {
         UserResponse response = identityService.registerUser(r);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
@@ -86,7 +86,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.of());
     }
 
-    @Operation(summary = "Verify reset password token")
+    @Operation(summary = "Verify reset password token.")
     @GetMapping("/verify-token")
     ResponseEntity<ApiResponse<String>> verifyPasswordResetToken(@RequestParam("token") String token) {
         passwordService.validateResetToken(token);

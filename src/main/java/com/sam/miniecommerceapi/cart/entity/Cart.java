@@ -1,13 +1,14 @@
 package com.sam.miniecommerceapi.cart.entity;
 
-import com.sam.miniecommerceapi.product.entity.Variant;
-import com.sam.miniecommerceapi.shared.entity.BaseEntity;
+import com.sam.miniecommerceapi.common.entity.BaseEntity;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,24 +16,24 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-        name = "carts",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "product_variant_id"})}
-)
+@Table(name = "carts")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Cart extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_variant_id", nullable = false)
-    Variant variant;
-
-    @Column(name = "quantity", nullable = false)
-    Integer quantity;
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    Set<CartItem> cartItems = new LinkedHashSet<>();
 
     public BigDecimal getTotalPrice() {
-        return this.variant.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return this.cartItems.stream()
+                .map(item -> item.getVariant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public int getTotalItems() {
+        return this.cartItems.size();
     }
 }

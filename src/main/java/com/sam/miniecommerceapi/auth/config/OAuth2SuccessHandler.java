@@ -5,7 +5,7 @@ import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.config.AppProperties;
-import com.sam.miniecommerceapi.shared.service.CookieService;
+import com.sam.miniecommerceapi.common.service.CookieService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;

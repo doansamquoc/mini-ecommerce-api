@@ -13,10 +13,10 @@ import com.sam.miniecommerceapi.order.service.OrderService;
 import com.sam.miniecommerceapi.order.util.OrderStateMachine;
 import com.sam.miniecommerceapi.product.entity.Variant;
 import com.sam.miniecommerceapi.product.service.VariantService;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.constant.OrderStatus;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.constant.OrderStatus;
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
@@ -38,197 +38,190 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderServiceImpl implements OrderService {
-    OrderMapper mapper;
-    UserService userService;
-    OrderRepository repository;
-    OrderItemService itemService;
-    VariantService variantService;
+	OrderMapper mapper;
+	UserService userService;
+	OrderRepository repository;
+	OrderItemService itemService;
+	VariantService variantService;
 
-    @Override
-    @Transactional
-    public OrderResponse createOrder(Long userId, OrderRequest r) {
-        User user = userService.findById(userId);
-        Order order = mapper.toEntity(r);
-        order.setUser(user);
-        order.setOrderItems(new ArrayList<>());
+	@Override
+	@Transactional
+	public OrderResponse createOrder(Long userId, OrderRequest request) {
+		User user = userService.findById(userId);
+		Order order = mapper.toEntity(request);
+		order.setUser(user);
+		order.setOrderItems(new ArrayList<>());
 
-        for (OrderItemRequest i : r.getItems()) {
-            // Receiver the record number has been updated
-            int affected = variantService.deductStock(i.getVariantId(), i.getQuantity());
-            // If the record not change
-            if (affected == 0) {
-                throw new BusinessException(ErrorCode.PRODUCT_OUT_OF_STOCK, Map.of("id", i.getVariantId()));
-            }
+		for (OrderItemRequest i : request.items()) {
+			// Receiver the record number has been updated
+			int affected = variantService.deductStock(i.variantId(), i.quantity());
+			// If the record not change
+			if (affected == 0) {
+				throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, "id", "product.stock.", i.variantId());
+			}
 
-            Variant variant = variantService.findById(i.getVariantId());
-            OrderItem orderItem = createOrderItem(order, variant, i.getQuantity());
+			Variant variant = variantService.findById(i.variantId());
+			OrderItem orderItem = createOrderItem(order, variant, i.quantity());
 
-            order.addToOrderItems(orderItem);
-        }
+			order.addToOrderItems(orderItem);
+		}
 
-        order.calcTotalPrice();
-        return mapper.toResponse(repository.save(order));
-    }
+		order.calcTotalPrice();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse cancelOrder(Long orderId, CancelOrderRequest request) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.CANCELED, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_CANCELED);
-        }
-        order.cancel(request.getCancellationReason());
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse cancelOrder(Long orderId, CancelOrderRequest request) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.CANCELED, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_CANCELED);
+		}
+		order.cancel(request.getCancellationReason());
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse confirmOrder(Long orderId) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.CONFIRMED, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_CONFIRMED);
-        }
-        order.markAsConfirm();
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse confirmOrder(Long orderId) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.CONFIRMED, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_CONFIRMED);
+		}
+		order.markAsConfirm();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse deliveringOrder(Long orderId) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.DELIVERING, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_DELIVERING);
-        }
-        order.markAsDelivering();
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse deliveringOrder(Long orderId) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.DELIVERING, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_DELIVERING);
+		}
+		order.markAsDelivering();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse deliveredOrder(Long orderId) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.DELIVERED, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_DELIVERED);
-        }
-        order.delivered();
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse deliveredOrder(Long orderId) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.DELIVERED, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_DELIVERED);
+		}
+		order.delivered();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse paymentPendingOrder(Long orderId) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.PENDING_PAYMENT, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_PAYMENT_PENDING);
-        }
-        order.markAsPendingPayment();
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse paymentPendingOrder(Long orderId) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.PENDING_PAYMENT, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_PAYMENT_PENDING);
+		}
+		order.markAsPendingPayment();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse paymentPaidOrder(Long orderId) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.PENDING_PAYMENT, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_PAID);
-        }
-        order.markAsPaid();
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse paymentPaidOrder(Long orderId) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.PENDING_PAYMENT, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_PAID);
+		}
+		order.markAsPaid();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public OrderResponse paymentFailedOrder(Long orderId) {
-        Order order = findById(orderId);
-        if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.PENDING_PAYMENT, order.getPaymentMethod())) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_FAILED);
-        }
-        order.markAsFailed();
-        return mapper.toResponse(repository.save(order));
-    }
+	@Override
+	public OrderResponse paymentFailedOrder(Long orderId) {
+		Order order = findById(orderId);
+		if (!OrderStateMachine.canTransition(order.getStatus(), OrderStatus.PENDING_PAYMENT, order.getPaymentMethod())) {
+			throw BusinessException.of(ErrorCode.ORDER_CANNOT_BE_FAILED);
+		}
+		order.markAsFailed();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    @Transactional
-    public OrderResponse updateOrder(Long id, OrderRequest request) {
-        Order order = findById(id);
-        mapper.toEntity(request, order);
+	@Override
+	@Transactional
+	public OrderResponse updateOrder(Long id, OrderRequest request) {
+		Order order = findById(id);
+		mapper.toEntity(request, order);
 
-        Map<Long, OrderItem> existingItemsMap = order.getOrderItems().stream()
-                .collect(Collectors.toMap(item -> item.getVariant().getId(), item -> item));
+		Map<Long, OrderItem> existingItemsMap = order.getOrderItems().stream()
+			.collect(Collectors.toMap(item -> item.getVariant().getId(), item -> item));
 
-        for (OrderItemRequest itemRequest : request.getItems()) {
-            // Order must be at least 1 product
-            if (itemRequest.getQuantity() < 1) {
-                throw new BusinessException(
-                        ErrorCode.ORDER_INVALID_QUANTITY, Map.of("variantId", itemRequest.getVariantId())
-                );
-            }
+		for (OrderItemRequest iReq : request.items()) {
+			// Order must be at least 1 product
+			if (iReq.quantity() < 1) {
+				throw BusinessException.of(ErrorCode.ORDER_INVALID_QUANTITY, "id", "order.quantity.min", iReq.quantity());
+			}
 
-            // Check current item already exists yet
-            OrderItem existingItem = existingItemsMap.get(itemRequest.getVariantId());
-            if (existingItem != null) {
-                int quantityDiff = itemRequest.getQuantity() - existingItem.getQuantity();
-                if (quantityDiff > 0) {
-                    int affected = variantService.deductStock(itemRequest.getVariantId(), itemRequest.getQuantity());
-                    if (affected == 0) {
-                        throw new BusinessException(
-                                ErrorCode.PRODUCT_OUT_OF_STOCK, Map.of("variantId", itemRequest.getVariantId())
-                        );
-                    }
-                } else if (quantityDiff < 0) {
-                    variantService.increaseStock(itemRequest.getVariantId(), Math.abs(quantityDiff));
-                }
+			// Check current item already exists yet
+			OrderItem existingItem = existingItemsMap.get(iReq.variantId());
+			if (existingItem != null) {
+				int quantityDiff = iReq.quantity() - existingItem.getQuantity();
+				if (quantityDiff > 0) {
+					int affected = variantService.deductStock(iReq.variantId(), iReq.quantity());
+					if (affected == 0) {
+						throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, "id", "product.stock.out_of_stock");
+					}
+				} else if (quantityDiff < 0) {
+					variantService.increaseStock(iReq.variantId(), Math.abs(quantityDiff));
+				}
 
-                existingItem.setQuantity(itemRequest.getQuantity());
-                existingItemsMap.remove(itemRequest.getVariantId());
-            } else {
-                int affected = variantService.deductStock(itemRequest.getVariantId(), itemRequest.getQuantity());
-                if (affected == 0) {
-                    throw new BusinessException(
-                            ErrorCode.PRODUCT_OUT_OF_STOCK,
-                            Map.of("variantId", itemRequest.getVariantId())
-                    );
-                }
+				existingItem.setQuantity(iReq.quantity());
+				existingItemsMap.remove(iReq.variantId());
+			} else {
+				int affected = variantService.deductStock(iReq.variantId(), iReq.quantity());
+				if (affected == 0) {
+					throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, "id", "product.stock.out_of_stock");
+				}
 
-                Variant variant = variantService.findById(itemRequest.getVariantId());
-                OrderItem newItem = createOrderItem(order, variant, itemRequest.getQuantity());
+				Variant variant = variantService.findById(iReq.variantId());
+				OrderItem newItem = createOrderItem(order, variant, iReq.quantity());
 
-                order.addToOrderItems(newItem);
-            }
-        }
+				order.addToOrderItems(newItem);
+			}
+		}
 
-        List<OrderItem> removedItems = new ArrayList<>();
-        for (OrderItem removedItem : existingItemsMap.values()) {
-            variantService.increaseStock(removedItem.getVariant().getId(), removedItem.getQuantity());
-            order.removeOrderItem(removedItem);
-            removedItems.add(removedItem);
-        }
-        itemService.deleteAll(removedItems);
+		List<OrderItem> removedItems = new ArrayList<>();
+		for (OrderItem removedItem : existingItemsMap.values()) {
+			variantService.increaseStock(removedItem.getVariant().getId(), removedItem.getQuantity());
+			order.removeOrderItem(removedItem);
+			removedItems.add(removedItem);
+		}
+		itemService.deleteAll(removedItems);
 
-        order.calcTotalPrice();
-        return mapper.toResponse(repository.save(order));
-    }
+		order.calcTotalPrice();
+		return mapper.toResponse(repository.save(order));
+	}
 
-    @Override
-    public PageResponse<OrderResponse> getOrderByStatus(OrderStatus status, Pageable pageable) {
-        Page<Order> orders = repository.findByStatus(status, pageable);
-        Page<OrderResponse> responses = orders.map(mapper::toResponse);
-        return PageResponse.from(responses);
-    }
+	@Override
+	public PageResponse<OrderResponse> getOrderByStatus(OrderStatus status, Pageable pageable) {
+		Page<Order> orders = repository.findByStatus(status, pageable);
+		Page<OrderResponse> responses = orders.map(mapper::toResponse);
+		return PageResponse.from(responses);
+	}
 
-    @Override
-    public PageResponse<OrderResponse> getOrderByUserId(Long userId, OrderStatus status, Pageable pageable) {
-        Page<Order> orders = repository.findByUserIdAndStatus(userId, status, pageable);
-        Page<OrderResponse> responses = orders.map(mapper::toResponse);
-        return PageResponse.from(responses);
-    }
+	@Override
+	public PageResponse<OrderResponse> getOrderByUserId(Long userId, OrderStatus status, Pageable pageable) {
+		Page<Order> orders = repository.findByUserIdAndStatus(userId, status, pageable);
+		Page<OrderResponse> responses = orders.map(mapper::toResponse);
+		return PageResponse.from(responses);
+	}
 
 
-    public Order findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
-    }
+	public Order findById(Long id) {
+		return repository.findById(id).orElseThrow(() -> BusinessException.of(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
+	}
 
-    private OrderItem createOrderItem(Order order, Variant variant, int quantity) {
-        OrderItem orderItem = new OrderItem();
-        orderItem.setVariant(variant);
-        orderItem.setOrder(order);
-        orderItem.setQuantity(quantity);
-        orderItem.setUnitPrice(variant.getPrice());
-        orderItem.calcTotalPrice();
+	private OrderItem createOrderItem(Order order, Variant variant, int quantity) {
+		OrderItem orderItem = new OrderItem();
+		orderItem.setVariant(variant);
+		orderItem.setOrder(order);
+		orderItem.setQuantity(quantity);
+		orderItem.setUnitPrice(variant.getPrice());
+		orderItem.calcTotalPrice();
 
-        return orderItem;
-    }
+		return orderItem;
+	}
 }

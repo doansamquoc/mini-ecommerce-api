@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -21,5 +22,5 @@ public class ProductDetailsResponse {
     String imageUrl;
     CategoryResponse category;
     Set<VariantResponse> variants;
-    Set<AttributeWithTermListResponse> attributes;
+    Map<String, Set<Object>> attributes;
 }

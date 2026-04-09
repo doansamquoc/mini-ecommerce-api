@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.repository;
 
 import com.sam.miniecommerceapi.auth.entity.SocialAccount;
-import com.sam.miniecommerceapi.shared.constant.SocialProvider;
+import com.sam.miniecommerceapi.common.constant.SocialProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

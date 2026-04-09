@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.user.controller;
 
-import com.sam.miniecommerceapi.shared.annotation.CurrentUserId;
-import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
+import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import com.sam.miniecommerceapi.user.service.UserService;

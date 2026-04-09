@@ -2,57 +2,59 @@ package com.sam.miniecommerceapi.product.mapper;
 
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
-import com.sam.miniecommerceapi.product.dto.response.AttributeTermResponse;
-import com.sam.miniecommerceapi.product.dto.response.AttributeWithTermListResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
-import com.sam.miniecommerceapi.product.entity.AttributeTerm;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.Variant;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper(
-        componentModel = "spring",
-        uses = {VariantMapper.class, AttributeMapper.class, AttributeTermMapper.class, CategoryMapper.class},
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+	componentModel = "spring",
+	uses = {VariantMapper.class, CategoryMapper.class},
+	nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface ProductMapper {
-    Product toEntity(ProductCreationRequest request);
+	Product toEntity(ProductCreationRequest request);
 
-    void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
+	void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
 
-    ProductResponse toResponse(Product product);
+	ProductResponse toResponse(Product product);
 
-    @Mapping(target = "attributes", source = "variants")
-    ProductDetailsResponse toDetailsResponse(Product product);
+	@Mapping(target = "attributes", source = "variants", qualifiedByName = "aggregateAttributesFromVariants")
+	ProductDetailsResponse toDetailsResponse(Product product);
 
-    default Set<AttributeWithTermListResponse> mapVariantsToAttributes(Set<Variant> variants) {
-        if (variants == null || variants.isEmpty()) return Collections.emptySet();
+	@Named("aggregateAttributesFromVariants")
+	default Map<String, Set<Object>> aggregateAttributesFromVariants(Set<Variant> variants) {
+		if (variants == null || variants.isEmpty()) return Collections.emptyMap();
+		return variants.stream()
+			.map(Variant::getAttributes)
+			.filter(Objects::nonNull)
+			.flatMap(map -> map.entrySet().stream())
+			.collect(Collectors.groupingBy(
+					Map.Entry::getKey,
+					Collectors.mapping(
+						Map.Entry::getValue,
+						Collectors.toCollection(() -> new TreeSet<>(attributeComparator()))
+					)
+				)
+			);
+	}
 
-        return variants.stream()
-                .flatMap(variant -> variant.getVariantAttributes().stream())
-                .collect(Collectors.groupingBy(
-                                AttributeTerm::getAttribute,
-                                Collectors.mapping(
-                                        term -> new AttributeTermResponse(term.getId(), term.getName()),
-                                        Collectors.toSet()
-                                )
-                        )
-                )
-                .entrySet().stream()
-                .map(entry -> new AttributeWithTermListResponse(
-                        entry.getKey().getId(),
-                        entry.getKey().getName(),
-                        new ArrayList<>(entry.getValue())
-                ))
-                .collect(Collectors.toSet());
-    }
+	default Comparator<Object> attributeComparator() {
+		return (obj1, obj2) -> {
+			if (obj1 == null || obj2 == null) return 0;
+			if (obj1 instanceof Number n1 && obj2 instanceof Number n2) {
+				return Double.compare(n1.doubleValue(), n2.doubleValue());
+			}
+
+			if (obj1 instanceof String s1 && obj2 instanceof String s2) {
+				return s1.compareTo(s2);
+			}
+
+			return obj1.toString().compareTo(obj2.toString());
+		};
+	}
 }

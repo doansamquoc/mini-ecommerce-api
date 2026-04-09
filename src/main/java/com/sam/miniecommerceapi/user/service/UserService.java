@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.user.service;
 
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;

@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.order.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sam.miniecommerceapi.shared.constant.OrderStatus;
-import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
+import com.sam.miniecommerceapi.common.constant.OrderStatus;
+import com.sam.miniecommerceapi.common.constant.PaymentMethod;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

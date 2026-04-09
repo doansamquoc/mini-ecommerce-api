@@ -3,7 +3,7 @@ package com.sam.miniecommerceapi.auth.service.impl;
 import com.sam.miniecommerceapi.auth.entity.SocialAccount;
 import com.sam.miniecommerceapi.auth.repository.SocialAccountRepository;
 import com.sam.miniecommerceapi.auth.service.SocialAccountService;
-import com.sam.miniecommerceapi.shared.constant.SocialProvider;
+import com.sam.miniecommerceapi.common.constant.SocialProvider;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

@@ -7,9 +7,9 @@ import com.sam.miniecommerceapi.product.entity.Category;
 import com.sam.miniecommerceapi.product.mapper.CategoryMapper;
 import com.sam.miniecommerceapi.product.repository.CategoryRepository;
 import com.sam.miniecommerceapi.product.service.CategoryService;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -75,9 +75,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse createCategory(CategoryCreationRequest r) {
         if (existedByName(r.getName()))
-            throw new BusinessException(ErrorCode.CATEGORY_NAME_CONFLICT);
+            throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
         if (existedBySlug(r.getSlug()))
-            throw new BusinessException(ErrorCode.CATEGORY_SLUG_CONFLICT);
+            throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
 
         Category category = mapper.toEntity(r);
 
@@ -94,9 +94,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse updateCategory(Long id, CategoryUpdateRequest r) {
         if (!r.getName().isBlank() && existedByName(r.getName()))
-            throw new BusinessException(ErrorCode.CATEGORY_NAME_CONFLICT);
+            throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
         if (!r.getSlug().isBlank() && existedBySlug(r.getSlug()))
-            throw new BusinessException(ErrorCode.CATEGORY_SLUG_CONFLICT);
+            throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
 
         Category category = findById(id);
         category = mapper.toEntity(r, category);
@@ -105,18 +105,23 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Category getReference(Long id) {
+        return repository.getReferenceById(id);
+    }
+
+    @Override
     public Category findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+        return repository.findById(id).orElseThrow(() -> BusinessException.of(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override
     public Category findByName(String name) {
-        return repository.findByName(name).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+        return repository.findByName(name).orElseThrow(() -> BusinessException.of(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override
     public Category findBySlug(String slug) {
-        return repository.findBySlug(slug).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+        return repository.findBySlug(slug).orElseThrow(() -> BusinessException.of(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override

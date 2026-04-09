@@ -6,8 +6,8 @@ import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.auth.service.TokenManagementService;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.exception.BusinessException;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class TokenManagementServiceImpl implements TokenManagementService {
 
     @Override
     public TokenDTO refreshAccessToken(String refreshTokenStr, String ip, String agent) {
-        if (refreshTokenStr == null) throw new BusinessException(ErrorCode.TOKEN_INVALID);
+        if (refreshTokenStr == null) throw BusinessException.of(ErrorCode.TOKEN_INVALID);
 
         RefreshToken oldRefreshToken = refreshTokenService.validateToken(refreshTokenStr);
         User user = oldRefreshToken.getUser();

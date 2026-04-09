@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.event;
 
-import com.sam.miniecommerceapi.shared.constant.MailTemplate;
+import com.sam.miniecommerceapi.common.constant.MailTemplate;
 
 import java.util.Map;
 

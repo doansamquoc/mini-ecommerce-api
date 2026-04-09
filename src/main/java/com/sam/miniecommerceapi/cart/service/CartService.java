@@ -1,17 +1,15 @@
 package com.sam.miniecommerceapi.cart.service;
 
-import com.sam.miniecommerceapi.cart.dto.request.CartCreationRequest;
 import com.sam.miniecommerceapi.cart.dto.response.CartResponse;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
-import org.springframework.transaction.annotation.Transactional;
+import com.sam.miniecommerceapi.cart.entity.Cart;
+import org.springframework.data.domain.Pageable;
 
 public interface CartService {
-    CartResponse addToCart(Long id, CartCreationRequest r);
+    Cart createCart(Long userId);
 
-    PageResponse<CartResponse> getCarts(int pageNumber, int PageSize, Long id);
+    Cart getAllOrCreateCart(Long userId);
 
-    void deleteCart(Long userId, Long cartId);
+    Cart getOrCreateCart(Long userId);
 
-    @Transactional
-    void deleteAllByUser(Long userId);
+    CartResponse getCart(Long userId, Pageable pageable);
 }

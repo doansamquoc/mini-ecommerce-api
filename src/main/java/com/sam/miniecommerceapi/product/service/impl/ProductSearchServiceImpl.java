@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.service.ProductSearchService;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AccessLevel;

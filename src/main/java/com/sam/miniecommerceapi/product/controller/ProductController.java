@@ -7,8 +7,8 @@ import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.service.ProductSearchService;
 import com.sam.miniecommerceapi.product.service.ProductService;
-import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityManager;
@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
-@Tag(name = "Product Endpoints.")
+@Tag(name = "Product Endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductController {
     EntityManager entityManager;

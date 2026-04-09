@@ -1,13 +1,13 @@
 package com.sam.miniecommerceapi.auth.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sam.miniecommerceapi.shared.constant.ErrorCode;
-import com.sam.miniecommerceapi.shared.exception.ErrorResponse;
+import com.sam.miniecommerceapi.common.constant.ErrorCode;
+import com.sam.miniecommerceapi.common.exception.ErrorResponse;
+import com.sam.miniecommerceapi.common.service.TranslatorService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -20,20 +20,20 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JsonAuthResponder implements AuthResponder {
-    ObjectMapper mapper;
-    MessageSource messageSource;
+	ObjectMapper mapper;
+	TranslatorService translator;
 
-    @Override
-    public void sendError(HttpServletResponse response, ErrorCode errorCode, String path) throws IOException {
-        Locale locale = LocaleContextHolder.getLocale();
-        String i18nMessage = messageSource.getMessage(errorCode.getMessageKey(), null, locale);
-        ErrorResponse error = ErrorResponse.of(errorCode, i18nMessage, path);
+	@Override
+	public void sendError(HttpServletResponse response, ErrorCode ec, String path) throws IOException {
+		Locale locale = LocaleContextHolder.getLocale();
+		String messaged = translator.translator(ec.getMessageKey(), null, locale);
+		ErrorResponse error = ErrorResponse.of(ec.getStatus(), ec.getCode(), messaged);
 
-        response.setStatus(errorCode.getHttpStatus().value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		response.setStatus(ec.getStatus());
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        response.getWriter().write(mapper.writeValueAsString(error));
-        response.flushBuffer();
-    }
+		response.getWriter().write(mapper.writeValueAsString(error));
+		response.flushBuffer();
+	}
 }

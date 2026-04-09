@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.order.dto.request;
 
-import com.sam.miniecommerceapi.shared.constant.OrderStatus;
-import com.sam.miniecommerceapi.shared.constant.PaymentMethod;
+import com.sam.miniecommerceapi.common.constant.OrderStatus;
+import com.sam.miniecommerceapi.common.constant.PaymentMethod;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

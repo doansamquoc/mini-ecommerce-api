@@ -1,11 +1,13 @@
 package com.sam.miniecommerceapi.cart.controller;
 
-import com.sam.miniecommerceapi.cart.dto.request.CartCreationRequest;
+import com.sam.miniecommerceapi.cart.dto.request.CartItemAdditionRequest;
+import com.sam.miniecommerceapi.cart.dto.request.CartItemUpdateRequest;
+import com.sam.miniecommerceapi.cart.dto.response.CartItemResponse;
 import com.sam.miniecommerceapi.cart.dto.response.CartResponse;
+import com.sam.miniecommerceapi.cart.service.CartItemService;
 import com.sam.miniecommerceapi.cart.service.CartService;
-import com.sam.miniecommerceapi.shared.annotation.CurrentUserId;
-import com.sam.miniecommerceapi.shared.dto.response.ApiResponse;
-import com.sam.miniecommerceapi.shared.dto.response.PageResponse;
+import com.sam.miniecommerceapi.common.annotation.CurrentUserId;
+import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,43 +21,40 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/carts")
-@Tag(name = "Cart endpoints")
+@Tag(name = "Cart Endpoints")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CartController {
-    CartService cartService;
+    CartService service;
+    CartItemService itemService;
 
-    @Operation(summary = "Add product to cart")
+    @Operation(summary = "Add a product variation to cart.")
     @PostMapping
-    ResponseEntity<ApiResponse<CartResponse>> addToCart(
+    ResponseEntity<ApiResponse<CartItemResponse>> addToCart(
             @CurrentUserId Long userId,
-            @Valid @RequestBody CartCreationRequest r
+            @Valid @RequestBody CartItemAdditionRequest request
     ) {
-        CartResponse response = cartService.addToCart(userId, r);
+        CartItemResponse response = itemService.addToCart(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
     }
 
-    @Operation(summary = "Get all products in cart by cart ID")
+    @Operation(summary = "Get all products in cart by current user")
     @GetMapping
-    ResponseEntity<ApiResponse<PageResponse<CartResponse>>> getProductsInCart(
-            @CurrentUserId Long id,
+    ResponseEntity<ApiResponse<CartResponse>> getProductsInCart(
+            @CurrentUserId Long userId,
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20") int pageSize
     ) {
-        PageResponse<CartResponse> responses = cartService.getCarts(pageNumber, pageSize, id);
+        CartResponse responses = service.getCart(userId, null);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(responses));
     }
 
-    @Operation(summary = "Delete product in cart")
-    @DeleteMapping("/{id}")
-    ResponseEntity<ApiResponse<String>> deleteCart(@PathVariable Long id, @CurrentUserId Long userId) {
-        cartService.deleteCart(userId, id);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of());
-    }
-
-    @Operation(summary = "Delete all products in cart")
-    @DeleteMapping
-    ResponseEntity<ApiResponse<String>> deleteAllCartsByUserId(@CurrentUserId Long userId) {
-        cartService.deleteAllByUser(userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of());
+    @Operation(summary = "Update a cart item.")
+    @PatchMapping
+    ResponseEntity<ApiResponse<CartItemResponse>> updateItem(
+            @CurrentUserId Long userId,
+            @Valid @RequestBody CartItemUpdateRequest request
+    ) {
+        CartItemResponse response = itemService.updateCartItem(userId, request);
+        return ResponseEntity.ok(ApiResponse.of(response));
     }
 }

@@ -6,7 +6,7 @@ import com.sam.miniecommerceapi.event.PasswordResetEvent;
 import com.sam.miniecommerceapi.event.RegisterUserEvent;
 import com.sam.miniecommerceapi.notification.dto.request.TemplateEmailRequest;
 import com.sam.miniecommerceapi.notification.service.EmailService;
-import com.sam.miniecommerceapi.shared.constant.MailTemplate;
+import com.sam.miniecommerceapi.common.constant.MailTemplate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

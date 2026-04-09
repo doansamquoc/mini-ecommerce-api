@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.product.service;
 
+import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.entity.Variant;
 
@@ -11,7 +11,7 @@ public interface VariantService {
 
     VariantResponse update(Long productId, Long variantId, VariantRequest request);
 
-    VariantResponse create(Long productId, VariantRequest request);
+    VariantResponse create(Long productId, VariantCreationRequest request);
 
     VariantResponse read(Long productId, Long variantId);
 
@@ -26,4 +26,6 @@ public interface VariantService {
     void increaseStock(Long id, int quantity);
 
     Variant findById(Long variantId);
+
+    Variant findGraphById(Long id);
 }

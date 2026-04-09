@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.product.entity;
 
-import com.sam.miniecommerceapi.shared.entity.BaseEntity;
+import com.sam.miniecommerceapi.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,31 +20,31 @@ import java.util.Set;
 @Table(name = "products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product extends BaseEntity {
-    @FullTextField(analyzer = "name_analyzer")
-    @Column(name = "name", nullable = false)
-    String name;
+	@FullTextField(analyzer = "name_analyzer")
+	@Column(name = "name", nullable = false)
+	String name;
 
-    @FullTextField(analyzer = "name_analyzer")
-    @Column(name = "description")
-    String description;
+	@FullTextField(analyzer = "name_analyzer")
+	@Column(name = "description")
+	String description;
 
-    @KeywordField
-    @Column(name = "slug", nullable = false, unique = true)
-    String slug;
+	@KeywordField
+	@Column(name = "slug", nullable = false, unique = true)
+	String slug;
 
-    @GenericField
-    @Column(name = "reguler_price")
-    BigDecimal regularPrice;
+	@GenericField
+	@Column(name = "regular_price")
+	BigDecimal regularPrice;
 
-    @IndexedEmbedded
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    Category category;
+	@IndexedEmbedded
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id", nullable = false)
+	Category category;
 
-    @Column(name = "image_url")
-    String imageUrl;
+	@Column(name = "image_url")
+	String imageUrl;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Variant> variants = new LinkedHashSet<>();
+	@Builder.Default
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	Set<Variant> variants = new LinkedHashSet<>();
 }

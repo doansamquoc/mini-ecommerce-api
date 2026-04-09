@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.user.entity;
 
-import com.sam.miniecommerceapi.shared.entity.BaseEntity;
-import com.sam.miniecommerceapi.shared.constant.Role;
+import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.common.constant.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

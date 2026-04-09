@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.auth.security;
 
-import com.sam.miniecommerceapi.shared.constant.AppConstant;
-import com.sam.miniecommerceapi.shared.constant.Role;
+import com.sam.miniecommerceapi.common.constant.AppConstant;
+import com.sam.miniecommerceapi.common.constant.Role;
 import com.sam.miniecommerceapi.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;

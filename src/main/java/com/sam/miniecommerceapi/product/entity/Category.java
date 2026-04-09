@@ -1,6 +1,6 @@
 package com.sam.miniecommerceapi.product.entity;
 
-import com.sam.miniecommerceapi.shared.entity.BaseEntity;
+import com.sam.miniecommerceapi.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
