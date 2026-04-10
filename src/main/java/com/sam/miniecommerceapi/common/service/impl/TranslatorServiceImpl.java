@@ -17,6 +17,6 @@ public class TranslatorServiceImpl implements TranslatorService {
 
 	@Override
 	public String translator(String code, Object[] args, Locale locale) {
-		return messageSource.getMessage(code, args, locale);
+		return messageSource.getMessage(code, args, code, locale);
 	}
 }
