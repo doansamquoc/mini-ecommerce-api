@@ -82,6 +82,10 @@ spring:
           max-active: 8
           max-idle: 8
           min-idle: 0
+    web:
+      pageable:
+        one-indexed-parameters: true
+        default-page-size: 20
 
   security:
     oauth2:
