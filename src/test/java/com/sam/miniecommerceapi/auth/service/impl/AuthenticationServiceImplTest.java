@@ -9,7 +9,7 @@ import com.sam.miniecommerceapi.auth.security.UserPrincipal;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtProvider;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -22,8 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.Clock;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;

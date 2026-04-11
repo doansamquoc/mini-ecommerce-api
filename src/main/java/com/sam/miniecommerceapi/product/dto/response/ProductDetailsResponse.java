@@ -17,7 +17,7 @@ public class ProductDetailsResponse {
 	String name;
 	String slug;
 	String description;
-	BigDecimal regularPrice;
+	BigDecimal price;
 	String imageUrl;
 	CategoryResponse category;
 	Set<VariantResponse> variants;

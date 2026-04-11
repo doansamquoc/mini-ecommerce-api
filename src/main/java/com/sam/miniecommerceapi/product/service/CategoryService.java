@@ -5,9 +5,10 @@ import com.sam.miniecommerceapi.product.dto.request.CategoryCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.CategoryUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;
 import com.sam.miniecommerceapi.product.entity.Category;
+import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
-	PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize);
+	PageResponse<CategoryResponse> getCategories(Pageable pageable);
 
 	CategoryResponse getCategoryById(Long id);
 

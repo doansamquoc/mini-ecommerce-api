@@ -5,7 +5,7 @@ import com.sam.miniecommerceapi.auth.repository.RefreshTokenRepository;
 import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.user.entity.User;
 import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;

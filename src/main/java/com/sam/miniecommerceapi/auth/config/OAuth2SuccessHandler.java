@@ -7,7 +7,7 @@ import com.sam.miniecommerceapi.auth.service.RefreshTokenService;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.util.CookieUtils;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

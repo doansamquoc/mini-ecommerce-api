@@ -1,10 +1,8 @@
 package com.sam.miniecommerceapi.product.entity;
 
 import com.sam.miniecommerceapi.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.sam.miniecommerceapi.upload.entity.Image;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -25,8 +23,9 @@ public class Category extends BaseEntity {
 	@Column(name = "name", nullable = false, unique = true)
 	String name;
 
-	@Column(name = "image_url")
-	String imageUrl;
+	@ManyToOne
+	@JoinColumn(name = "image_id")
+	Image image;
 
 	@Column(name = "slug")
 	String slug;

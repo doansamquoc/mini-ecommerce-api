@@ -52,10 +52,9 @@ spring:
             lucene_version: LATEST
             directory:
               root: ./lucene/indexes
-              type: local-filesystem  # hoặc local-heap cho test
+              type: local-filesystem
             analysis:
               configurer: com.sam.miniecommerceapi.shared.config.LuceneAnalysisConfig
-            # Tối ưu indexing performance
             indexing:
               merge:
                 max_merge_count: 10
@@ -156,6 +155,8 @@ logging:
     org.hibernate.search: DEBUG
     org.hibernate.search.engine: DEBUG
     org.hibernate.search.mapper.orm: DEBUG
+
+# JTE
 gg:
   jte:
     development-mode: true

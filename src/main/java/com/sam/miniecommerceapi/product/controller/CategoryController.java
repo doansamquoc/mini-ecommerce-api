@@ -12,10 +12,14 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,13 +48,12 @@ public class CategoryController {
 		return ResponseEntity.ok(ApiResponse.of(response));
 	}
 
-	@Operation(summary = "Get all categories.")
 	@GetMapping
+	@Operation(summary = "Get all categories.")
 	ResponseEntity<ApiResponse<PageResponse<CategoryResponse>>> getCategories(
-		@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
-		@RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+		@PageableDefault(sort = "name") Pageable pageable
 	) {
-		PageResponse<CategoryResponse> responses = categoryService.getCategories(pageNumber, pageSize);
+		PageResponse<CategoryResponse> responses = categoryService.getCategories(pageable);
 		return ResponseEntity.ok(ApiResponse.of(responses));
 	}
 

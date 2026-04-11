@@ -21,7 +21,6 @@ public class PageResponse<T> {
 	PageMeta pageMeta;
 
 	public static <T> PageResponse<T> from(Page<T> page) {
-
 		Sort.Order order = page.getSort().stream().findFirst().orElse(null);
 		List<SortMeta> sortsMeta = null;
 

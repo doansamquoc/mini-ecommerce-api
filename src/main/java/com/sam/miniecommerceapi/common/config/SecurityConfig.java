@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.config;
+package com.sam.miniecommerceapi.common.config;
 
 import com.sam.miniecommerceapi.auth.config.CookieBearerTokenResolver;
 import com.sam.miniecommerceapi.auth.config.OAuth2FailureHandler;

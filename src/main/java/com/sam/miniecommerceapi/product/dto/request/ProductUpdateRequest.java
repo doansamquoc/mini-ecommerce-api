@@ -7,16 +7,14 @@ import org.hibernate.validator.constraints.URL;
 import java.math.BigDecimal;
 
 public record ProductUpdateRequest(
-	@Size(min = 2, max = 255, message = "product.validation.name_size")
+	@Size(min = 2, max = 255, message = "product.name.size")
 	String name,
 
-	@Size(min = 2, message = "product.validation.description_size")
+	@Size(min = 15, message = "product.description.size")
 	String description,
 
-	@Min(value = 1000, message = "product.validation.price_min")
-	BigDecimal regularPrice,
+	@Min(value = 1000, message = "product.price.min")
+	BigDecimal price,
 	Long categoryId,
-
-	@URL(message = "product.validation.image_invalid_url")
-	String imageUrl
+	Long imageId
 ) {}

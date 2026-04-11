@@ -4,7 +4,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.sam.miniecommerceapi.auth.security.UserPrincipal;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

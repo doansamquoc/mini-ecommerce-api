@@ -9,4 +9,6 @@ public interface UploadService {
 	SignatureResponse generateSignature();
 
 	Map upload(MultipartFile file);
+
+	void delete(String publicId);
 }

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @Slf4j
 @ControllerAdvice
@@ -31,10 +32,10 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(BusinessException.class)
 	ResponseEntity<ErrorResponse> handle(BusinessException e, Locale locale) {
-		log.error("Business Logic", e);
+		log.error("Business Error: {}", e.getMessage());
 
 		ErrorCode ec = e.getErrorCode();
-		List<MyFieldError> fieldErrors = e.getMyFieldErrors().stream().map(f -> {
+		List<MyFieldError> fieldErrors = e.getMyFieldErrors().stream().filter(Objects::nonNull).map(f -> {
 			String messaged = translator.translator(f.getMessage(), e.getArgs(), locale);
 			return new MyFieldError(f.getField(), messaged);
 		}).toList();

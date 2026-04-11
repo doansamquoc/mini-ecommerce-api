@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.config;
+package com.sam.miniecommerceapi.common.config;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

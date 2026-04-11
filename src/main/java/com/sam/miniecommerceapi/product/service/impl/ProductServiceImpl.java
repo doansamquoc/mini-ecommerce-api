@@ -14,6 +14,8 @@ import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.repository.ProductRepository;
 import com.sam.miniecommerceapi.product.service.CategoryService;
 import com.sam.miniecommerceapi.product.service.ProductService;
+import com.sam.miniecommerceapi.upload.entity.Image;
+import com.sam.miniecommerceapi.upload.service.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,32 +30,43 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductServiceImpl implements ProductService {
 	Slugify slugify;
 	ProductMapper mapper;
+	ImageService imageService;
 	ProductRepository repository;
 	CategoryService categoryService;
 
 	@Override
-	public ProductResponse createProduct(ProductCreationRequest request) {
-		Category category = categoryService.findById(request.categoryId());
-		Product product = mapper.toEntity(request);
+	public ProductResponse createProduct(ProductCreationRequest req) {
+		Category category = categoryService.findById(req.categoryId());
+		Image image = imageService.findById(req.imageId());
+
+		Product product = mapper.toEntity(req);
 		product.setCategory(category);
 		product.setSlug(makeUniqueSlug(product.getName()));
+		product.setImage(image);
+
 		return mapper.toResponse(save(product));
 	}
 
 	@Override
-	public ProductResponse updateProduct(Long id, ProductUpdateRequest request) {
+	public ProductResponse updateProduct(Long id, ProductUpdateRequest req) {
 		Product product = findById(id);
+		mapper.toUpdate(product, req);
 
-		if (request.categoryId() != null) {
-			Category category = categoryService.findById(request.categoryId());
+		if (req.categoryId() != null) {
+			Category category = categoryService.findById(req.categoryId());
 			product.setCategory(category);
 		}
 
-		if (request.name() != null && !product.getName().equals(request.name())) {
-			product.setSlug(makeUniqueSlug(request.name()));
+		// Just update slug when update name too
+		if (req.name() != null && !product.getName().equals(req.name())) {
+			product.setSlug(makeUniqueSlug(req.name()));
 		}
 
-		mapper.toUpdate(product, request);
+		if (req.imageId()!=null) {
+			Image image = imageService.findById(req.imageId());
+			product.setImage(image);
+		}
+
 		return mapper.toResponse(save(product));
 	}
 

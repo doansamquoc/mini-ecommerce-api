@@ -5,7 +5,7 @@ import com.sam.miniecommerceapi.auth.dto.request.ResetPasswordRequest;
 import com.sam.miniecommerceapi.auth.entity.PasswordResetToken;
 import com.sam.miniecommerceapi.auth.service.PasswordResetTokenService;
 import com.sam.miniecommerceapi.auth.service.PasswordService;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.event.PasswordChangedEvent;
 import com.sam.miniecommerceapi.event.PasswordResetEvent;
 import com.sam.miniecommerceapi.user.dto.request.UserUpdateRequest;

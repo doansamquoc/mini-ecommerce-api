@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.config;
+package com.sam.miniecommerceapi.common.config;
 
 import com.sam.miniecommerceapi.common.resolver.ClientIpArgumentResolver;
 import com.sam.miniecommerceapi.common.resolver.CurrentUserIdArgumentResolver;

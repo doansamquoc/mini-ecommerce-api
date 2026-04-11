@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.product.entity;
 
 import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.upload.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,8 +34,9 @@ public class Variant extends BaseEntity {
 	@Column(name = "stock_quantity", nullable = false)
 	Integer stockQuantity;
 
-	@Column(name = "image_url")
-	String imageUrl;
+	@ManyToOne
+	@JoinColumn(name = "image_id")
+	Image image;
 
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(name = "attributes", columnDefinition = "jsonb")

@@ -1,4 +1,4 @@
-package com.sam.miniecommerceapi.config;
+package com.sam.miniecommerceapi.common.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

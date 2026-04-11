@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.notification.service.impl;
 
 import com.sam.miniecommerceapi.common.util.FileUtils;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.notification.dto.request.BulkEmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.EmailRequest;
 import com.sam.miniecommerceapi.notification.dto.request.TemplateEmailRequest;

@@ -3,7 +3,7 @@ package com.sam.miniecommerceapi.product.service.impl;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
+import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.Variant;
@@ -12,6 +12,8 @@ import com.sam.miniecommerceapi.product.repository.VariantRepository;
 import com.sam.miniecommerceapi.product.service.AttributeDefinitionService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import com.sam.miniecommerceapi.product.service.VariantService;
+import com.sam.miniecommerceapi.upload.entity.Image;
+import com.sam.miniecommerceapi.upload.service.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,43 +26,59 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VariantServiceImpl implements VariantService {
 	VariantMapper mapper;
+	ImageService imageService;
 	VariantRepository repository;
 	ProductService productService;
 	AttributeDefinitionService definitionService;
 
 	@Override
-	public VariantResponse update(Long productId, Long id, VariantRequest request) {
-		if (existsBySku(request.getSku())) {
-			throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS, "sku", "product.sku.conflict", request.getSku());
+	public VariantResponse updateVariant(Long productId, Long id, VariantUpdateRequest req) {
+		if (!req.getSku().isBlank() && existsBySku(req.getSku())) {
+			throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS, "sku", "product.sku.conflict", req.getSku());
 		}
+
 		Variant variant = findByProductIdAndId(productId, id);
-		mapper.toUpdate(request, variant);
+		mapper.toUpdate(req, variant);
+
+		if (req.getImageId() != null) {
+			Image image = imageService.findById(req.getImageId());
+			variant.setImage(image);
+		}
+
+		if (!req.getAttributes().isEmpty()) {
+			Product product = productService.findById(productId);
+			definitionService.attributeNormalizer(product.getCategory().getId(), req.getAttributes());
+		}
+
 		return mapper.toResponse(save(variant));
 	}
 
 	@Override
-	public VariantResponse create(Long productId, VariantCreationRequest request) {
-		if (existsBySku(request.sku())) {
-			throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS, "sku", "product.sku.conflict", request.sku());
+	public VariantResponse createVariant(Long productId, VariantCreationRequest req) {
+		if (existsBySku(req.sku())) {
+			throw BusinessException.of(ErrorCode.SKU_ALREADY_EXISTS, "sku", "product.sku.conflict", req.sku());
 		}
 
 		Product product = productService.findById(productId);
-		definitionService.attributeNormalizer(product.getCategory().getId(), request.attributes());
+		definitionService.attributeNormalizer(product.getCategory().getId(), req.attributes());
 
-		Variant variant = mapper.toEntity(request);
+		Variant variant = mapper.toEntity(req);
 		variant.setProduct(product);
+
+		Image image = imageService.findById(req.imageId());
+		variant.setImage(image);
 
 		return mapper.toResponse(save(variant));
 	}
 
 	@Override
-	public VariantResponse read(Long productId, Long variantId) {
+	public VariantResponse getVariant(Long productId, Long variantId) {
 		Variant variant = findByProductIdAndId(productId, variantId);
 		return mapper.toResponse(variant);
 	}
 
 	@Override
-	public List<VariantResponse> readAll(Long productId) {
+	public List<VariantResponse> getAllVariants(Long productId) {
 		List<Variant> variants = findAllByProductId(productId);
 		return mapper.toResponseList(variants);
 	}

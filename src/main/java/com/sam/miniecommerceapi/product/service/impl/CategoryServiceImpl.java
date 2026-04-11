@@ -10,11 +10,12 @@ import com.sam.miniecommerceapi.product.entity.Category;
 import com.sam.miniecommerceapi.product.mapper.CategoryMapper;
 import com.sam.miniecommerceapi.product.repository.CategoryRepository;
 import com.sam.miniecommerceapi.product.service.CategoryService;
+import com.sam.miniecommerceapi.upload.entity.Image;
+import com.sam.miniecommerceapi.upload.service.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,84 +23,57 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryServiceImpl implements CategoryService {
-	CategoryRepository repository;
 	CategoryMapper mapper;
+	CategoryRepository repository;
+	private final ImageService imageService;
 
-	/**
-	 * @param pageNumber page number
-	 * @param pageSize   page size
-	 * @return List of category
-	 */
 	@Override
-	public PageResponse<CategoryResponse> getCategories(int pageNumber, int pageSize) {
-		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	public PageResponse<CategoryResponse> getCategories(Pageable pageable) {
 		Page<Category> categories = repository.findAll(pageable);
 		Page<CategoryResponse> responses = categories.map(mapper::toResponse);
-
 		return PageResponse.from(responses);
 	}
 
-	/**
-	 * Get category by ID
-	 *
-	 * @param id Category ID
-	 * @return Category data
-	 */
 	@Override
 	public CategoryResponse getCategoryById(Long id) {
 		return mapper.toResponse(findById(id));
 	}
 
-	/**
-	 * Get category by slug
-	 *
-	 * @param slug Category slug
-	 * @return Category data
-	 */
 	@Override
 	public CategoryResponse getCategorySlug(String slug) {
 		return mapper.toResponse(findBySlug(slug));
 	}
 
-	/**
-	 * Get category by name
-	 *
-	 * @param name Category name
-	 * @return Category data
-	 */
 	@Override
 	public CategoryResponse getCategoryByName(String name) {
 		return mapper.toResponse(findByName(name));
 	}
 
 	@Override
-	public CategoryResponse createCategory(CategoryCreationRequest r) {
-		if (existedByName(r.getName()))
-			throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
-		if (existedBySlug(r.getSlug()))
-			throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
+	public CategoryResponse createCategory(CategoryCreationRequest req) {
+		if (existedByName(req.getName())) throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
+		if (existedBySlug(req.getSlug())) throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
 
-		Category category = mapper.toEntity(r);
+		Image image = imageService.findById(req.getImageId());
+		Category category = mapper.toEntity(req);
+		category.setImage(image);
 
 		return mapper.toResponse(repository.save(category));
 	}
 
-	/**
-	 * Update category information by ID
-	 *
-	 * @param id Category ID
-	 * @param r  Category update request
-	 * @return Category updated
-	 */
 	@Override
-	public CategoryResponse updateCategory(Long id, CategoryUpdateRequest r) {
-		if (!r.getName().isBlank() && existedByName(r.getName()))
+	public CategoryResponse updateCategory(Long id, CategoryUpdateRequest req) {
+		if (!req.getName().isBlank() && existedByName(req.getName())) {
 			throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
-		if (!r.getSlug().isBlank() && existedBySlug(r.getSlug()))
+		}
+		if (!req.getSlug().isBlank() && existedBySlug(req.getSlug())) {
 			throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
+		}
 
 		Category category = findById(id);
-		category = mapper.toEntity(r, category);
+		mapper.toEntity(req, category);
+		Image image = imageService.findById(req.getImageId());
+		category.setImage(image);
 
 		return mapper.toResponse(repository.save(category));
 	}

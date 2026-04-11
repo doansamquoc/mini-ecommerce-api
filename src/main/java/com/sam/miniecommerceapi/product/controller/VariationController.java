@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantRequest;
+import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.service.VariantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public class VariationController {
 		@PathVariable Long productId,
 		@Valid @RequestBody VariantCreationRequest request
 	) {
-		VariantResponse response = service.create(productId, request);
+		VariantResponse response = service.createVariant(productId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
 	}
 
@@ -40,9 +40,9 @@ public class VariationController {
 	ResponseEntity<ApiResponse<VariantResponse>> updateVariation(
 		@PathVariable Long productId,
 		@PathVariable Long id,
-		@Valid @RequestBody VariantRequest request
+		@Valid @RequestBody VariantUpdateRequest request
 	) {
-		VariantResponse response = service.update(productId, id, request);
+		VariantResponse response = service.updateVariant(productId, id, request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
 	}
 
@@ -69,14 +69,14 @@ public class VariationController {
 	@GetMapping
 	@Operation(summary = "Get all product variations.")
 	ResponseEntity<ApiResponse<List<VariantResponse>>> getAllVariations(@PathVariable Long productId) {
-		List<VariantResponse> responses = service.readAll(productId);
+		List<VariantResponse> responses = service.getAllVariants(productId);
 		return ResponseEntity.ok(ApiResponse.of(responses));
 	}
 
 	@GetMapping("/{id}")
 	@Operation(summary = "Get all product variations.")
 	ResponseEntity<ApiResponse<VariantResponse>> getVariation(@PathVariable Long id, @PathVariable Long productId) {
-		VariantResponse response = service.read(productId, id);
+		VariantResponse response = service.getVariant(productId, id);
 		return ResponseEntity.ok(ApiResponse.of(response));
 	}
 }

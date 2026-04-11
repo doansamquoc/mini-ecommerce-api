@@ -10,7 +10,7 @@ import com.sam.miniecommerceapi.auth.service.*;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.common.util.CookieUtils;
-import com.sam.miniecommerceapi.config.AppProperties;
+import com.sam.miniecommerceapi.common.config.AppProperties;
 import com.sam.miniecommerceapi.user.dto.request.UserCreationRequest;
 import com.sam.miniecommerceapi.user.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;

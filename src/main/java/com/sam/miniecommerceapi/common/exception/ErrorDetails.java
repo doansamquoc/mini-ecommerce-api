@@ -17,5 +17,6 @@ import java.util.List;
 public class ErrorDetails {
 	int code;
 	String message;
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	List<MyFieldError> fieldErrors;
 }

@@ -4,10 +4,7 @@ import com.sam.miniecommerceapi.product.dto.request.CategoryCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.CategoryUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;
 import com.sam.miniecommerceapi.product.entity.Category;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(
 	componentModel = "spring",
@@ -19,5 +16,6 @@ public interface CategoryMapper {
 
 	Category toEntity(CategoryUpdateRequest request, @MappingTarget Category category);
 
+	@Mapping(source = "category.image.url", target = "imageUrl")
 	CategoryResponse toResponse(Category category);
 }

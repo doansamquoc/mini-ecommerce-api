@@ -18,12 +18,11 @@ public record ProductCreationRequest(
 
 	@NotNull(message = "product.validation.price_required")
 	@Min(value = 1000, message = "product.validation.price_min")
-	BigDecimal regularPrice,
+	BigDecimal price,
 
 	@NotNull(message = "category.validation.id_required")
 	Long categoryId,
 
-	@NotBlank(message = "product.validation.image_required")
-	@URL(message = "product.validation.image_invalid_url")
-	String imageUrl
+	@NotNull(message = "product.image_id.required")
+	Long imageId
 ) {}

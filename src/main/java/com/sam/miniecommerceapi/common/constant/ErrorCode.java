@@ -97,14 +97,15 @@ public enum ErrorCode {
 	ATTRIBUTE_DEFINITION_NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE.value(), "message.validation.not_acceptable", 3403),
 
 	RESOURCE_CONFLICT(HttpStatus.CONFLICT.value(), "message.validation.conflict", 4901),
-	DATABASE_CONSTRAINT_VIOLATION(HttpStatus.NO_CONTENT.value(), "message.error.conflict", 4902),
+	DATABASE_CONSTRAINT_VIOLATION(HttpStatus.CONFLICT.value(), "message.error.conflict", 4902),
 
 	INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST.value(), "enum.value.invalid", 4003),
-
+	IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "image.not_found", 4101),
 	// --- UPLOAD & REQUEST (4xxx) ---
 	REQUEST_INVALID(HttpStatus.BAD_REQUEST.value(), "request.error.invalid", 4000),
 	UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "upload.error.failed", 4001),
-	UPLOAD_MAX_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "upload.error.size_limit", 4002);
+	UPLOAD_MAX_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "upload.error.size_limit", 4002),
+	CLOUDINARY_DELETE_FAILED(HttpStatus.BAD_REQUEST.value(), "cloudinary.delete.failed", 4004);
 
 	int status;
 	String messageKey;

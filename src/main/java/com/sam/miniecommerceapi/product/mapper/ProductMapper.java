@@ -21,9 +21,11 @@ public interface ProductMapper {
 
 	void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
 
+	@Mapping(source = "product.image.url", target = "imageUrl")
 	ProductResponse toResponse(Product product);
 
 	@Mapping(target = "attributes", source = "variants", qualifiedByName = "aggregateAttributesFromVariants")
+	@Mapping(source = "product.image.url", target = "imageUrl")
 	ProductDetailsResponse toDetailsResponse(Product product);
 
 	@Named("aggregateAttributesFromVariants")

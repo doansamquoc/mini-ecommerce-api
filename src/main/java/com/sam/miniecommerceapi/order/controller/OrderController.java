@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,12 +35,12 @@ public class OrderController {
 	@GetMapping
 	@Operation(summary = "Get orders with pagination and status")
 	ResponseEntity<ApiResponse<PageResponse<OrderResponse>>> getOrders(
-		@RequestParam(value = "status", required = false) OrderStatus status,
-		@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-		@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-		@RequestParam(value = "sort", defaultValue = "orderDate, desc") String sort
+		@RequestParam(name = "status", required = false) OrderStatus status,
+		@RequestParam(name = "page", defaultValue = "1") int pageNumber,
+		@RequestParam(value = "size", defaultValue = "10") int pageSize,
+		@RequestParam(name = "sort", defaultValue = "orderDate,desc") String[] sorts
 	) {
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, SortUtils.extractSortFromString(sort));
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(SortUtils.normalizeSort(sorts)));
 		PageResponse<OrderResponse> responses = orderService.getOrderByStatus(status, pageable);
 		return ResponseEntity.ok(ApiResponse.of(responses));
 	}
@@ -48,12 +49,12 @@ public class OrderController {
 	@Operation(summary = "Get orders with pagination and status by me")
 	ResponseEntity<ApiResponse<PageResponse<OrderResponse>>> myOrders(
 		@CurrentUserId Long userId,
-		@RequestParam(value = "status", required = false) OrderStatus status,
-		@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-		@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-		@RequestParam(value = "sort", defaultValue = "orderDate, desc") String sort
+		@RequestParam(name = "status", required = false) OrderStatus status,
+		@RequestParam(name = "page", defaultValue = "1") int pageNumber,
+		@RequestParam(value = "size", defaultValue = "10") int pageSize,
+		@RequestParam(name = "sort", defaultValue = "orderDate,desc") String[] sorts
 	) {
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, SortUtils.extractSortFromString(sort));
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(SortUtils.normalizeSort(sorts)));
 		PageResponse<OrderResponse> responses = orderService.getOrderByUserId(userId, status, pageable);
 		return ResponseEntity.ok(ApiResponse.of(responses));
 	}

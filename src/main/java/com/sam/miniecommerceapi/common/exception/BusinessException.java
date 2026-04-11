@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -24,7 +25,7 @@ public class BusinessException extends RuntimeException {
 	}
 
 	public static BusinessException of(ErrorCode errorCode) {
-		return new BusinessException(errorCode, null);
+		return new BusinessException(errorCode, Collections.emptyList());
 	}
 
 	public static BusinessException withErrors(ErrorCode errorCode, List<MyFieldError> myFieldErrors) {
@@ -32,7 +33,7 @@ public class BusinessException extends RuntimeException {
 	}
 
 	public static BusinessException withArgs(ErrorCode errorCode, Object... args) {
-		return new BusinessException(errorCode, null, args);
+		return new BusinessException(errorCode, Collections.emptyList(), args);
 	}
 
 	public static BusinessException of(ErrorCode errorCode, List<MyFieldError> myFieldErrors, Object... args) {

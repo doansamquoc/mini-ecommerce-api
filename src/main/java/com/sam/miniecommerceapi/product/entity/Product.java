@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.product.entity;
 
 import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.upload.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,16 +34,17 @@ public class Product extends BaseEntity {
 	String slug;
 
 	@GenericField
-	@Column(name = "regular_price")
-	BigDecimal regularPrice;
+	@Column(name = "price")
+	BigDecimal price;
 
 	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)
 	Category category;
 
-	@Column(name = "image_url")
-	String imageUrl;
+	@ManyToOne
+	@JoinColumn(name = "image_id")
+	Image image;
 
 	@Builder.Default
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
