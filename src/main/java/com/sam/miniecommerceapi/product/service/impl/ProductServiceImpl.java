@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
 import com.github.slugify.Slugify;
+import com.sam.miniecommerceapi.common.constant.CacheNames;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.util.UUIDUtils;
@@ -20,6 +21,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +39,10 @@ public class ProductServiceImpl implements ProductService {
 	CategoryService categoryService;
 
 	@Override
+	@CacheEvict(value = CacheNames.PRODUCT)
 	public ProductResponse createProduct(ProductCreationRequest req) {
-		Category category = categoryService.findById(req.categoryId());
-		Image image = imageService.findById(req.imageId());
+		Category category = categoryService.getReference(req.categoryId());
+		Image image = imageService.getReference(req.imageId());
 
 		Product product = mapper.toEntity(req);
 		product.setCategory(category);
@@ -48,6 +53,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@Caching(evict = {
+		@CacheEvict(value = CacheNames.PRODUCT, key = "#id"),
+		@CacheEvict(value = CacheNames.PRODUCT, key = "#result.slug"),
+		@CacheEvict(value = CacheNames.PRODUCTS_LIST, allEntries = true)
+	})
 	public ProductResponse updateProduct(Long id, ProductUpdateRequest req) {
 		Product product = findById(id);
 		mapper.toUpdate(product, req);
@@ -62,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 			product.setSlug(makeUniqueSlug(req.name()));
 		}
 
-		if (req.imageId()!=null) {
+		if (req.imageId() != null) {
 			Image image = imageService.findById(req.imageId());
 			product.setImage(image);
 		}
@@ -70,28 +80,30 @@ public class ProductServiceImpl implements ProductService {
 		return mapper.toResponse(save(product));
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
+	@Cacheable(value = CacheNames.PRODUCT, key = "#id")
 	public ProductDetailsResponse getProductDetailsById(Long id) {
 		Product product = findDetailsById(id);
 		return mapper.toDetailsResponse(product);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
+	@Cacheable(value = CacheNames.PRODUCT, key = "#slug")
 	public ProductDetailsResponse getProductDetailsBySlug(String slug) {
 		Product product = findBySlug(slug);
 		return mapper.toDetailsResponse(product);
 	}
 
-	@Transactional
 	@Override
+	@Transactional
 	public void deleteProduct(Long id) {
 		delete(id);
 	}
 
-	@Transactional
 	@Override
+	@Transactional
 	public void deleteAllProduct() {
 		deleteAll();
 	}

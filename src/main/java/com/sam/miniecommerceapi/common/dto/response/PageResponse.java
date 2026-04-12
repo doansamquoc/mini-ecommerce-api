@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,25 +22,21 @@ public class PageResponse<T> {
 	PageMeta pageMeta;
 
 	public static <T> PageResponse<T> from(Page<T> page) {
-		Sort.Order order = page.getSort().stream().findFirst().orElse(null);
-		List<SortMeta> sortsMeta = null;
+		List<SortMeta> sortMetas = page.getSort().stream()
+			.map(order -> SortMeta.builder().sortBy(order.getProperty()).direction(order.getDirection()).build())
+			.toList();
 
-		if (order != null) {
-			sortsMeta = Collections.singletonList(SortMeta.builder()
-				.sortBy(order.getProperty())
-				.direction(order.getDirection())
-				.build());
-		}
+		List<SortMeta> cleanSorts = new ArrayList<>(sortMetas);
 
 		PageMeta meta = PageMeta.builder()
 			.pageNumber(page.getNumber())
 			.pageSize(page.getSize())
 			.totalElements(page.getTotalElements())
 			.totalPages(page.getTotalPages())
-			.sort(sortsMeta)
+			.sort(cleanSorts)
 			.build();
 
-		return PageResponse.<T>builder().content(page.getContent()).pageMeta(meta).build();
+		return PageResponse.<T>builder().content(new ArrayList<>(page.getContent())).pageMeta(meta).build();
 	}
 
 	public static <T> PageResponse<T> fromSearchResult(List<T> content, long totalElements, Pageable pageable) {

@@ -12,14 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	@EntityGraph(attributePaths = {"category", "variants",})
+	@EntityGraph(attributePaths = {"category", "variants", "image"})
 	Optional<Product> findBySlug(@Param("slug") String slug);
 
-	@EntityGraph(attributePaths = {"category", "variants"})
+	@EntityGraph(attributePaths = {"category", "variants", "image"})
 	Optional<Product> findDetailsById(@Param("id") Long id);
 
 	boolean existsBySlug(String slug);
-
-	@Query("SELECT p.slug FROM Product p WHERE p.slug LIKE CONCAT(:baseSlug, '%')")
-	List<String> findExistingSlugs(@Param("baseSlug") String baseSlug);
 }

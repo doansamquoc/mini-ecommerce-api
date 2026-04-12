@@ -99,23 +99,23 @@ public class AttributeDefinitionServiceImpl implements AttributeDefinitionServic
 		attributes.putAll(normalized);
 	}
 
-	public AttributeDefinition findById(Long id) {
+	private AttributeDefinition findById(Long id) {
 		return repository.findById(id).orElseThrow(
 			() -> BusinessException.of(ErrorCode.ATTRIBUTE_DEFINITION_NOT_FOUND)
 		);
 	}
 
-	public AttributeDefinition findByAttributeKey(String attributeKey) {
+	private AttributeDefinition findByAttributeKey(String attributeKey) {
 		return repository.findByAttributeKey(attributeKey).orElseThrow(
 			() -> BusinessException.of(ErrorCode.ATTRIBUTE_DEFINITION_NOT_FOUND)
 		);
 	}
 
-	public AttributeDefinition save(AttributeDefinition attributeDefinition) {
+	private AttributeDefinition save(AttributeDefinition attributeDefinition) {
 		return repository.save(attributeDefinition);
 	}
 
-	public boolean existsByCategoryIdAndAttributeKey(Long categoryId, String attributeKey) {
+	private boolean existsByCategoryIdAndAttributeKey(Long categoryId, String attributeKey) {
 		return repository.existsByCategoryIdAndAttributeKey(categoryId, attributeKey);
 	}
 }

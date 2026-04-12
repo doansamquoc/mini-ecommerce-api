@@ -1,10 +1,12 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
+import com.sam.miniecommerceapi.common.validator.ExitsId;
+import com.sam.miniecommerceapi.product.entity.Category;
+import com.sam.miniecommerceapi.upload.entity.Image;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
 
@@ -21,8 +23,10 @@ public record ProductCreationRequest(
 	BigDecimal price,
 
 	@NotNull(message = "category.validation.id_required")
+	@ExitsId(entity = Category.class, message = "category.not_found")
 	Long categoryId,
 
 	@NotNull(message = "product.image_id.required")
+	@ExitsId(entity = Image.class, message = "image.not_found")
 	Long imageId
 ) {}

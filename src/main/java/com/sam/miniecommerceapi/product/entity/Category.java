@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -18,8 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "categories")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Category extends BaseEntity {
-	@FullTextField(analyzer = "name_analyzer")
+public class Category extends BaseEntity implements Serializable {
+	@FullTextField(analyzer = "name_analyzer", projectable = Projectable.YES)
 	@Column(name = "name", nullable = false, unique = true)
 	String name;
 

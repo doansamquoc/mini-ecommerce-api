@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.data.domain.Sort.Direction.ASC;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,10 +50,8 @@ public class CategoryController {
 
 	@GetMapping
 	@Operation(summary = "Get all categories.")
-	ResponseEntity<ApiResponse<PageResponse<CategoryResponse>>> getCategories(
-		@PageableDefault(sort = "name") Pageable pageable
-	) {
-		PageResponse<CategoryResponse> responses = categoryService.getCategories(pageable);
+	ResponseEntity<ApiResponse<List<CategoryResponse>>> getCategories() {
+		List<CategoryResponse> responses = categoryService.getAllCategories();
 		return ResponseEntity.ok(ApiResponse.of(responses));
 	}
 

@@ -1,11 +1,12 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
+import com.sam.miniecommerceapi.common.validator.ExitsId;
+import com.sam.miniecommerceapi.upload.entity.Image;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.constraints.URL;
 
 @Data
 @Builder
@@ -22,5 +23,6 @@ public class CategoryCreationRequest {
 	String slug;
 
 	@NotNull(message = "category.image_id.required")
+	@ExitsId(entity = Image.class, message = "image.not_found")
 	Long imageId;
 }

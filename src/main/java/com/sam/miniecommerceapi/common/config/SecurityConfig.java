@@ -7,6 +7,7 @@ import com.sam.miniecommerceapi.auth.config.jwt.JwtAccessDeniedHandler;
 import com.sam.miniecommerceapi.auth.config.jwt.JwtAuthenticationEntryPoint;
 import com.sam.miniecommerceapi.auth.repository.OAuth2AuthorizationRequestRepository;
 import com.sam.miniecommerceapi.auth.service.CustomOAuth2UserService;
+import com.sam.miniecommerceapi.common.constant.APIs;
 import com.sam.miniecommerceapi.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,9 @@ public class SecurityConfig {
 			session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		httpSecurity.authorizeHttpRequests(
 			auth -> {
-				auth.requestMatchers(AppConstant.PUBLIC_ENDPOINTS).permitAll();
-				auth.requestMatchers(AppConstant.SWAGGER_ENDPOINTS).permitAll();
-				auth.requestMatchers(AppConstant.ADMIN_ENDPOINTS).hasRole("ADMIN");
+				auth.requestMatchers(APIs.PUBLIC_ENDPOINTS).permitAll();
+				auth.requestMatchers(APIs.SWAGGER_ENDPOINTS).permitAll();
+				auth.requestMatchers(APIs.ADMIN_ENDPOINTS).hasRole("ADMIN");
 				auth.anyRequest().authenticated();
 			});
 		httpSecurity.oauth2Login(oauth2 -> {

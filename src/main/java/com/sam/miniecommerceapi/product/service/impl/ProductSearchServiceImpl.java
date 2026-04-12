@@ -1,22 +1,21 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
 import com.sam.miniecommerceapi.common.dto.response.PageResponse;
-import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
+import com.sam.miniecommerceapi.product.dto.SearchDTO;
 import com.sam.miniecommerceapi.product.entity.Product;
-import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.service.ProductSearchService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.search.engine.search.query.SearchResult;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,47 +23,45 @@ import java.util.List;
 public class ProductSearchServiceImpl implements ProductSearchService {
 	@PersistenceContext
 	EntityManager entityManager;
-	ProductMapper mapper;
 
 	@Override
-	public PageResponse<ProductResponse> searchProducts(
+	public PageResponse<SearchDTO> searchProducts(
 		String keyword,
 		BigDecimal minPrice,
-		String categoryName,
+		BigDecimal maxPrice,
+		String catName,
 		Pageable pageable
 	) {
 		SearchSession searchSession = Search.session(entityManager);
+		SearchResult<SearchDTO> result = searchSession.search(Product.class).select(SearchDTO.class).where(f -> {
+			boolean hasKeyword = keyword != null && !keyword.isBlank();
+			boolean hasCategory = catName != null && !catName.isBlank();
+			boolean hasMinPrice = minPrice != null;
+			boolean hasMaxPrice = maxPrice != null;
 
-		var result = searchSession.search(Product.class).where(f -> {
+			if (!hasKeyword && !hasCategory && !hasMinPrice) return f.matchAll();
 			var bool = f.bool();
-			boolean hasCondition = false;
 
-			if (keyword != null && !keyword.isBlank()) {
-				int fuzziness = keyword.length() > 3 ? 2 : 0;
-				bool.must(f.match().fields("name", "description").matching(keyword).fuzzy(fuzziness).toPredicate());
-				hasCondition = true;
+			if (hasKeyword) {
+				bool.must(
+					f.match()
+						.field("name").boost(2.0f) // Important than description
+						.field("description")
+						.matching(keyword)
+						.fuzzy(1)
+				);
 			}
 
-			if (minPrice != null) {
-				bool.must(f.match().field("minPrice").matching(minPrice).toPredicate());
-				hasCondition = true;
+			if (hasMinPrice || hasMaxPrice) {
+				bool.must(f.range().field("regularPrice").between(minPrice, maxPrice).toPredicate());
 			}
 
-			if (categoryName != null && !categoryName.isBlank()) {
-				bool.must(f.match().field("category.name").matching(categoryName).toPredicate());
-				hasCondition = true;
+			if (hasCategory) {
+				bool.must(f.match().field("category.name").matching(catName).toPredicate());
 			}
-
-			if (!hasCondition) return f.matchAll();
-
 			return bool;
-		}).fetch((int) pageable.getOffset(), pageable.getPageSize());
-
-		List<ProductResponse> content = result.hits().stream().map(this::toResponse).toList();
-		return PageResponse.fromSearchResult(content, result.total().hitCount(), pageable);
-	}
-
-	private ProductResponse toResponse(Product product) {
-		return mapper.toResponse(product);
+		}).fetch(pageable.getPageNumber(), pageable.getPageSize());
+		return PageResponse.fromSearchResult(result.hits(), result.total().hitCount(), pageable);
 	}
 }
+

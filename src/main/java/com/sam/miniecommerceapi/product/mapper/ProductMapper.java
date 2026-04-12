@@ -1,5 +1,6 @@
 package com.sam.miniecommerceapi.product.mapper;
 
+import com.sam.miniecommerceapi.product.dto.SearchDTO;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
@@ -22,7 +23,10 @@ public interface ProductMapper {
 	void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
 
 	@Mapping(source = "product.image.url", target = "imageUrl")
+	@Mapping(source = "product.category.name", target = "categoryName")
 	ProductResponse toResponse(Product product);
+
+	SearchDTO toSearch(Product product);
 
 	@Mapping(target = "attributes", source = "variants", qualifiedByName = "aggregateAttributesFromVariants")
 	@Mapping(source = "product.image.url", target = "imageUrl")

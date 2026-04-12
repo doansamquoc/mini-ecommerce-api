@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.product.service.impl;
 
+import com.sam.miniecommerceapi.common.constant.CacheNames;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
-import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.product.dto.request.CategoryCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.CategoryUpdateRequest;
@@ -15,9 +15,12 @@ import com.sam.miniecommerceapi.upload.service.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,31 +31,35 @@ public class CategoryServiceImpl implements CategoryService {
 	private final ImageService imageService;
 
 	@Override
-	public PageResponse<CategoryResponse> getCategories(Pageable pageable) {
-		Page<Category> categories = repository.findAll(pageable);
-		Page<CategoryResponse> responses = categories.map(mapper::toResponse);
-		return PageResponse.from(responses);
+	@Cacheable(value = CacheNames.CATEGORIES, key = "'all'", unless = "#result == null || #result.isEmpty()")
+	public List<CategoryResponse> getAllCategories() {
+		List<Category> categories = repository.findAll();
+		return categories.stream().map(mapper::toResponse).toList();
 	}
 
 	@Override
+	@Cacheable(value = CacheNames.CATEGORIES, key = "'id:' + #id", unless = "#result == null")
 	public CategoryResponse getCategoryById(Long id) {
 		return mapper.toResponse(findById(id));
 	}
 
 	@Override
+	@Cacheable(value = CacheNames.CATEGORIES, key = "'slug:' + #slug", unless = "#result == null")
 	public CategoryResponse getCategorySlug(String slug) {
 		return mapper.toResponse(findBySlug(slug));
 	}
 
 	@Override
+	@Cacheable(value = CacheNames.CATEGORIES, key = "'name:' + #name", unless = "#result == null")
 	public CategoryResponse getCategoryByName(String name) {
 		return mapper.toResponse(findByName(name));
 	}
 
 	@Override
+	@CacheEvict(value = CacheNames.CATEGORIES, allEntries = true)
 	public CategoryResponse createCategory(CategoryCreationRequest req) {
-		if (existedByName(req.getName())) throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
-		if (existedBySlug(req.getSlug())) throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
+		if (existsByName(req.getName())) throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
+		if (existsBySlug(req.getSlug())) throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
 
 		Image image = imageService.findById(req.getImageId());
 		Category category = mapper.toEntity(req);
@@ -62,15 +69,22 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
+	@Caching(evict = {
+		@CacheEvict(value = CacheNames.CATEGORIES, allEntries = true),
+		@CacheEvict(value = CacheNames.PRODUCT, allEntries = true)
+	})
 	public CategoryResponse updateCategory(Long id, CategoryUpdateRequest req) {
-		if (!req.getName().isBlank() && existedByName(req.getName())) {
-			throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
-		}
-		if (!req.getSlug().isBlank() && existedBySlug(req.getSlug())) {
-			throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
+		Category category = findById(id);
+
+		if (!req.getName().equals(category.getName())) {
+			if (existsByNameAndIdNot(req.getName(), id))
+				throw BusinessException.of(ErrorCode.CATEGORY_NAME_CONFLICT);
 		}
 
-		Category category = findById(id);
+		if (!req.getSlug().equals(category.getSlug())) {
+			if (existsBySlugAndIdNot(req.getSlug(), id)) throw BusinessException.of(ErrorCode.CATEGORY_SLUG_CONFLICT);
+		}
+
 		mapper.toEntity(req, category);
 		Image image = imageService.findById(req.getImageId());
 		category.setImage(image);
@@ -99,12 +113,20 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public boolean existedByName(String name) {
+	public boolean existsByName(String name) {
 		return repository.existsByName(name);
 	}
 
 	@Override
-	public boolean existedBySlug(String slug) {
+	public boolean existsBySlug(String slug) {
 		return repository.existsBySlug(slug);
+	}
+
+	boolean existsByNameAndIdNot(String name, Long id) {
+		return repository.existsByNameAndIdNot(name, id);
+	}
+
+	boolean existsBySlugAndIdNot(String slug, Long id) {
+		return repository.existsBySlugAndIdNot(slug, id);
 	}
 }

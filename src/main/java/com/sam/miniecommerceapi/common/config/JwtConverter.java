@@ -24,8 +24,8 @@ public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken>
 
 	public JwtConverter() {
 		this.authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-		this.authoritiesConverter.setAuthoritiesClaimName(AppConstant.JWT_AUTHORIZE_CLAIM_NAME);
-		this.authoritiesConverter.setAuthorityPrefix(AppConstant.JWT_AUTHORIZE_PREFIX);
+		this.authoritiesConverter.setAuthoritiesClaimName(AppConstant.AUTHORIZE_CLAIM_NAME);
+		this.authoritiesConverter.setAuthorityPrefix(AppConstant.AUTHORIZE_PREFIX);
 	}
 
 	@Override

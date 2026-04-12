@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Table(name = "variants")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Variant extends BaseEntity {
+public class Variant extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", nullable = false)
 	Product product;

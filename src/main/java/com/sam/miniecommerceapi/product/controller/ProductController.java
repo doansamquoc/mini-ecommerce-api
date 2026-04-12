@@ -2,6 +2,7 @@ package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.common.dto.response.PageResponse;
+import com.sam.miniecommerceapi.product.dto.SearchDTO;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
@@ -21,6 +22,7 @@ import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,20 +82,14 @@ public class ProductController {
 
 	@Operation(summary = "Search products.", description = "Hibernate Search Engine (Lucene).")
 	@GetMapping("/search")
-	ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> searchProducts(
-		@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
-		@RequestParam(name = "pageSize", defaultValue = "20") int pageSize,
-		@RequestParam(name = "q", required = false) String q,
+	ResponseEntity<ApiResponse<PageResponse<SearchDTO>>> searchProducts(
+		@RequestParam(name = "q", required = false) String keyword,
 		@RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
-		@RequestParam(name = "categoryName", required = false) String categoryName,
-		@RequestParam(name = "sortBy", defaultValue = "name", required = false) String sortBy,
-		@RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir
+		@RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
+		@RequestParam(name = "category", required = false) String categoryName,
+		@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		Sort.Direction direction = Sort.Direction.fromString(sortDir);
-		Sort sort = Sort.by(direction, sortBy);
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-
-		PageResponse<ProductResponse> responses = searchService.searchProducts(q, minPrice, categoryName, pageable);
+		PageResponse<SearchDTO> responses = searchService.searchProducts(keyword, minPrice, maxPrice, categoryName, pageable);
 		return ResponseEntity.ok(ApiResponse.of(responses));
 	}
 

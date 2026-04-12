@@ -1,14 +1,14 @@
 package com.sam.miniecommerceapi.product.service;
 
-import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.CategoryCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.CategoryUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.CategoryResponse;
 import com.sam.miniecommerceapi.product.entity.Category;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface CategoryService {
-	PageResponse<CategoryResponse> getCategories(Pageable pageable);
+	List<CategoryResponse> getAllCategories();
 
 	CategoryResponse getCategoryById(Long id);
 
@@ -28,7 +28,7 @@ public interface CategoryService {
 
 	Category findBySlug(String slug);
 
-	boolean existedByName(String name);
+	boolean existsByName(String name);
 
-	boolean existedBySlug(String slug);
+	boolean existsBySlug(String slug);
 }

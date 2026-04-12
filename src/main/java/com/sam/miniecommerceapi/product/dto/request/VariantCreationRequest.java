@@ -1,5 +1,7 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
+import com.sam.miniecommerceapi.common.validator.ExitsId;
+import com.sam.miniecommerceapi.product.entity.Category;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -11,8 +13,8 @@ public record VariantCreationRequest(
 	@Size(min = 2, max = 16, message = "product.sku.size")
 	String sku,
 
-	@NotNull(message = "product.price.required")
-	@Min(value = 1000, message = "product.price.min")
+	@NotNull(message = "product.regularPrice.required")
+	@Min(value = 1000, message = "product.regularPrice.min")
 	BigDecimal price,
 
 	@NotNull(message = "product.stock.required")
@@ -20,6 +22,7 @@ public record VariantCreationRequest(
 	Integer stockQuantity,
 
 	@NotNull(message = "product.image_id.required")
+	@ExitsId(entity = Category.class, message = "image.not_found")
 	Long imageId,
 	Map<String, Object> attributes
 ) {}

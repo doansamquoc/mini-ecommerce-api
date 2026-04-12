@@ -5,8 +5,11 @@ import com.sam.miniecommerceapi.upload.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,22 +23,22 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Product extends BaseEntity {
-	@FullTextField(analyzer = "name_analyzer")
+public class Product extends BaseEntity implements Serializable {
+	@FullTextField(analyzer = "name_analyzer", projectable = Projectable.YES)
 	@Column(name = "name", nullable = false)
 	String name;
 
-	@FullTextField(analyzer = "name_analyzer")
+	@FullTextField(analyzer = "name_analyzer", projectable = Projectable.YES)
 	@Column(name = "description")
 	String description;
 
-	@KeywordField
+	@KeywordField(projectable = Projectable.YES)
 	@Column(name = "slug", nullable = false, unique = true)
 	String slug;
 
-	@GenericField
-	@Column(name = "price")
-	BigDecimal price;
+	@Column(name = "regular_price")
+	@GenericField(projectable = Projectable.YES)
+	BigDecimal regularPrice;
 
 	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +46,9 @@ public class Product extends BaseEntity {
 	Category category;
 
 	@ManyToOne
+	@IndexedEmbedded
 	@JoinColumn(name = "image_id")
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	Image image;
 
 	@Builder.Default

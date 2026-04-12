@@ -51,7 +51,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 
 	private static Collection<? extends GrantedAuthority> extractAuthorities(Set<Role> roles) {
 		return roles.stream()
-			.map(role -> new SimpleGrantedAuthority(AppConstant.JWT_AUTHORIZE_PREFIX + role.name()))
+			.map(role -> new SimpleGrantedAuthority(AppConstant.AUTHORIZE_PREFIX + role.name()))
 			.collect(Collectors.toSet());
 	}
 
