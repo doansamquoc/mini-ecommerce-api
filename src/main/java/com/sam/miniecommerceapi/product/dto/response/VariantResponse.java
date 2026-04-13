@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public record VariantResponse(
-	Long id,
 	String sku,
 	BigDecimal price,
 	Integer stockQuantity,

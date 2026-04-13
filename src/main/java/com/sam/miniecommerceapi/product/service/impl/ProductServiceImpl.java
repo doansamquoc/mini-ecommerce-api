@@ -82,14 +82,6 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheNames.PRODUCT, key = "#id")
-	public ProductDetailsResponse getProductDetailsById(Long id) {
-		Product product = findDetailsById(id);
-		return mapper.toDetailsResponse(product);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
 	@Cacheable(value = CacheNames.PRODUCT, key = "#slug")
 	public ProductDetailsResponse getProductDetailsBySlug(String slug) {
 		Product product = findBySlug(slug);
@@ -98,6 +90,10 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
+	@Caching(evict = {
+		@CacheEvict(value = CacheNames.PRODUCT, key = "#id"),
+		@CacheEvict(value = CacheNames.PRODUCT, allEntries = true)
+	})
 	public void deleteProduct(Long id) {
 		delete(id);
 	}
@@ -123,10 +119,6 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product findById(Long id) {
 		return repository.findById(id).orElseThrow(() -> BusinessException.of(ErrorCode.PRODUCT_NOT_FOUND));
-	}
-
-	public Product findDetailsById(Long id) {
-		return repository.findDetailsById(id).orElseThrow(() -> BusinessException.of(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 
 	private Product findBySlug(String slug) {

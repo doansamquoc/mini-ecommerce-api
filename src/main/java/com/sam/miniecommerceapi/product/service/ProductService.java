@@ -14,9 +14,6 @@ public interface ProductService {
 	ProductResponse updateProduct(Long id, ProductUpdateRequest request);
 
 	@Transactional(readOnly = true)
-	ProductDetailsResponse getProductDetailsById(Long id);
-
-	@Transactional(readOnly = true)
 	ProductDetailsResponse getProductDetailsBySlug(String slug);
 
 	@Transactional
