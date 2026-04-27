@@ -38,3 +38,4 @@ build/
 /jte-classes
 /lucene
 /src/main/frontend/node_modules
+/src/main/resources/application-local.yml
