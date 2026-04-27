@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public record VariantResponse(
+	String title,
 	String sku,
 	BigDecimal price,
-	Integer stockQuantity,
-	String imageUrl,
-	Map<String, Object> attributes
+	Integer stock,
+	String src,
+	String option1,
+	String option2,
+	String option3
 ) {}

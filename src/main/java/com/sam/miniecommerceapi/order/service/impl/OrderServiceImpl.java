@@ -4,6 +4,7 @@ import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.constant.OrderStatus;
 import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
+import com.sam.miniecommerceapi.common.exception.FieldViolation;
 import com.sam.miniecommerceapi.order.dto.request.CancelOrderRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderItemRequest;
 import com.sam.miniecommerceapi.order.dto.request.OrderRequest;
@@ -15,8 +16,8 @@ import com.sam.miniecommerceapi.order.repository.OrderRepository;
 import com.sam.miniecommerceapi.order.service.OrderItemService;
 import com.sam.miniecommerceapi.order.service.OrderService;
 import com.sam.miniecommerceapi.order.util.OrderStateMachine;
-import com.sam.miniecommerceapi.product.entity.Variant;
-import com.sam.miniecommerceapi.product.service.VariantService;
+import com.sam.miniecommerceapi.product.entity.ProductVariant;
+import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import com.sam.miniecommerceapi.user.entity.User;
 import com.sam.miniecommerceapi.user.service.UserService;
 import lombok.AccessLevel;
@@ -42,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
 	UserService userService;
 	OrderRepository repository;
 	OrderItemService itemService;
-	VariantService variantService;
+	ProductVariantService productVariantService;
 
 	@Override
 	@Transactional
@@ -54,13 +55,13 @@ public class OrderServiceImpl implements OrderService {
 
 		for (OrderItemRequest i : request.items()) {
 			// Receiver the record number has been updated
-			int affected = variantService.deductStock(i.variantId(), i.quantity());
+			int affected = productVariantService.deductStock(i.variantId(), i.quantity());
 			// If the record not change
 			if (affected == 0) {
-				throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, "id", "product.stock.", i.variantId());
+				throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, new FieldViolation("id", "product.stock", i.variantId()));
 			}
 
-			Variant variant = variantService.findById(i.variantId());
+			ProductVariant variant = productVariantService.findById(i.variantId());
 			OrderItem orderItem = createOrderItem(order, variant, i.quantity());
 
 			order.addToOrderItems(orderItem);
@@ -152,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
 		for (OrderItemRequest iReq : request.items()) {
 			// Order must be at least 1 product
 			if (iReq.quantity() < 1) {
-				throw BusinessException.of(ErrorCode.ORDER_INVALID_QUANTITY, "id", "order.quantity.min", iReq.quantity());
+				throw BusinessException.of(ErrorCode.ORDER_INVALID_QUANTITY, new FieldViolation("id", "order.quantity.min", iReq.quantity()));
 			}
 
 			// Check current item already exists yet
@@ -160,23 +161,23 @@ public class OrderServiceImpl implements OrderService {
 			if (existingItem != null) {
 				int quantityDiff = iReq.quantity() - existingItem.getQuantity();
 				if (quantityDiff > 0) {
-					int affected = variantService.deductStock(iReq.variantId(), iReq.quantity());
+					int affected = productVariantService.deductStock(iReq.variantId(), iReq.quantity());
 					if (affected == 0) {
-						throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, "id", "product.stock.out_of_stock");
+						throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, new FieldViolation("id", "product.stock.out_of_stock"));
 					}
 				} else if (quantityDiff < 0) {
-					variantService.increaseStock(iReq.variantId(), Math.abs(quantityDiff));
+					productVariantService.increaseStock(iReq.variantId(), Math.abs(quantityDiff));
 				}
 
 				existingItem.setQuantity(iReq.quantity());
 				existingItemsMap.remove(iReq.variantId());
 			} else {
-				int affected = variantService.deductStock(iReq.variantId(), iReq.quantity());
+				int affected = productVariantService.deductStock(iReq.variantId(), iReq.quantity());
 				if (affected == 0) {
-					throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, "id", "product.stock.out_of_stock");
+					throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK, new FieldViolation("id", "product.stock.out_of_stock"));
 				}
 
-				Variant variant = variantService.findById(iReq.variantId());
+				ProductVariant variant = productVariantService.findById(iReq.variantId());
 				OrderItem newItem = createOrderItem(order, variant, iReq.quantity());
 
 				order.addToOrderItems(newItem);
@@ -185,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
 
 		List<OrderItem> removedItems = new ArrayList<>();
 		for (OrderItem removedItem : existingItemsMap.values()) {
-			variantService.increaseStock(removedItem.getVariant().getId(), removedItem.getQuantity());
+			productVariantService.increaseStock(removedItem.getVariant().getId(), removedItem.getQuantity());
 			order.removeOrderItem(removedItem);
 			removedItems.add(removedItem);
 		}
@@ -214,7 +215,7 @@ public class OrderServiceImpl implements OrderService {
 		return repository.findById(id).orElseThrow(() -> BusinessException.of(ErrorCode.PRODUCT_VARIANT_NOT_FOUND));
 	}
 
-	private OrderItem createOrderItem(Order order, Variant variant, int quantity) {
+	private OrderItem createOrderItem(Order order, ProductVariant variant, int quantity) {
 		OrderItem orderItem = new OrderItem();
 		orderItem.setVariant(variant);
 		orderItem.setOrder(order);

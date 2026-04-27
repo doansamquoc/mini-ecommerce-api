@@ -148,17 +148,6 @@
 			<version>78.3</version>
 		</dependency>
 
-		<!-- Hibernate search -->
-		<dependency>
-			<groupId>org.hibernate.search</groupId>
-			<artifactId>hibernate-search-mapper-orm</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate.search</groupId>
-			<artifactId>hibernate-search-backend-lucene</artifactId>
-		</dependency>
-
 		<!--Cloudinary-->
 		<dependency>
 			<groupId>com.cloudinary</groupId>
@@ -231,60 +220,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.15.0</version>
-				<executions>
-					<execution>
-						<id>install node and pnpm</id>
-						<goals>
-							<goal>install-node-and-pnpm</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<nodeVersion>${node.version}</nodeVersion>
-							<pnpmVersion>${npm.version}</pnpmVersion>
-						</configuration>
-					</execution>
-					<execution>
-						<id>pnpm install</id>
-						<goals>
-							<goal>pnpm</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<arguments>install</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>pnpm run build</id>
-						<goals>
-							<goal>pnpm</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<arguments>run build</arguments>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<workingDirectory>src/main/frontend</workingDirectory>
-					<installDirectory>target</installDirectory>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.hibernate.search</groupId>
-				<artifactId>hibernate-search-bom</artifactId>
-				<version>7.1.0.Final</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>

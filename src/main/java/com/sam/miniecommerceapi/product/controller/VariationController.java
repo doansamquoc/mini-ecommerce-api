@@ -4,7 +4,7 @@ import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
-import com.sam.miniecommerceapi.product.service.VariantService;
+import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1/products/{productId}/variations")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VariationController {
-	VariantService service;
+	ProductVariantService service;
 
 	@PostMapping
 	@Operation(summary = "Create a new product variation.")

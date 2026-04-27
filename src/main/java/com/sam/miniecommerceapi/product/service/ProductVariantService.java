@@ -3,11 +3,14 @@ package com.sam.miniecommerceapi.product.service;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
-import com.sam.miniecommerceapi.product.entity.Variant;
+import com.sam.miniecommerceapi.product.entity.Product;
+import com.sam.miniecommerceapi.product.entity.ProductVariant;
 
 import java.util.List;
 
-public interface VariantService {
+public interface ProductVariantService {
+
+	List<ProductVariant> mapVariants(List<VariantCreationRequest> reqs);
 
 	VariantResponse updateVariant(Long productId, Long variantId, VariantUpdateRequest request);
 
@@ -25,7 +28,7 @@ public interface VariantService {
 
 	void increaseStock(Long id, int quantity);
 
-	Variant findById(Long variantId);
+	ProductVariant findById(Long variantId);
 
-	Variant findGraphById(Long id);
+	ProductVariant findGraphById(Long id);
 }

@@ -8,10 +8,10 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record ProductUpdateRequest(
-	@Size(min = 2, max = 255, message = "product.name.size")
+	@Size(min = 2, max = 255, message = "product.name.size.regexp")
 	String name,
 
-	@Size(min = 15, message = "product.description.size")
+	@Size(min = 15, message = "product.description.size.regexp")
 	String description,
 
 	@Min(value = 1000, message = "product.regularPrice.min")

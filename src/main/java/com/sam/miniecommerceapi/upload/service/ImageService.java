@@ -7,8 +7,12 @@ import com.sam.miniecommerceapi.upload.entity.Image;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface ImageService {
 	ImageResponse createImage(ImageAdditionRequest req);
+
+	List<Long> findExistingImages(List<Long> ids);
 
 	ImageResponse getImage(Long id);
 

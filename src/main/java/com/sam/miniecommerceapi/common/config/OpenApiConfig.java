@@ -22,16 +22,6 @@ public class OpenApiConfig {
 
 	@Bean
 	public OpenAPI customOpenApi() {
-		return new OpenAPI().info(
-			new Info().title(properties.getOpenApiTitle()).version(properties.getOpenApiVersion())
-		).servers(List.of(
-				new Server().url(properties.getOpenApiProdServer()).description("PROD"),
-				new Server().url("http://localhost:9000").description("LOCAL")
-			)
-		).components(new Components().addSecuritySchemes("Bearer Token", new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT"))
-		).security(List.of(new SecurityRequirement().addList("Bearer Token")));
+		return new OpenAPI().info(new Info().title(properties.getOpenApiTitle()).version(properties.getOpenApiVersion())).servers(List.of(new Server().url(properties.getOpenApiProdServer()).description("PROD"), new Server().url("http://localhost:8080").description("LOCAL")));
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ProductService {
 
+	ProductResponse insert(ProductCreationRequest req);
+
 	ProductResponse createProduct(ProductCreationRequest request);
 
 	ProductResponse updateProduct(Long id, ProductUpdateRequest request);

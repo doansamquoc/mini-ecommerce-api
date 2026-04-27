@@ -35,9 +35,9 @@ public class GlobalExceptionHandler {
 		log.error("Business Error: {}", e.getMessage());
 
 		ErrorCode ec = e.getErrorCode();
-		List<MyFieldError> fieldErrors = e.getMyFieldErrors().stream().filter(Objects::nonNull).map(f -> {
+		List<FieldViolation> fieldErrors = e.getFieldViolations().stream().filter(Objects::nonNull).map(f -> {
 			String messaged = translator.translator(f.getMessage(), e.getArgs(), locale);
-			return new MyFieldError(f.getField(), messaged);
+			return new FieldViolation(f.getField(), messaged);
 		}).toList();
 
 		String messaged = translator.translator(ec.getMessageKey(), null, locale);
@@ -49,11 +49,11 @@ public class GlobalExceptionHandler {
 	ResponseEntity<ErrorResponse> handle(HttpMessageNotReadableException e, Locale locale) {
 		log.error("Http Method Not Readable", e);
 
-		List<MyFieldError> fieldErrors = new ArrayList<>();
+		List<FieldViolation> fieldErrors = new ArrayList<>();
 		if (e.getCause() instanceof InvalidFormatException ife && ife.getTargetType().isEnum()) {
 			String fieldName = ife.getPath().getFirst().getFieldName();
 			String messaged = translator.translator("enum.value.invalid", null, locale);
-			fieldErrors.add(new MyFieldError(fieldName, messaged));
+			fieldErrors.add(new FieldViolation(fieldName, messaged));
 		}
 
 		ErrorCode ec = ErrorCode.INVALID_REQUEST_BODY;
@@ -67,9 +67,9 @@ public class GlobalExceptionHandler {
 	ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e, Locale locale) {
 		log.error("Validation Error", e);
 
-		List<MyFieldError> fieldErrors = e.getBindingResult().getFieldErrors().stream().map(f -> {
+		List<FieldViolation> fieldErrors = e.getBindingResult().getFieldErrors().stream().map(f -> {
 			String messaged = translator.translator(f.getDefaultMessage(), f.getArguments(), locale);
-			return new MyFieldError(f.getField(), messaged);
+			return new FieldViolation(f.getField(), messaged);
 		}).toList();
 
 		ErrorCode ec = ErrorCode.VALIDATION_FAILED;
