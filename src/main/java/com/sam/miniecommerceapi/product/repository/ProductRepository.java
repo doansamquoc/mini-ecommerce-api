@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	@EntityGraph(attributePaths = {"category", "variants", "image"})
+	@EntityGraph(attributePaths = {"category", "variants", "image", "options"})
 	Optional<Product> findBySlug(@Param("slug") String slug);
 
 	boolean existsBySlug(String slug);

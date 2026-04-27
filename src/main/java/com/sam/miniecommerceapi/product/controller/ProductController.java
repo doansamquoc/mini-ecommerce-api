@@ -2,7 +2,6 @@ package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
 import com.sam.miniecommerceapi.common.dto.response.PageResponse;
-import com.sam.miniecommerceapi.product.dto.SearchDTO;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
@@ -17,9 +16,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.mapper.orm.session.SearchSession;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -37,22 +33,13 @@ import java.math.BigDecimal;
 public class ProductController {
 	EntityManager entityManager;
 	ProductService productService;
-	ProductSearchService searchService;
-
-	@PostMapping("/reindex")
-	@Operation(summary = "Reindex products for searching.")
-	public ResponseEntity<?> reindex() throws InterruptedException {
-		SearchSession searchSession = Search.session(entityManager);
-		searchSession.massIndexer(Product.class).startAndWait();
-		return ResponseEntity.ok("Indexing done");
-	}
 
 	@PostMapping
 	@Operation(summary = "Create a new product.")
 	ResponseEntity<ApiResponse<ProductResponse>> createProduct(
 		@Valid @RequestBody ProductCreationRequest request
 	) {
-		ProductResponse response = productService.createProduct(request);
+		ProductResponse response = productService.insert(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
 	}
 
@@ -71,26 +58,6 @@ public class ProductController {
 	ResponseEntity<ApiResponse<ProductDetailsResponse>> getProductBySlug(@PathVariable String slug) {
 		ProductDetailsResponse response = productService.getProductDetailsBySlug(slug);
 		return ResponseEntity.ok(ApiResponse.of(response));
-	}
-
-	@GetMapping("/id/{id}")
-	@Operation(summary = "Get a product by ID.")
-	ResponseEntity<ApiResponse<ProductDetailsResponse>> getProductById(@PathVariable Long id) {
-		ProductDetailsResponse response = productService.getProductDetailsById(id);
-		return ResponseEntity.ok(ApiResponse.of(response));
-	}
-
-	@Operation(summary = "Search products.", description = "Hibernate Search Engine (Lucene).")
-	@GetMapping("/search")
-	ResponseEntity<ApiResponse<PageResponse<SearchDTO>>> searchProducts(
-		@RequestParam(name = "q", required = false) String keyword,
-		@RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
-		@RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
-		@RequestParam(name = "category", required = false) String categoryName,
-		@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-	) {
-		PageResponse<SearchDTO> responses = searchService.searchProducts(keyword, minPrice, maxPrice, categoryName, pageable);
-		return ResponseEntity.ok(ApiResponse.of(responses));
 	}
 
 	@DeleteMapping("/{id}")

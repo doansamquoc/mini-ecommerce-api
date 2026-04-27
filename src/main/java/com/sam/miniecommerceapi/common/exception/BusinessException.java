@@ -14,13 +14,13 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BusinessException extends RuntimeException {
 	ErrorCode errorCode;
-	List<MyFieldError> myFieldErrors;
+	List<FieldViolation> fieldViolations;
 	Object[] args;
 
-	private BusinessException(ErrorCode errorCode, List<MyFieldError> myFieldErrors, Object... args) {
+	private BusinessException(ErrorCode errorCode, List<FieldViolation> fieldViolations, Object... args) {
 		super(errorCode.getMessageKey());
 		this.errorCode = errorCode;
-		this.myFieldErrors = myFieldErrors;
+		this.fieldViolations = fieldViolations;
 		this.args = args;
 	}
 
@@ -28,19 +28,24 @@ public class BusinessException extends RuntimeException {
 		return new BusinessException(errorCode, Collections.emptyList());
 	}
 
-	public static BusinessException withErrors(ErrorCode errorCode, List<MyFieldError> myFieldErrors) {
-		return new BusinessException(errorCode, myFieldErrors);
+	public static BusinessException withErrors(ErrorCode errorCode, List<FieldViolation> fieldViolations) {
+		return new BusinessException(errorCode, fieldViolations);
 	}
 
 	public static BusinessException withArgs(ErrorCode errorCode, Object... args) {
 		return new BusinessException(errorCode, Collections.emptyList(), args);
 	}
 
-	public static BusinessException of(ErrorCode errorCode, List<MyFieldError> myFieldErrors, Object... args) {
-		return new BusinessException(errorCode, myFieldErrors, args);
+	public static BusinessException of(ErrorCode errorCode, List<FieldViolation> fieldViolations) {
+		return new BusinessException(errorCode, fieldViolations);
 	}
 
-	public static BusinessException of(ErrorCode errorCode, String field, String message, Object... args) {
-		return new BusinessException(errorCode, List.of(new MyFieldError(field, message)), args);
+	public static BusinessException of(ErrorCode errorCode, FieldViolation fieldViolation) {
+		return new BusinessException(errorCode, List.of(fieldViolation));
 	}
+
+
+	// public static BusinessException of(ErrorCode errorCode, String field, String message, Object... args) {
+	// 	return new BusinessException(errorCode, List.of(new MyFieldError(field, message)), args);
+	// }
 }

@@ -15,7 +15,6 @@ public interface CategoryMapper {
 	Category toEntity(CategoryCreationRequest request);
 
 	Category toEntity(CategoryUpdateRequest request, @MappingTarget Category category);
-
-	@Mapping(source = "category.image.url", target = "imageUrl")
+	
 	CategoryResponse toResponse(Category category);
 }

@@ -7,6 +7,6 @@ public record ProductResponse(
 	String description,
 	BigDecimal regularPrice,
 	String slug,
-	String imageUrl,
+	String src,
 	String categoryName
 ) {}

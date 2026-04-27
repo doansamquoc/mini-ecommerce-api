@@ -105,7 +105,8 @@ public enum ErrorCode {
 	REQUEST_INVALID(HttpStatus.BAD_REQUEST.value(), "request.error.invalid", 4000),
 	UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "upload.error.failed", 4001),
 	UPLOAD_MAX_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "upload.error.size_limit", 4002),
-	CLOUDINARY_DELETE_FAILED(HttpStatus.BAD_REQUEST.value(), "cloudinary.delete.failed", 4004);
+	CLOUDINARY_DELETE_FAILED(HttpStatus.BAD_REQUEST.value(), "cloudinary.delete.failed", 4004),
+	PRODUCT_OPTION_NAME_DUPLICATE(HttpStatus.CONFLICT.value(), "product.options.name_duplicate", 300203);
 
 	int status;
 	String messageKey;

@@ -1,53 +1,32 @@
 package com.sam.miniecommerceapi.product.mapper;
 
-import com.sam.miniecommerceapi.product.dto.SearchDTO;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
-import com.sam.miniecommerceapi.product.entity.Variant;
 import org.mapstruct.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Mapper(
 	componentModel = "spring",
-	uses = {VariantMapper.class, CategoryMapper.class},
+	uses = {ProductVariantMapper.class, CategoryMapper.class},
 	nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface ProductMapper {
+	@Mapping(target = "category", ignore = true)
+	@Mapping(target = "image", ignore = true)
 	Product toEntity(ProductCreationRequest request);
 
 	void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
 
-	@Mapping(source = "product.image.url", target = "imageUrl")
+	@Mapping(source = "product.image.url", target = "src")
 	@Mapping(source = "product.category.name", target = "categoryName")
 	ProductResponse toResponse(Product product);
 
-	SearchDTO toSearch(Product product);
-
-	@Mapping(target = "attributes", source = "variants", qualifiedByName = "aggregateAttributesFromVariants")
-	@Mapping(source = "product.image.url", target = "imageUrl")
+	@Mapping(source = "product.image.url", target = "src")
 	ProductDetailsResponse toDetailsResponse(Product product);
-
-	@Named("aggregateAttributesFromVariants")
-	default Map<String, Set<Object>> aggregateAttributesFromVariants(Set<Variant> variants) {
-		if (variants == null || variants.isEmpty()) return Collections.emptyMap();
-		return variants.stream()
-			.map(Variant::getAttributes)
-			.filter(Objects::nonNull)
-			.flatMap(map -> map.entrySet().stream())
-			.collect(Collectors.groupingBy(
-					Map.Entry::getKey,
-					Collectors.mapping(
-						Map.Entry::getValue,
-						Collectors.toCollection(() -> new TreeSet<>(attributeComparator()))
-					)
-				)
-			);
-	}
 
 	default Comparator<Object> attributeComparator() {
 		return (obj1, obj2) -> {

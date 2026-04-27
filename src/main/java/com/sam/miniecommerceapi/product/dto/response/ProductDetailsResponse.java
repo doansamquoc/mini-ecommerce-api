@@ -1,7 +1,8 @@
 package com.sam.miniecommerceapi.product.dto.response;
 
+import com.sam.miniecommerceapi.product.dto.ProductOptionDto;
+
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Set;
 
 public record ProductDetailsResponse(
@@ -9,9 +10,9 @@ public record ProductDetailsResponse(
 	String name,
 	String slug,
 	String description,
-	BigDecimal price,
-	String imageUrl,
+	BigDecimal regularPrice,
+	String src,
 	CategoryResponse category,
 	Set<VariantResponse> variants,
-	Map<String, Set<Object>> attributes
+	Set<ProductOptionDto> options
 ) {}

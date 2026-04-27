@@ -18,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,6 +32,14 @@ public class ImageServiceImpl implements ImageService {
 	public ImageResponse createImage(ImageAdditionRequest req) {
 		Image image = mapper.toEntity(req);
 		return mapper.toResponse(save(image));
+	}
+
+	@Override
+	public List<Long> findExistingImages(List<Long> ids) {
+		List<Long> existingIds = repository.findExistingImages(ids);
+
+		// The ids exists
+		return ids.stream().filter(existingIds::contains).toList();
 	}
 
 	@Override

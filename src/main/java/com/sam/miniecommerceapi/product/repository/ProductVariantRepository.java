@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.product.repository;
 
 import com.sam.miniecommerceapi.product.entity.Product;
-import com.sam.miniecommerceapi.product.entity.Variant;
+import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,32 +15,36 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VariantRepository extends JpaRepository<Variant, Long> {
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
 	boolean existsBySku(String sku);
 
-	@Query("SELECT v.sku FROM Variant v WHERE v.sku IN :skus")
+	@Query("SELECT v.sku FROM ProductVariant v WHERE v.sku IN :skus")
 	List<String> findExistingSkus(Collection<String> skus);
 
-	List<Variant> findAllByProductId(Long productId);
+	List<ProductVariant> findAllByProductId(Long productId);
 
-	Optional<Variant> findByProductIdAndId(Long productId, Long id);
+	Optional<ProductVariant> findByProductIdAndId(Long productId, Long id);
 
 	@Transactional
 	@Modifying
-	@Query("UPDATE Variant v SET v.stockQuantity = v.stockQuantity - :quantity WHERE v.id = :id AND v.stockQuantity >= :quantity")
+	@Query("UPDATE ProductVariant v SET v.stock = v.stock - :quantity WHERE v.id = :id AND v.stock >= :quantity")
 	int deductStock(@Param("id") long id, @Param("quantity") int quantity);
 
 	@Modifying
-	@Query("UPDATE Variant v SET v.stockQuantity = v.stockQuantity + :quantity WHERE v.id = :id")
+	@Query("UPDATE ProductVariant v SET v.stock = v.stock + :quantity WHERE v.id = :id")
 	void increaseStock(@Param("id") long id, @Param("quantity") int quantity);
 
-	Optional<Variant> findByProductAndId(Product product, Long id);
+	Optional<ProductVariant> findByProductAndId(Product product, Long id);
 
 	void deleteByProductIdAndId(Long productId, Long id);
 
 	void deleteAllByProductId(Long productId);
 
 	@EntityGraph(attributePaths = {"product"})
-	@Query("SELECT v FROM Variant v WHERE v.id = :id")
-	Optional<Variant> findGraphById(Long id);
+	@Query("SELECT v FROM ProductVariant v WHERE v.id = :id")
+	Optional<ProductVariant> findGraphById(Long id);
+
+
+	@Query("SELECT v.sku FROM ProductVariant v WHERE v.sku IN :skus")
+	List<String> findExistingSkus(List<String> skus);
 }

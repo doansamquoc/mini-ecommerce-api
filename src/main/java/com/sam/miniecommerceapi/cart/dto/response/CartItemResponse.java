@@ -7,7 +7,7 @@ public record CartItemResponse(
 	Long variantId,
 	String productName,
 	String sku,
-	String imageUrl,
+	String src,
 	BigDecimal price,
 	int quantity,
 	BigDecimal subTotal

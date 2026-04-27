@@ -11,10 +11,14 @@ import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
 import com.sam.miniecommerceapi.product.entity.Category;
 import com.sam.miniecommerceapi.product.entity.Product;
+import com.sam.miniecommerceapi.product.entity.ProductOption;
+import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.product.mapper.ProductMapper;
 import com.sam.miniecommerceapi.product.repository.ProductRepository;
 import com.sam.miniecommerceapi.product.service.CategoryService;
+import com.sam.miniecommerceapi.product.service.ProductOptionService;
 import com.sam.miniecommerceapi.product.service.ProductService;
+import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import com.sam.miniecommerceapi.upload.entity.Image;
 import com.sam.miniecommerceapi.upload.service.ImageService;
 import lombok.AccessLevel;
@@ -27,6 +31,9 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +44,35 @@ public class ProductServiceImpl implements ProductService {
 	ImageService imageService;
 	ProductRepository repository;
 	CategoryService categoryService;
+	ProductOptionService optionService;
+	ProductVariantService variantService;
+
+	@Override
+	public ProductResponse insert(ProductCreationRequest req) {
+		Product product = mapper.toEntity(req);
+
+		// Set category
+		product.setCategory(categoryService.getReference(req.categoryId()));
+
+		// Set image
+		product.setImage(imageService.getReference(req.imageId()));
+
+		// Set Slug
+		product.setSlug(makeUniqueSlug(req.name()));
+
+		// Set all variants. Simply save the product and its variations will be saved as well.
+		List<ProductVariant> variants = variantService.mapVariants(req.variants());
+		variants.forEach(variant -> variant.setProduct(product)); // Many to many
+		product.setVariants(new LinkedHashSet<>(variants)); // Many to many
+
+		// Set all options. Simply save the product and its options will be saved as well.
+		List<ProductOption> options = optionService.mapOptions(req.options());
+		options.forEach(option -> option.setProduct(product)); // Many to many
+		product.setOptions(options); // Many to many
+
+		// Save and return
+		return mapper.toResponse(repository.save(product));
+	}
 
 	@Override
 	@CacheEvict(value = CacheNames.PRODUCT)

@@ -11,8 +11,8 @@ import com.sam.miniecommerceapi.cart.service.CartItemService;
 import com.sam.miniecommerceapi.cart.service.CartService;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
-import com.sam.miniecommerceapi.product.entity.Variant;
-import com.sam.miniecommerceapi.product.service.VariantService;
+import com.sam.miniecommerceapi.product.entity.ProductVariant;
+import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,19 +28,19 @@ public class CartItemServiceImpl implements CartItemService {
 	CartItemMapper mapper;
 	CartService cartService;
 	CartItemRepository repository;
-	VariantService variantService;
+	ProductVariantService productVariantService;
 
 	@Override
 	@Transactional
 	public CartItemResponse addToCart(Long userId, CartItemAdditionRequest request) {
 		CartItem cartItem = repository.findByUserIdAndVariantId(userId, request.variantId()).orElseGet(() -> {
 			Cart cart = cartService.getOrCreateCart(userId);
-			Variant variant = variantService.findGraphById(request.variantId());
+			ProductVariant variant = productVariantService.findGraphById(request.variantId());
 			return CartItem.builder().cart(cart).variant(variant).quantity(0).build();
 		});
 
 		int totalQuantity = cartItem.getQuantity() + request.quantity();
-		if (cartItem.getVariant().getStockQuantity() < totalQuantity) {
+		if (cartItem.getVariant().getStock() < totalQuantity) {
 			throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK);
 		}
 
@@ -59,8 +59,8 @@ public class CartItemServiceImpl implements CartItemService {
 			return null;
 		}
 
-		Variant variant = variantService.findById(request.variantId());
-		if (variant.getStockQuantity() < request.quantity()) {
+		ProductVariant variant = productVariantService.findById(request.variantId());
+		if (variant.getStock() < request.quantity()) {
 			throw BusinessException.of(ErrorCode.PRODUCT_OUT_OF_STOCK);
 		}
 

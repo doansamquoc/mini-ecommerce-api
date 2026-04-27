@@ -1,40 +1,56 @@
 version: '3.8'
 services:
-  # Database (PostgreSQL)
-  postgres-db:
-    image: postgres:15-alpine
-    container_name: ecommerce-db
-    environment:
-      POSTGRES_DB: mini_ecommerce
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+  postgresql:
+    container_name: postgresql
+    image: postgres:alpine
     ports:
       - "5432:5432"
     volumes:
-      - ./db-data:/var/lib/postgresql/data
+      - postgresql-data:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
-  # Caching (Redis)
-  redis-cache:
-    image: redis:7-alpine
-    container_name: ecommerce-redis
+  redis:
+    container_name: redis
+    image: redis:alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
 
-  # Spring Boot App
-  app:
-    build: .
-    container_name: ecommerce-api
+  redis-insight:
+    image: redis/redisinsight:latest
     ports:
-      - "9000:9000"
+      - "5540:5540"
+    volumes:
+      - redis-insight-data:/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     depends_on:
-      - postgres-db
-      - redis-cache
+      - postgresql
+      - redis
     environment:
-      - DB_URL=jdbc:${DB_URL:postgresql://postgres-db:5432/mini_ecommerce}
-      - DB_USERNAME=${DB_USERNAME:postgres}
-      - DB_PASSWORD=${DB_PASSWORD:123456}
-      - SPRING_DATA_REDIS_HOST=redis-cache
-      - SPRING_DATA_REDIS_PORT=6379
+      - SERVER_PORT=${SERVER_PORT}
+      - DB_URL=jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - JWT_SECRET=f1545ca030b7c3b0f7d7820196cb7fb14b9cb2a5ec4b911405cad2fa430966523c247a7c1c6553153f0e639873be291efb278ac8f1a5c68768d5401185f6f9e6
+      - JWT_SECRET=${SECRET_KEY}
+
+volumes:
+  postgresql-data:
+    name: postgresql-data
+  redis-data:
+    name: redis-data
+  redis-insight-data:
+    name: redis-insight-data

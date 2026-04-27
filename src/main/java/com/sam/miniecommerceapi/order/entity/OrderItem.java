@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.order.entity;
 
 import com.sam.miniecommerceapi.common.entity.BaseEntity;
-import com.sam.miniecommerceapi.product.entity.Variant;
+import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +23,7 @@ public class OrderItem extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "variant_id", nullable = false)
-	Variant variant;
+	ProductVariant variant;
 
 	@Column(name = "quantity")
 	Integer quantity;

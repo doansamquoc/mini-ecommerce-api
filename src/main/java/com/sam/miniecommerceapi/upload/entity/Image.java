@@ -7,8 +7,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.search.engine.backend.types.Projectable;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
 import java.io.Serializable;
 
@@ -25,6 +23,5 @@ public class Image extends BaseEntity implements Serializable {
 	String publicId;
 
 	@Column(name = "url", nullable = false, columnDefinition = "text")
-	@GenericField(projectable = Projectable.YES)
 	String url;
 }

@@ -25,7 +25,7 @@ public class ErrorResponse {
 		return new ErrorResponse(status, new ErrorDetails(code, message, null));
 	}
 
-	public static ErrorResponse of(int status, int code, String message, List<MyFieldError> fieldErrors) {
+	public static ErrorResponse of(int status, int code, String message, List<FieldViolation> fieldErrors) {
 		return new ErrorResponse(status, new ErrorDetails(code, message, fieldErrors));
 	}
 }

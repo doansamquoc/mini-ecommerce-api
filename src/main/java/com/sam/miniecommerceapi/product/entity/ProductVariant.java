@@ -6,12 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Map;
 
 @Entity
 @Setter
@@ -19,12 +16,14 @@ import java.util.Map;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "variants")
+@Table(name = "product_variants")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Variant extends BaseEntity implements Serializable {
+public class ProductVariant extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", nullable = false)
 	Product product;
+
+	String title;
 
 	@Column(name = "sku", nullable = false, unique = true)
 	String sku;
@@ -32,16 +31,16 @@ public class Variant extends BaseEntity implements Serializable {
 	@Column(name = "price", nullable = false)
 	BigDecimal price;
 
-	@Column(name = "stock_quantity", nullable = false)
-	Integer stockQuantity;
+	@Column(name = "stock", nullable = false)
+	Integer stock;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "image_id")
 	Image image;
 
-	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(name = "attributes", columnDefinition = "jsonb")
-	Map<String, Object> attributes;
+	String option1;
+	String option2;
+	String option3;
 
 	@Version
 	Long version;

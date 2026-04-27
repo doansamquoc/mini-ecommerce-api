@@ -22,7 +22,7 @@ public interface CartItemMapper {
 	@Mapping(source = "variant.id", target = "variantId")
 	@Mapping(source = "variant.product.name", target = "productName")
 	@Mapping(source = "variant.sku", target = "sku")
-	@Mapping(source = "variant.image.url", target = "imageUrl")
+	@Mapping(source = "variant.image.url", target = "src")
 	@Mapping(source = "variant.price", target = "price")
 	@Mapping(target = "subTotal", expression = "java(cartItem.getSubTotal())")
 	CartItemResponse toResponse(CartItem cartItem);
