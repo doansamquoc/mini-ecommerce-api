@@ -1,11 +1,12 @@
 package com.sam.miniecommerceapi.product.dto.request;
 
-import com.sam.miniecommerceapi.common.validator.ExitsId;
-import com.sam.miniecommerceapi.product.entity.Category;
+import com.sam.miniecommerceapi.product.dto.ProductOptionDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ProductUpdateRequest(
 	@Size(min = 2, max = 255, message = "product.name.size.regexp")
@@ -16,10 +17,13 @@ public record ProductUpdateRequest(
 
 	@Min(value = 1000, message = "product.regularPrice.min")
 	BigDecimal price,
-
-	@ExitsId(entity = Category.class, message = "category.not_found")
 	Long categoryId,
+	Long imageId,
 
-	@ExitsId(entity = Category.class, message = "image.not_found")
-	Long imageId
+	@Valid
+	List<ProductVariantRequest> variants,
+
+	@Valid
+	@Size(max = 3, message = "product.option.maximum")
+	List<ProductOptionDto> options
 ) {}

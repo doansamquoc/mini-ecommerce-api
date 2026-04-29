@@ -3,13 +3,13 @@ package com.sam.miniecommerceapi.product.service.impl;
 import com.sam.miniecommerceapi.common.constant.ErrorCode;
 import com.sam.miniecommerceapi.common.exception.BusinessException;
 import com.sam.miniecommerceapi.common.exception.FieldViolation;
+import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
+import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import com.sam.miniecommerceapi.product.mapper.ProductVariantMapper;
 import com.sam.miniecommerceapi.product.repository.ProductVariantRepository;
-import com.sam.miniecommerceapi.product.service.AttributeDefinitionService;
 import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import com.sam.miniecommerceapi.upload.entity.Image;
 import com.sam.miniecommerceapi.upload.service.ImageService;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,6 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 	ProductVariantMapper mapper;
 	ImageService imageService;
 	ProductVariantRepository repository;
-	AttributeDefinitionService definitionService;
 
 	@Override
 	public List<ProductVariant> mapVariants(List<VariantCreationRequest> reqs) {
@@ -37,10 +37,21 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 		violations.addAll(detectDuplicateSkus(reqs));
 		violations.addAll(detectSkuConflicts(reqs));
 		violations.addAll(validateImageIds(reqs));
-
 		if (!violations.isEmpty()) throw BusinessException.of(ErrorCode.VALIDATION_FAILED, violations);
 
-		return reqs.stream().map(mapper::toEntity).toList();
+		List<ProductVariant> variants = reqs.stream().map(mapper::toEntity).toList();
+		variants.forEach(v -> v.setTitle(makeTitle(v)));
+
+		return variants;
+	}
+
+	private String makeTitle(ProductVariant variant) {
+		return Stream.of(
+			variant.getOption1(),
+			variant.getOption2(),
+			variant.getOption3()
+		).filter(Objects::nonNull
+		).collect(Collectors.joining(" / "));
 	}
 
 	private List<FieldViolation> detectSkuConflicts(List<VariantCreationRequest> reqs) {
@@ -94,23 +105,59 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
 
 	@Override
-	public VariantResponse updateVariant(Long productId, Long id, VariantUpdateRequest req) {
-		if (!req.getSku().isBlank() && existsBySku(req.getSku())) {
+	public VariantResponse update(Long productId, Long id, ProductVariantRequest req) {
+		if (!req.sku().isBlank() && existsBySku(req.sku())) {
 			throw BusinessException.of(
 				ErrorCode.SKU_ALREADY_EXISTS,
-				new FieldViolation("sku", "product.sku.conflict", req.getSku())
+				new FieldViolation("sku", "product.sku.conflict", req.sku())
 			);
 		}
 
 		ProductVariant variant = findByProductIdAndId(productId, id);
 		mapper.toUpdate(req, variant);
 
-		if (req.getImageId() != null) {
-			Image image = imageService.findById(req.getImageId());
+		if (req.imageId() != null) {
+			Image image = imageService.findById(req.imageId());
 			variant.setImage(image);
 		}
 
 		return mapper.toResponse(save(variant));
+	}
+
+	@Override
+	public ProductVariant mapUpdate(ProductVariantRequest req, ProductVariant variant) {
+		return mapper.toUpdate(req, variant);
+	}
+
+	@Override
+	public ProductVariant mapEntity(ProductVariantRequest req) {
+		return mapper.toEntity(req);
+	}
+
+	@Override
+	public void batchUpdate(Product product, List<ProductVariantRequest> reqs) {
+		if (reqs == null || reqs.isEmpty()) {
+			product.getVariants().clear();
+			return;
+		}
+
+		Set<Long> requestIds = reqs.stream().map(ProductVariantRequest::id).collect(Collectors.toSet());
+		product.getVariants().removeIf(variant -> !requestIds.contains(variant.getId()));
+
+		Map<Long, ProductVariant> existing = product.getVariants().stream(
+		).filter(v -> v.getId() != null
+		).collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
+		for (ProductVariantRequest req : reqs) {
+			if (req.id() != null && existing.containsKey(req.id())) {
+				ProductVariant variant = existing.get(req.id());
+				if (variant != null) mapper.toUpdate(req, variant);
+			} else {
+				ProductVariant variant = mapper.toEntity(req);
+				variant.setProduct(product);
+				product.getVariants().add(variant);
+			}
+		}
 	}
 
 	@Override
@@ -121,7 +168,6 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 				new FieldViolation("sku", "product.sku.conflict", req.sku())
 			);
 		}
-
 
 		ProductVariant variant = mapper.toEntity(req);
 

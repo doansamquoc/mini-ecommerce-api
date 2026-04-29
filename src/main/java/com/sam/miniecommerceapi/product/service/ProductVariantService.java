@@ -1,18 +1,25 @@
 package com.sam.miniecommerceapi.product.service;
 
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
+import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductVariantService {
 
 	List<ProductVariant> mapVariants(List<VariantCreationRequest> reqs);
 
-	VariantResponse updateVariant(Long productId, Long variantId, VariantUpdateRequest request);
+	VariantResponse update(Long productId, Long variantId, ProductVariantRequest request);
+
+	ProductVariant mapUpdate(ProductVariantRequest req, ProductVariant variant);
+
+	ProductVariant mapEntity(ProductVariantRequest req);
+
+	void batchUpdate(Product product, List<ProductVariantRequest> reqs);
 
 	VariantResponse createVariant(Long productId, VariantCreationRequest request);
 

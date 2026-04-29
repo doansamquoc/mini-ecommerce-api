@@ -2,7 +2,7 @@ package com.sam.miniecommerceapi.common.constant;
 
 public class CacheNames {
 	public static final String PREFIX = "ecommerce:v1:";
-	public static final String PRODUCT = "products";
+	public static final String PRODUCTS = "products";
 	public static final String PRODUCTS_LIST = "products:list";
 	public static final String CACHE_PRODUCT_SEARCH = "products:search";
 	public static final String CATEGORIES = "categories";

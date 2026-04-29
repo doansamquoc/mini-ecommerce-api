@@ -65,8 +65,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
         default_batch_fetch_size: 100
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        order_updates: true
+        order_inserts: true
+        generate_statistics: true
+        jdbc:
+          batch_size: 20
+        id:
+          generator:
+            mappings: true
+          default_optimizer_strategy: pooled-lo
 
   servlet:
     multipart:
@@ -142,5 +152,7 @@ gg:
 
 logging:
   level:
+    org.hibernate.sql: DEBUG
+
     org.springframework.data.redis: DEBUG
     org.springframework.cache: TRACE

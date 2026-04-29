@@ -19,6 +19,8 @@ public interface ProductMapper {
 	@Mapping(target = "image", ignore = true)
 	Product toEntity(ProductCreationRequest request);
 
+	@Mapping(target = "variants", ignore = true)
+	@Mapping(target = "options", ignore = true)
 	void toUpdate(@MappingTarget Product product, ProductUpdateRequest request);
 
 	@Mapping(source = "product.image.url", target = "src")

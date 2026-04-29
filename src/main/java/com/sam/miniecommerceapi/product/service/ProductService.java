@@ -11,9 +11,7 @@ public interface ProductService {
 
 	ProductResponse insert(ProductCreationRequest req);
 
-	ProductResponse createProduct(ProductCreationRequest request);
-
-	ProductResponse updateProduct(Long id, ProductUpdateRequest request);
+	ProductDetailsResponse update(Long id, ProductUpdateRequest request);
 
 	@Transactional(readOnly = true)
 	ProductDetailsResponse getProductDetailsBySlug(String slug);

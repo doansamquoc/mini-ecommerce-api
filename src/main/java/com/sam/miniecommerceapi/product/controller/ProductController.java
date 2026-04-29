@@ -1,13 +1,10 @@
 package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
-import com.sam.miniecommerceapi.common.dto.response.PageResponse;
 import com.sam.miniecommerceapi.product.dto.request.ProductCreationRequest;
 import com.sam.miniecommerceapi.product.dto.request.ProductUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.ProductDetailsResponse;
 import com.sam.miniecommerceapi.product.dto.response.ProductResponse;
-import com.sam.miniecommerceapi.product.entity.Product;
-import com.sam.miniecommerceapi.product.service.ProductSearchService;
 import com.sam.miniecommerceapi.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,14 +13,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,11 +37,11 @@ public class ProductController {
 
 	@Operation(summary = "Update product by ID")
 	@PatchMapping("/{id}")
-	ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
+	ResponseEntity<ApiResponse<ProductDetailsResponse>> updateProduct(
 		@PathVariable Long id,
 		@Valid @RequestBody ProductUpdateRequest request
 	) {
-		ProductResponse response = productService.updateProduct(id, request);
+		ProductDetailsResponse response = productService.update(id, request);
 		return ResponseEntity.ok(ApiResponse.of(response));
 	}
 

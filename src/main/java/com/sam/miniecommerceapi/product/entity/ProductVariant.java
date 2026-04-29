@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "product_variants")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SequenceGenerator(name = "id_generator", sequenceName = "product_variants_id_seq")
 public class ProductVariant extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", nullable = false)

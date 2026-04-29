@@ -26,11 +26,9 @@ public record ProductCreationRequest(
 	BigDecimal regularPrice,
 
 	@NotNull(message = "category.id.required")
-	@ExitsId(entity = Category.class, message = "category.not_found")
 	Long categoryId,
 
 	@NotNull(message = "image.id.required")
-	@ExitsId(entity = Image.class, message = "image.not_found")
 	Long imageId,
 
 	@Valid

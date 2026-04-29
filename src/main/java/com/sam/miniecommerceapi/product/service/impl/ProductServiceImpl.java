@@ -25,6 +25,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -33,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -48,14 +52,17 @@ public class ProductServiceImpl implements ProductService {
 	ProductVariantService variantService;
 
 	@Override
+	@Transactional
 	public ProductResponse insert(ProductCreationRequest req) {
 		Product product = mapper.toEntity(req);
 
 		// Set category
-		product.setCategory(categoryService.getReference(req.categoryId()));
+		Category category = categoryService.findById(req.categoryId());
+		product.setCategory(category);
 
 		// Set image
-		product.setImage(imageService.getReference(req.imageId()));
+		Image image = imageService.findById(req.imageId());
+		product.setImage(image);
 
 		// Set Slug
 		product.setSlug(makeUniqueSlug(req.name()));
@@ -66,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setVariants(new LinkedHashSet<>(variants)); // Many to many
 
 		// Set all options. Simply save the product and its options will be saved as well.
-		List<ProductOption> options = optionService.mapOptions(req.options());
+		List<ProductOption> options = optionService.mappingOptions(req.options());
 		options.forEach(option -> option.setProduct(product)); // Many to many
 		product.setOptions(options); // Many to many
 
@@ -75,28 +82,15 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	@CacheEvict(value = CacheNames.PRODUCT)
-	public ProductResponse createProduct(ProductCreationRequest req) {
-		Category category = categoryService.getReference(req.categoryId());
-		Image image = imageService.getReference(req.imageId());
-
-		Product product = mapper.toEntity(req);
-		product.setCategory(category);
-		product.setSlug(makeUniqueSlug(product.getName()));
-		product.setImage(image);
-
-		return mapper.toResponse(save(product));
-	}
-
-	@Override
-	@Caching(evict = {
-		@CacheEvict(value = CacheNames.PRODUCT, key = "#id"),
-		@CacheEvict(value = CacheNames.PRODUCT, key = "#result.slug"),
-		@CacheEvict(value = CacheNames.PRODUCTS_LIST, allEntries = true)
-	})
-	public ProductResponse updateProduct(Long id, ProductUpdateRequest req) {
+	@Transactional
+	public ProductDetailsResponse update(Long id, ProductUpdateRequest req) {
 		Product product = findById(id);
+
+		// Mapping
 		mapper.toUpdate(product, req);
+
+		variantService.batchUpdate(product, req.variants());
+		optionService.batchUpdate(product, req.options());
 
 		if (req.categoryId() != null) {
 			Category category = categoryService.findById(req.categoryId());
@@ -112,13 +106,12 @@ public class ProductServiceImpl implements ProductService {
 			Image image = imageService.findById(req.imageId());
 			product.setImage(image);
 		}
-
-		return mapper.toResponse(save(product));
+		return mapper.toDetailsResponse(save(product));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheNames.PRODUCT, key = "#slug")
+	@Cacheable(value = CacheNames.PRODUCTS, key = "#slug")
 	public ProductDetailsResponse getProductDetailsBySlug(String slug) {
 		Product product = findBySlug(slug);
 		return mapper.toDetailsResponse(product);
@@ -127,8 +120,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	@Caching(evict = {
-		@CacheEvict(value = CacheNames.PRODUCT, key = "#id"),
-		@CacheEvict(value = CacheNames.PRODUCT, allEntries = true)
+		@CacheEvict(value = CacheNames.PRODUCTS, key = "#id"),
+		@CacheEvict(value = CacheNames.PRODUCTS, allEntries = true)
 	})
 	public void deleteProduct(Long id) {
 		delete(id);

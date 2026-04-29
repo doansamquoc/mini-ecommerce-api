@@ -1,10 +1,13 @@
 package com.sam.miniecommerceapi.product.service;
 
 import com.sam.miniecommerceapi.product.dto.ProductOptionDto;
+import com.sam.miniecommerceapi.product.entity.Product;
 import com.sam.miniecommerceapi.product.entity.ProductOption;
 
 import java.util.List;
 
 public interface ProductOptionService {
-	List<ProductOption> mapOptions(List<ProductOptionDto> reqs);
+	void batchUpdate(Product product, List<ProductOptionDto> dtos);
+
+	List<ProductOption> mappingOptions(List<ProductOptionDto> reqs);
 }

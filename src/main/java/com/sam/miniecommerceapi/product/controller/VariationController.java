@@ -1,8 +1,8 @@
 package com.sam.miniecommerceapi.product.controller;
 
 import com.sam.miniecommerceapi.common.dto.response.ApiResponse;
+import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.service.ProductVariantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,9 +40,9 @@ public class VariationController {
 	ResponseEntity<ApiResponse<VariantResponse>> updateVariation(
 		@PathVariable Long productId,
 		@PathVariable Long id,
-		@Valid @RequestBody VariantUpdateRequest request
+		@Valid @RequestBody ProductVariantRequest request
 	) {
-		VariantResponse response = service.updateVariant(productId, id, request);
+		VariantResponse response = service.update(productId, id, request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(response));
 	}
 

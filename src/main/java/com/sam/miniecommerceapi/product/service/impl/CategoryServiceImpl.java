@@ -71,7 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	@Caching(evict = {
 		@CacheEvict(value = CacheNames.CATEGORIES, allEntries = true),
-		@CacheEvict(value = CacheNames.PRODUCT, allEntries = true)
+		@CacheEvict(value = CacheNames.PRODUCTS, allEntries = true)
 	})
 	public CategoryResponse updateCategory(Long id, CategoryUpdateRequest req) {
 		Category category = findById(id);

@@ -1,18 +1,9 @@
 package com.sam.miniecommerceapi.common.config;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sam.miniecommerceapi.common.constant.CacheNames;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -47,7 +38,7 @@ public class RedisConfig {
 	@Bean
 	public RedisCacheManager redisCacheManager(RedisConnectionFactory factory, RedisCacheConfiguration config) {
 		Map<String, RedisCacheConfiguration> cache = new HashMap<>();
-		cache.put(CacheNames.PRODUCT, config.entryTtl(Duration.ofHours(2)));
+		cache.put(CacheNames.PRODUCTS, config.entryTtl(Duration.ofHours(2)));
 		cache.put(CacheNames.CATEGORIES, config.entryTtl(Duration.ofHours(2)));
 		return RedisCacheManager.builder(factory).cacheDefaults(config).withInitialCacheConfigurations(cache).build();
 	}

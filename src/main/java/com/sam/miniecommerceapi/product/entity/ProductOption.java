@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "product_options")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SequenceGenerator(name = "id_generator", sequenceName = "product_options_id_seq")
 public class ProductOption extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")

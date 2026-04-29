@@ -1,7 +1,7 @@
 package com.sam.miniecommerceapi.product.mapper;
 
+import com.sam.miniecommerceapi.product.dto.request.ProductVariantRequest;
 import com.sam.miniecommerceapi.product.dto.request.VariantCreationRequest;
-import com.sam.miniecommerceapi.product.dto.request.VariantUpdateRequest;
 import com.sam.miniecommerceapi.product.dto.response.VariantResponse;
 import com.sam.miniecommerceapi.product.entity.ProductVariant;
 import org.mapstruct.*;
@@ -14,11 +14,11 @@ import java.util.List;
 	nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface ProductVariantMapper {
-	ProductVariant toEntity(VariantUpdateRequest req);
+	ProductVariant toEntity(ProductVariantRequest req);
 
 	ProductVariant toEntity(VariantCreationRequest req);
 
-	void toUpdate(VariantUpdateRequest req, @MappingTarget ProductVariant variant);
+	ProductVariant toUpdate(ProductVariantRequest req, @MappingTarget ProductVariant variant);
 
 	@Mapping(source = "image.url", target = "src")
 	VariantResponse toResponse(ProductVariant variant);

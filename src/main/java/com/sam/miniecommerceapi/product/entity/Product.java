@@ -1,6 +1,7 @@
 package com.sam.miniecommerceapi.product.entity;
 
 import com.sam.miniecommerceapi.common.entity.BaseEntity;
+import com.sam.miniecommerceapi.product.dto.ProductOptionDto;
 import com.sam.miniecommerceapi.upload.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,10 +9,9 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -21,6 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SequenceGenerator(name = "id_generator", sequenceName = "products_id_seq")
 public class Product extends BaseEntity implements Serializable {
 	@Column(name = "name", nullable = false)
 	String name;
@@ -47,6 +48,21 @@ public class Product extends BaseEntity implements Serializable {
 	Set<ProductVariant> variants = new LinkedHashSet<>();
 
 	@Builder.Default
+	@OrderBy("position ASC")
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	List<ProductOption> options = new ArrayList<>();
+
+	public void addVariant(ProductVariant variant) {
+		this.variants.add(variant);
+		variant.setProduct(this);
+	}
+
+	public void updateInfo(String name, String description, Supplier<String> slugGenerator) {
+		if (name != null && !name.equals(this.name)) {
+			this.name = name;
+			this.slug = slugGenerator.get();
+		}
+	}
+
+
 }
